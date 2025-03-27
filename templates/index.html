@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japanese Synonym Graph</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three/build/three.module.js",
+                "three-spritetext": "https://unpkg.com/three-spritetext/dist/three-spritetext.mjs"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="search-container">
+        <div class="search-row">
+            <input type="text" id="search-input" placeholder="Search for a node...">
+            <select id="search-attribute">
+                <option value="kanji">Kanji</option>
+                <option value="hiragana">Hiragana</option>
+                <option value="POS">POS</option>
+                <option value="translation">Translation</option>
+                <option value="JLPT">JLPT</option>
+                <option value="jlpt_jisho_lemma">JLPT Jisho Lemma</option>
+                <option value="jlpt_jisho_synonym">JLPT Jisho Synonym</option>
+            </select>
+            <button id="search-button">Search</button>
+        </div>
+        <div class="search-row">
+            <label class="control-item">
+                <input type="checkbox" id="exact-search-checkbox" name="exact-search" value="exact" checked>
+                Exact Search
+            </label>
+            <select id="search-depth" class="control-item">
+                <option value="1">Depth 1</option>
+                <option value="2">Depth 2</option>
+                <option value="3">Depth 3</option>
+            </select>
+            <select id="dimension-select" class="control-item">
+                <option value="2d">2D Graph</option>
+                <option value="3d">3D Graph</option>
+            </select>
+        </div>
+    </div>
+    <div id="view-controls" class="info-card">
+        <div class="view-controls-content">
+            <label class="control-item">
+                <input type="checkbox" id="focus-checkbox" name="focus" value="focus">
+                Focus on Node
+            </label>
+            <button id="fit-to-canvas-btn" class="control-button">Fit to Canvas</button>
+        </div>
+    </div>
+    <div id="search-info" class="info-card">
+        <h4>Search Information</h4>
+        <div id="search-info-content"></div>
+    </div>
+    <div id="search-matches" class="info-card">
+        <h4>Search Matches</h4>
+        <div id="search-matches-content"></div>
+    </div>
+    <div id="node-info" class="info-card">
+        <h4>Selected Node</h4>
+        <div id="node-info-content"></div>
+    </div>
+    <div id="neighbors-info" class="info-card">
+        <h4>Neighboring Nodes</h4>
+        <div id="neighbors-list"></div>
+    </div>
+    <div id="graph-container">
+        <div id="3d-graph"></div>
+    </div>
+
+    <!-- Add the side navigation -->
+    <nav id="side-nav">
+        <a href="javascript:void(0)" class="close-btn" onclick="toggleNav()">&times;</a>
+        <div class="accordion">
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>View Options</span>
+                    <span class="arrow">▼</span>
+                </button>
+                <div class="accordion-content">
+                    <div class="slider-container">
+                        <label for="label-size">Label Size:</label>
+                        <input type="range" id="label-size-slider" min="0.5" max="3.0" step="0.1" value="1.5">
+                        <span id="label-size-value">1.5x</span>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>About</span>
+                    <span class="arrow">▼</span>
+                </button>
+                <div class="accordion-content">
+                    <p>Japanese Synonym Graph Visualization Tool</p>
+                    <p>Version 1.0</p>
+                    <p>Developed by:</p>
+                    <p>Benedikt Perak, University of Rijeka</p>
+                    <p>Dragana Špica, University of Pula</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Contact</span>
+                    <span class="arrow">▼</span>
+                </button>
+                <div class="accordion-content">
+                    <p>Email: bperak@uniri.hr, dspica@unipu.hr</p>
+                </div>
+            </div>
+            <div class="accordion-item"></div>
+                <button class="accordion-header" onclick="toggleAccordion(this)">
+                    <span>Publications</span>
+                    <span class="arrow">▼</span>
+                </button>
+                <div class="accordion-content">
+                    <p>2024-10: <a href="https://euralex.jezik.hr/wp-content/uploads/2021/09/Euralax-XXI-final-web.pdf" target="_blank">Špica, D., & Perak, B. (2024). Enhancing Japanese Lexical Networks Using Large Language Models. Euralex 21.</a></p>
+                    <p>2024-12: <a href="" target="_blank">Špica, D., & Perak, B. (2024). Automating Lexical Graph Construction with Large Language Models: A Scalable Approach to Japanese Multi-relation Lexical Networks. (Submitted for review.)</a></p>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Add the open navigation button -->
+    <button id="open-nav-btn" onclick="toggleNav()">
+        <div class="hamburger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <span class="menu-text">Menu</span>
+    </button>
+
+    <!-- Ensure only one instance of 3d-force-graph is loaded -->
+    <script src="https://unpkg.com/three@0.137.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/three-spritetext@1.6.5/dist/three-spritetext.min.js"></script>
+    <script src="https://unpkg.com/3d-force-graph@1.72.3/dist/3d-force-graph.min.js"></script>
+    <script src="https://unpkg.com/force-graph"></script>
+    <script>
+        function toggleNav() {
+            const sideNav = document.getElementById('side-nav');
+            if (sideNav.style.right === '0px') {
+                sideNav.style.right = '-250px';
+            } else {
+                sideNav.style.right = '0px';
+            }
+        }
+
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const arrow = header.querySelector('.arrow');
+            const isOpen = content.style.maxHeight;
+            
+            // Close all accordion items
+            document.querySelectorAll('.accordion-content').forEach(item => {
+                item.style.maxHeight = null;
+            });
+            document.querySelectorAll('.arrow').forEach(arrow => {
+                arrow.style.transform = 'rotate(0deg)';
+            });
+            
+            // Open clicked item if it was closed
+            if (!isOpen) {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                arrow.style.transform = 'rotate(180deg)';
+            }
+        }
+    </script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

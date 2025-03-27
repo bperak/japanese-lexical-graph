@@ -5,79 +5,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Japanese Synonym Graph</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three/build/three.module.js",
-                "three-spritetext": "https://unpkg.com/three-spritetext/dist/three-spritetext.mjs"
-            }
-        }
-    </script>
 </head>
 <body>
-    <div id="search-container">
-        <div class="search-row">
-            <input type="text" id="search-input" placeholder="Search for a node...">
-            <select id="search-attribute">
-                <option value="kanji">Kanji</option>
-                <option value="hiragana">Hiragana</option>
-                <option value="POS">POS</option>
-                <option value="translation">Translation</option>
-                <option value="JLPT">JLPT</option>
-                <option value="jlpt_jisho_lemma">JLPT Jisho Lemma</option>
-                <option value="jlpt_jisho_synonym">JLPT Jisho Synonym</option>
-            </select>
-            <button id="search-button">Search</button>
+    <div class="app-container">
+        <!-- Left sidebar for information panels -->
+        <div class="sidebar-left">
+            <!-- Search container -->
+            <div id="search-container">
+                <div class="search-row">
+                    <input type="text" id="search-input" placeholder="Search for a node...">
+                    <select id="search-attribute">
+                        <option value="kanji">Kanji</option>
+                        <option value="hiragana">Hiragana</option>
+                        <option value="POS">POS</option>
+                        <option value="translation">Translation</option>
+                        <option value="JLPT">JLPT</option>
+                        <option value="jlpt_jisho_lemma">JLPT Jisho Lemma</option>
+                        <option value="jlpt_jisho_synonym">JLPT Jisho Synonym</option>
+                    </select>
+                    <button id="search-button">Search</button>
+                </div>
+                <div class="search-row">
+                    <label class="control-item">
+                        <input type="checkbox" id="exact-search-checkbox" name="exact-search" value="exact" checked>
+                        Exact Search
+                    </label>
+                    <select id="search-depth" class="control-item">
+                        <option value="1">Depth 1</option>
+                        <option value="2">Depth 2</option>
+                        <option value="3">Depth 3</option>
+                    </select>
+                    <select id="dimension-select" class="control-item">
+                        <option value="2d">2D Graph</option>
+                        <option value="3d">3D Graph</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- View controls -->
+            <div id="view-controls" class="info-card">
+                <div class="view-controls-content">
+                    <label class="control-item">
+                        <input type="checkbox" id="focus-checkbox" name="focus" value="focus">
+                        Focus on Node
+                    </label>
+                    <button id="fit-to-canvas-btn" class="control-button">Fit to Canvas</button>
+                </div>
+            </div>
+            
+            <!-- Search information -->
+            <div id="search-info" class="info-card">
+                <h4>Search Information</h4>
+                <div id="search-info-content"></div>
+            </div>
+            
+            <!-- Search matches -->
+            <div id="search-matches" class="info-card">
+                <h4>Search Matches</h4>
+                <div id="search-matches-content"></div>
+            </div>
+            
+            <!-- Selected node info -->
+            <div id="node-info" class="info-card">
+                <h4>Selected Node</h4>
+                <div id="node-info-content"></div>
+            </div>
+            
+            <!-- Neighbors info -->
+            <div id="neighbors-info" class="info-card">
+                <h4>Neighboring Nodes</h4>
+                <div id="neighbors-list"></div>
+            </div>
         </div>
-        <div class="search-row">
-            <label class="control-item">
-                <input type="checkbox" id="exact-search-checkbox" name="exact-search" value="exact" checked>
-                Exact Search
-            </label>
-            <select id="search-depth" class="control-item">
-                <option value="1">Depth 1</option>
-                <option value="2">Depth 2</option>
-                <option value="3">Depth 3</option>
-            </select>
-            <select id="dimension-select" class="control-item">
-                <option value="2d">2D Graph</option>
-                <option value="3d">3D Graph</option>
-            </select>
+        
+        <!-- Main content area for graph visualization -->
+        <div class="main-content">
+            <div id="graph-container">
+                <div id="3d-graph"></div>
+            </div>
         </div>
-    </div>
-    <div id="view-controls" class="info-card">
-        <div class="view-controls-content">
-            <label class="control-item">
-                <input type="checkbox" id="focus-checkbox" name="focus" value="focus">
-                Focus on Node
-            </label>
-            <button id="fit-to-canvas-btn" class="control-button">Fit to Canvas</button>
+
+        <!-- New Right sidebar for Wikidata information -->
+        <div class="sidebar-right" id="wikidata-sidebar">
+            <div class="sidebar-header">
+                <h3>Wikidata Information</h3>
+                <button class="close-btn" onclick="toggleWikidataSidebar()">&times;</button>
+            </div>
+            <div class="sidebar-content">
+                <div id="wikidata-details">
+                    <div class="no-data">Select a node to view Wikidata information</div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div id="search-info" class="info-card">
-        <h4>Search Information</h4>
-        <div id="search-info-content"></div>
-    </div>
-    <div id="search-matches" class="info-card">
-        <h4>Search Matches</h4>
-        <div id="search-matches-content"></div>
-    </div>
-    <div id="node-info" class="info-card">
-        <h4>Selected Node</h4>
-        <div id="node-info-content"></div>
-    </div>
-    <div id="neighbors-info" class="info-card">
-        <h4>Neighboring Nodes</h4>
-        <div id="neighbors-list"></div>
-    </div>
-    <div id="graph-container">
-        <div id="3d-graph"></div>
+
+        <!-- New Bottom sidebar for Gemini AI content -->
+        <div class="sidebar-bottom" id="gemini-sidebar">
+            <div class="sidebar-header">
+                <h3>AI Analysis (Gemini)</h3>
+                <button class="close-btn" onclick="toggleGeminiSidebar()">&times;</button>
+            </div>
+            <div class="sidebar-content">
+                <div id="gemini-details">
+                    <div class="no-data">Select a node to view AI-enhanced information</div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Add the side navigation -->
+    <!-- Side navigation for additional information -->
     <nav id="side-nav">
         <a href="javascript:void(0)" class="close-btn" onclick="toggleNav()">&times;</a>
         <div class="accordion">
+            <!-- AI Information Panel -->
+            <div class="accordion-item">
+                <button class="accordion-header" id="ai-info-btn">
+                    <span>About</span>
+                    <span class="arrow">▼</span>
+                </button>
+                <div class="accordion-content" id="ai-info-content">
+                    <p>Japanese Synonym Graph Visualization Tool</p>
+                    <p>Version 1.0</p>
+                    <p>Developed by:</p>
+                    <p>Benedikt Perak, University of Rijeka</p>
+                    <p>Dragana Špica, University of Pula</p>
+                </div>
+            </div>
+
             <div class="accordion-item">
                 <button class="accordion-header" onclick="toggleAccordion(this)">
                     <span>View Options</span>
@@ -136,19 +189,67 @@
         <span class="menu-text">Menu</span>
     </button>
 
-    <!-- Ensure only one instance of 3d-force-graph is loaded -->
-    <script src="https://unpkg.com/three@0.137.0/build/three.min.js"></script>
-    <script src="https://unpkg.com/three-spritetext@1.6.5/dist/three-spritetext.min.js"></script>
-    <script src="https://unpkg.com/3d-force-graph@1.72.3/dist/3d-force-graph.min.js"></script>
-    <script src="https://unpkg.com/force-graph"></script>
+    <!-- Add button to toggle Wikidata sidebar -->
+    <button id="show-wikidata-btn" onclick="toggleWikidataSidebar()">
+        <span class="wiki-icon">W</span>
+        <span class="menu-text">Wikidata</span>
+    </button>
+
+    <!-- Add button to toggle Gemini sidebar -->
+    <button id="show-gemini-btn" onclick="toggleGeminiSidebar()">
+        <span class="ai-icon">AI</span>
+        <span class="menu-text">Gemini</span>
+    </button>
+
+    <!-- Simple direct script loading -->
+    <!-- First load Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.137.0/build/three.min.js"></script>
+    
+    <!-- Make THREE globally available -->
     <script>
+        console.log('Three.js loaded:', THREE.REVISION);
+        window.THREE = THREE;
+    </script>
+    
+    <!-- Then load dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/three-spritetext@1.6.5/dist/three-spritetext.min.js"></script>
+    
+    <!-- Load visualization libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/force-graph@1.43.3/dist/force-graph.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/3d-force-graph@1.72.3/dist/3d-force-graph.min.js"></script>
+    
+    <!-- Load our application code -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <!-- Debug script for DOM loaded event -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded');
+            
+            // Log the graph container
+            const container = document.getElementById('graph-container');
+            console.log('Graph container:', container);
+            if (container) {
+                console.log('Container dimensions:', container.offsetWidth, container.offsetHeight);
+            } else {
+                console.error('Graph container not found!');
+            }
+        });
+        
+        // Navigation functions
         function toggleNav() {
             const sideNav = document.getElementById('side-nav');
-            if (sideNav.style.right === '0px') {
-                sideNav.style.right = '-250px';
-            } else {
-                sideNav.style.right = '0px';
-            }
+            sideNav.classList.toggle('open');
+        }
+
+        function toggleWikidataSidebar() {
+            const wikidataSidebar = document.getElementById('wikidata-sidebar');
+            wikidataSidebar.classList.toggle('open');
+        }
+
+        function toggleGeminiSidebar() {
+            const geminiSidebar = document.getElementById('gemini-sidebar');
+            geminiSidebar.classList.toggle('open');
         }
 
         function toggleAccordion(header) {
@@ -171,6 +272,5 @@
             }
         }
     </script>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

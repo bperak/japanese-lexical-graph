@@ -9,3 +9,12 @@ networkx==3.3
 setuptools==75.1.0
 Werkzeug==3.0.4
 wheel==0.44.0
+
+# New dependencies for enhancements
+SPARQLWrapper==2.0.0
+requests==2.31.0
+google-generativeai==0.3.1
+pillow==10.1.0
+python-dotenv==1.0.0
+redis==5.0.1
+flask_caching==2.1.0

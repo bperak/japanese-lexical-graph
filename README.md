@@ -1,89 +1,96 @@
 # Japanese Lexical Graph
 
-Interactive visualization of Japanese synonym relationships using 3D and 2D force-directed graphs.
-
-## Overview
-
-This application visualizes Japanese lexical relationships in an interactive graph format. Users can search for Japanese words by kanji, hiragana, part of speech, translation, or JLPT level, and explore their synonym relationships in either 2D or 3D visualization.
-
-![Japanese Lexical Graph Screenshot](https://vasturiano.github.io/3d-force-graph/example/preview.png)
-*Example visualization (actual appearance may differ)*
+An interactive visualization and exploration tool for Japanese language lexical networks with enhanced features including Wikidata integration and AI-powered analysis.
 
 ## Features
 
-- Search Japanese words by multiple criteria (kanji, hiragana, POS, translation, JLPT level)
-- Switch between 2D and 3D graph visualizations
-- Adjustable search depth for exploring relationships
-- Interactive node selection with detailed information display
-- Color-coding by JLPT level
-- Customizable label sizes
-- Focus mode to highlight specific nodes and their connections
-- Automatic graph fitting to canvas
+### Core Features
+- Interactive 3D graph visualization of Japanese lexical relationships
+- Search by Japanese terms, English meanings, or parts of speech
+- Detailed node information with translations and relationship strengths
+- Customizable graph display options
 
-## Technology Stack
-
-- **Backend**: Flask (Python)
-- **Data Storage**: NetworkX graph stored in pickle format
-- **Frontend**: HTML, CSS, JavaScript
-- **Visualization**: 3D-Force-Graph, ForceGraph libraries
+### Enhanced Features
+- **Wikidata Integration**: Access structured data about Japanese terms from Wikidata
+- **AI-Powered Analysis**: Get AI-generated explanations and relationship analysis using Google's Gemini API
+- **Term Comparison**: Compare two Japanese terms to understand semantic differences and similarities
+- **Caching System**: Optimized performance with in-memory and Redis-based caching
 
 ## Setup and Installation
 
 ### Prerequisites
-- Python 3.8+
-- Node.js (for development only)
+- Python 3.8 or higher
+- Pip package manager
+- Redis (optional, for enhanced caching)
 
 ### Installation
 
-1. Clone the repository
+1. Clone the repository:
    ```
    git clone https://github.com/yourusername/japanese-lexical-graph.git
    cd japanese-lexical-graph
    ```
 
-2. Create a virtual environment and install dependencies
+2. Install required packages:
    ```
-   python -m venv myenv
-   source myenv/bin/activate  # On Windows: myenv\Scripts\activate
    pip install -r requirements.txt
    ```
 
-3. Run the application
+3. Set up environment variables by creating a `.env` file in the project root:
+   ```
+   GEMINI_API_KEY=your_gemini_api_key_here
+   REDIS_URL=redis://localhost:6379/0  # Optional
+   FLASK_ENV=development
+   FLASK_DEBUG=True
+   ```
+
+4. Obtain a Google Gemini API key:
+   - Visit [Google AI Studio](https://ai.google.dev/) and create an account
+   - Generate an API key and add it to your `.env` file
+
+### Running the Application
+
+1. Start the Flask server:
    ```
    python app.py
    ```
 
-4. Open a web browser and navigate to the address shown in the console (typically http://localhost:8003)
+2. Open your browser and navigate to:
+   ```
+   http://localhost:5000
+   ```
 
-## Usage
+## Usage Guide
 
-1. Type a Japanese word, character, or English translation in the search box
-2. Select the search attribute (kanji, hiragana, POS, etc.)
-3. Choose the search depth (1-3) to control how many related words to display
-4. Toggle between 2D and 3D visualization as preferred
-5. Click on nodes to view detailed information
-6. Use the "Focus on Node" checkbox to highlight connections
-7. Use "Fit to Canvas" to optimize the view
+### Graph Navigation
+- **Search**: Enter a Japanese term, English word, or part of speech in the search box
+- **View Controls**: Adjust display options in the control panel
+- **Node Selection**: Click on nodes to view details and access Wikidata/AI information
+- **Term Comparison**: Select two nodes and click "Analyze Selected Terms" to compare them
 
-## Data
+### Sidebar Features
+- **Wikidata Information**: View structured data about the selected term
+- **AI Analysis**: Access Gemini-powered explanations and relationship analysis
+- **Graph Controls**: Adjust visualization parameters
 
-The application uses a NetworkX graph stored in pickle format (`G_synonyms_2024_09_18.pickle`), containing Japanese words with attributes such as:
-- Kanji representation
-- Hiragana reading
-- Part of speech
-- English translation
-- JLPT level
+## Technical Architecture
 
-## Developers
+### Backend Components
+- **Flask**: Web server and API endpoints
+- **NetworkX**: Graph data structure and operations
+- **SPARQLWrapper**: Integration with Wikidata's SPARQL endpoint
+- **Google Generative AI**: Integration with Gemini API for AI features
+- **Redis/In-memory Cache**: Performance optimization
 
-- Benedikt Perak, University of Rijeka
-- Dragana Špica, University of Pula
+### Frontend Components
+- **Three.js**: 3D visualization
+- **Force-Directed Graph**: Layout algorithm for network visualization
+- **Modern CSS**: Responsive design with accordion panels and tabs
 
-## Publications
+## Contributing
 
-- 2024-10: Špica, D., & Perak, B. (2024). Enhancing Japanese Lexical Networks Using Large Language Models. Euralex 21.
-- 2024-12: Špica, D., & Perak, B. (2024). Automating Lexical Graph Construction with Large Language Models: A Scalable Approach to Japanese Multi-relation Lexical Networks. (Submitted for review.)
+Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
 
 ## License
 
-This project is licensed under the terms included in the LICENSE file. 
+MIT License 

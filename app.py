@@ -3,15 +3,20 @@ import networkx as nx
 import pickle
 import ssl
 import os
-<<<<<<< Updated upstream
-import sys
-=======
 import logging
 from dotenv import load_dotenv
 from wikidata_helper import get_wikidata_info
 from cache_helper import cache
 import gemini_helper
 import json
+import time
+import math
+import numpy as np
+from collections import Counter, defaultdict
+# Import our new AI generation script
+import ai_generation_single
+# Import our new lexical exercises script
+import exercises_script
 
 # Load environment variables
 load_dotenv()
@@ -22,7 +27,6 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
->>>>>>> Stashed changes
 
 app = Flask(__name__)
 
@@ -31,9 +35,16 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 # Load the NetworkX graph from pickle file
 try:
-    filename = 'G_synonyms_2024_09_18.pickle'
+    # Updated path to pickle file in graph_models folder
+    filename = os.path.join('graph_models', 'G_synonyms_2024_09_18.pickle')
     with open(filename, 'rb') as f:
         G = pickle.load(f)
+
+    # Clean up any NaN nodes which can cause issues
+    nan_nodes = [node for node in G.nodes() if isinstance(node, float) and math.isnan(node)]
+    if nan_nodes:
+        logger.warning(f"Found {len(nan_nodes)} NaN nodes in the graph. Removing them.")
+        G.remove_nodes_from(nan_nodes)
 
     # Print basic information about the graph
     logger.info(f"Number of nodes: {G.number_of_nodes()}")
@@ -98,51 +109,6 @@ def graph_data():
         link['id'] = f"{u}-{v}-{key}"
         links.append(link)
 
-<<<<<<< Updated upstream
-    print(f"Returning {len(nodes)} nodes and {len(links)} links")
-    return jsonify({'nodes': nodes, 'links': links})
-
-if __name__ == '__main__':
-    # Default configuration
-    host = '31.147.206.155'
-    port = 8003
-    debug = True
-    use_ssl = True
-    
-    # Get SSL certificate paths from environment or use defaults
-    cert_path = os.environ.get('SSL_CERT_PATH', "/home/Liks/certs/liks.cer")
-    key_path = os.environ.get('SSL_KEY_PATH', "/home/Liks/certs/liks.key")
-    
-    # Check if SSL is enabled but certificates don't exist
-    if use_ssl and (not os.path.exists(cert_path) or not os.path.exists(key_path)):
-        print(f"Warning: SSL certificate or key not found at {cert_path} and {key_path}")
-        print("If you want to disable SSL, set use_ssl=False")
-        
-        # Ask user what to do
-        if input("Continue without SSL? (y/n): ").lower() == 'y':
-            use_ssl = False
-        else:
-            print("Exiting. Please ensure SSL certificates are available.")
-            sys.exit(1)
-    
-    # Setup SSL context for secure HTTP if enabled
-    if use_ssl:
-        try:
-            context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-            context.load_cert_chain(cert_path, key_path)
-            print(f"SSL enabled with certificates: {cert_path} and {key_path}")
-            
-            # Run the Flask application with SSL
-            app.run(host=host, port=port, debug=debug, ssl_context=context)
-        except Exception as e:
-            print(f"Error setting up SSL: {e}")
-            print("Falling back to non-SSL mode")
-            app.run(host=host, port=port, debug=debug)
-    else:
-        # Run without SSL
-        print("Running without SSL")
-        app.run(host=host, port=port, debug=debug)
-=======
     logger.info(f"Returning {len(nodes)} nodes and {len(links)} links")
     return jsonify({'nodes': nodes, 'links': links})
 
@@ -291,7 +257,7 @@ def gemini_explanation():
     try:
         # Get node context if term is a node in our graph
         context = None
-        matching_nodes = find_nodes('japanese', term)
+        matching_nodes = find_nodes(G, term, 'kanji')
         if matching_nodes:
             node_id = matching_nodes[0]
             node_attrs = dict(G.nodes[node_id])
@@ -300,13 +266,13 @@ def gemini_explanation():
             neighbors = []
             for neighbor in G.neighbors(node_id):
                 neighbor_attrs = dict(G.nodes[neighbor])
-                neighbors.append(neighbor_attrs.get('japanese', ''))
+                neighbors.append(str(neighbor))
                 if len(neighbors) >= 5:
                     break
             
             context = {
-                "pos": node_attrs.get('pos', ''),
-                "english": node_attrs.get('english', []),
+                "pos": node_attrs.get('POS', ''),
+                "english": node_attrs.get('translation', ''),
                 "related": neighbors
             }
         
@@ -361,6 +327,173 @@ def gemini_analyze():
     except Exception as e:
         logger.error(f"Error analyzing relationship with Gemini for {term1} and {term2}: {e}")
         return jsonify({"error": str(e)}), 500
+
+@app.route('/ai-generate-relations', methods=['GET'])
+def ai_generate_relations():
+    """
+    Endpoint to generate AI-powered lexical relations for a node.
+    This allows users to generate new synonyms and antonyms for a word,
+    adding these to the graph database.
+    """
+    node_id = request.args.get('id', '')
+    if not node_id:
+        return jsonify({"error": "No node ID provided"}), 400
+    
+    try:
+        # Check if AI generation is available
+        if not ai_generation_single.is_available():
+            return jsonify({
+                "status": "error",
+                "message": "AI Generation is not available. Please check your API key configuration."
+            }), 503
+        
+        # Generate relations for the node
+        logger.info(f"Generating AI relations for node: {node_id}")
+        result = ai_generation_single.generate_node_relations(node_id)
+        logger.info(f"AI generation result status: {result.get('status')}")
+
+        # If the generation was successful, include the updated graph data
+        if result.get("status") in ["success", "partial_success"]:
+            try:
+                # Get the depth parameter or default to 1
+                depth = int(request.args.get('depth', '1'))
+                logger.info(f"Fetching subgraph with depth {depth} for {node_id}")
+                
+                # Include any newly added nodes in the source nodes
+                source_nodes = [node_id]
+                if "changes" in result and "updated_nodes" in result["changes"]:
+                    source_nodes.extend(result["changes"]["updated_nodes"])
+                    logger.info(f"Including updated nodes in subgraph: {result['changes']['updated_nodes']}")
+                
+                # Get the updated subgraph data - with additional error handling
+                try:
+                    # Get the valid nodes that exist in the graph
+                    valid_source_nodes = [node for node in source_nodes if node in G.nodes]
+                    if len(valid_source_nodes) < len(source_nodes):
+                        missing_nodes = [node for node in source_nodes if node not in G.nodes]
+                        logger.warning(f"Some nodes weren't found in the graph and will be skipped: {missing_nodes}")
+                    
+                    # Continue with valid nodes
+                    subgraph = get_subgraph(G, valid_source_nodes, depth=depth)
+                    logger.info(f"Got subgraph with {subgraph.number_of_nodes()} nodes and {subgraph.number_of_edges()} edges")
+                    
+                    # Format nodes and links
+                    nodes = []
+                    for node, data in subgraph.nodes(data=True):
+                        node_data = {'id': str(node)}
+                        node_data.update({k: str(v) if v is not None else None for k, v in data.items()})
+                        nodes.append(node_data)
+                    
+                    links = []
+                    for u, v, key, data in subgraph.edges(data=True, keys=True):
+                        # Check that both nodes exist in the nodes list
+                        if u in subgraph.nodes() and v in subgraph.nodes():
+                            link = {'source': str(u), 'target': str(v)}
+                            link.update({k: str(v) if v is not None else None for k, v in data.items()})
+                            link['id'] = f"{u}-{v}-{key}"
+                            links.append(link)
+                    
+                    # Add the graph data to the result
+                    result["graph_data"] = {
+                        "nodes": nodes,
+                        "links": links
+                    }
+                    logger.info(f"Added graph_data to response with {len(nodes)} nodes and {len(links)} links")
+                    
+                    # Add update statistics
+                    result["update_stats"] = {
+                        "nodes_before": G.number_of_nodes() - len(result.get("changes", {}).get("updated_nodes", [])),
+                        "nodes_after": G.number_of_nodes(),
+                        "edges_before": G.number_of_edges() - (
+                            result.get("changes", {}).get("synonyms_added", 0) + 
+                            result.get("changes", {}).get("antonyms_added", 0)
+                        ),
+                        "edges_after": G.number_of_edges(),
+                        "new_nodes": len(result.get("changes", {}).get("updated_nodes", [])),
+                        "new_edges": (
+                            result.get("changes", {}).get("synonyms_added", 0) + 
+                            result.get("changes", {}).get("antonyms_added", 0)
+                        )
+                    }
+                    logger.info(f"Added update_stats to response")
+                except Exception as graph_error:
+                    # If getting the subgraph fails, we'll still return the generation results
+                    # but with an informative message about the graph update issue
+                    logger.error(f"Error fetching subgraph data: {graph_error}")
+                    result["message"] = f"{result['message']} (Warning: Graph visualization may be incomplete)"
+                    result["graph_error"] = str(graph_error)
+                    
+                    # Try to get at least a minimal graph with just the original node
+                    try:
+                        if node_id in G.nodes:
+                            minimal_subgraph = nx.Graph()
+                            minimal_subgraph.add_node(node_id, **G.nodes[node_id])
+                            
+                            # Add immediate valid neighbors
+                            for neighbor in G.neighbors(node_id):
+                                minimal_subgraph.add_node(neighbor, **G.nodes[neighbor])
+                                # Get edge data for each connection (could be multiple)
+                                for _, _, key, data in G.edges([node_id, neighbor], data=True, keys=True):
+                                    if node_id != neighbor:  # Avoid self-loops
+                                        minimal_subgraph.add_edge(node_id, neighbor, **data)
+                            
+                            # Format nodes and links
+                            nodes = []
+                            for node, data in minimal_subgraph.nodes(data=True):
+                                node_data = {'id': str(node)}
+                                node_data.update({k: str(v) if v is not None else None for k, v in data.items()})
+                                nodes.append(node_data)
+                            
+                            links = []
+                            for u, v, data in minimal_subgraph.edges(data=True):
+                                link = {'source': str(u), 'target': str(v)}
+                                link.update({k: str(v) if v is not None else None for k, v in data.items()})
+                                link['id'] = f"{u}-{v}-0"  # Use 0 as default key
+                                links.append(link)
+                            
+                            # Add the minimal graph data to the result
+                            result["graph_data"] = {
+                                "nodes": nodes,
+                                "links": links
+                            }
+                            logger.info(f"Added minimal fallback graph_data with {len(nodes)} nodes and {len(links)} links")
+                            
+                            # Still include update statistics
+                            result["update_stats"] = {
+                                "nodes_before": G.number_of_nodes() - len(result.get("changes", {}).get("updated_nodes", [])),
+                                "nodes_after": G.number_of_nodes(),
+                                "edges_before": G.number_of_edges() - (
+                                    result.get("changes", {}).get("synonyms_added", 0) + 
+                                    result.get("changes", {}).get("antonyms_added", 0)
+                                ),
+                                "edges_after": G.number_of_edges(),
+                                "new_nodes": len(result.get("changes", {}).get("updated_nodes", [])),
+                                "new_edges": (
+                                    result.get("changes", {}).get("synonyms_added", 0) + 
+                                    result.get("changes", {}).get("antonyms_added", 0)
+                                )
+                            }
+                    except Exception as fallback_error:
+                        logger.error(f"Error creating minimal fallback graph: {fallback_error}")
+                        # Still maintain the original error
+            except Exception as data_error:
+                # If any part of gathering graph data fails, we'll still return the generation results
+                logger.error(f"Error preparing graph data: {data_error}")
+                result["graph_data_error"] = str(data_error)
+        
+        # Log the keys in the result for debugging
+        logger.info(f"Final response keys: {', '.join(result.keys())}")
+        
+        # Return the results
+        return jsonify(result)
+    
+    except Exception as e:
+        logger.error(f"Error generating AI relations for node {node_id}: {e}")
+        return jsonify({
+            "status": "error",
+            "message": f"An error occurred: {str(e)}",
+            "error": str(e)
+        }), 500
 
 @app.route('/enhanced-node', methods=['GET'])
 def enhanced_node():
@@ -501,6 +634,337 @@ def enhanced_node():
             }
         }), 500
 
+# New endpoints for graph analysis
+@app.route('/graph-stats')
+def graph_stats():
+    """Endpoint to get basic statistics about the graph."""
+    try:
+        # Calculate basic graph statistics
+        stats = {
+            "node_count": G.number_of_nodes(),
+            "edge_count": G.number_of_edges(),
+            "is_directed": nx.is_directed(G),
+            "density": nx.density(G),
+            "avg_degree": sum(d for n, d in G.degree()) / G.number_of_nodes() if G.number_of_nodes() > 0 else 0,
+        }
+        
+        # Count node attributes
+        sample_nodes = list(G.nodes())[:min(100, G.number_of_nodes())]
+        attribute_keys = set()
+        for node in sample_nodes:
+            if isinstance(node, float) and math.isnan(node):
+                continue
+            attribute_keys.update(G.nodes[node].keys())
+        
+        stats["node_attributes"] = sorted(list(attribute_keys))
+        
+        # Calculate distribution of POS if available
+        if "POS" in attribute_keys:
+            pos_distribution = {}
+            pos_counts = Counter()
+            
+            for node in sample_nodes:
+                if isinstance(node, float) and math.isnan(node):
+                    continue
+                if "POS" in G.nodes[node]:
+                    pos = G.nodes[node]["POS"]
+                    if pos and not (isinstance(pos, float) and math.isnan(pos)):
+                        pos_counts[pos] += 1
+            
+            # Convert counter to dictionary for JSON serialization
+            pos_distribution = {pos: count for pos, count in pos_counts.most_common(10)}
+            stats["pos_distribution_sample"] = pos_distribution
+        
+        # Get JLPT level distribution if available
+        if "JLPT" in attribute_keys:
+            jlpt_distribution = {}
+            jlpt_counts = Counter()
+            
+            for node in sample_nodes:
+                if isinstance(node, float) and math.isnan(node):
+                    continue
+                if "JLPT" in G.nodes[node]:
+                    jlpt = G.nodes[node]["JLPT"]
+                    if jlpt and not (isinstance(jlpt, float) and math.isnan(jlpt)):
+                        jlpt_counts[jlpt] += 1
+            
+            jlpt_distribution = {f"N{jlpt}": count for jlpt, count in jlpt_counts.most_common()}
+            stats["jlpt_distribution_sample"] = jlpt_distribution
+        
+        # Find top-degree nodes
+        top_nodes = sorted(G.degree(), key=lambda x: x[1], reverse=True)[:10]
+        stats["top_degree_nodes"] = [{"node": str(node), "degree": degree} for node, degree in top_nodes]
+        
+        return jsonify(stats)
+    except Exception as e:
+        logger.error(f"Error generating graph statistics: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/graph-analysis', methods=['GET'])
+def graph_analysis():
+    """API endpoint to analyze specific parts of the graph."""
+    analysis_type = request.args.get('type', 'basic')
+    node_id = request.args.get('node', '')
+    limit = int(request.args.get('limit', 100))
+    
+    # Check cache first
+    cache_key = f"graph_analysis:{analysis_type}:{node_id}:{limit}"
+    cached_result = cache.get(cache_key)
+    if cached_result:
+        return jsonify(json.loads(cached_result))
+    
+    try:
+        result = {}
+        
+        if analysis_type == 'basic':
+            # Basic graph metrics
+            result = {
+                "node_count": G.number_of_nodes(),
+                "edge_count": G.number_of_edges(),
+                "density": nx.density(G),
+                "is_directed": nx.is_directed(G),
+            }
+            
+            # Compute connected components
+            if not nx.is_directed(G):
+                connected_components = list(nx.connected_components(G))
+                result["connected_components"] = len(connected_components)
+                largest_cc = max(connected_components, key=len)
+                result["largest_component_size"] = len(largest_cc)
+                result["largest_component_percentage"] = len(largest_cc) / G.number_of_nodes() * 100
+            
+        elif analysis_type == 'degrees':
+            # Degree distribution analysis
+            degrees = [d for n, d in G.degree()]
+            degree_counts = Counter(degrees)
+            
+            result = {
+                "average_degree": sum(degrees) / len(degrees) if degrees else 0,
+                "max_degree": max(degrees) if degrees else 0,
+                "min_degree": min(degrees) if degrees else 0,
+                "degree_distribution": {str(d): count for d, count in degree_counts.most_common(20)}
+            }
+            
+            # Top degree nodes
+            top_nodes = sorted(G.degree(), key=lambda x: x[1], reverse=True)[:10]
+            result["top_degree_nodes"] = [{"node": str(node), "degree": degree} for node, degree in top_nodes]
+            
+        elif analysis_type == 'node':
+            # Node-specific analysis
+            if not node_id or node_id not in G:
+                return jsonify({"error": "Invalid or missing node ID"}), 400
+            
+            # Get node attributes
+            node_attrs = dict(G.nodes[node_id])
+            
+            # Get neighbors
+            neighbors = list(G.neighbors(node_id))
+            
+            # Analyze neighbor attributes if they exist
+            neighbor_attrs = {}
+            if neighbors:
+                # Check for common attributes
+                sample_neighbor = neighbors[0]
+                potential_attrs = G.nodes[sample_neighbor].keys()
+                
+                for attr in potential_attrs:
+                    values = []
+                    for neighbor in neighbors:
+                        if attr in G.nodes[neighbor]:
+                            value = G.nodes[neighbor][attr]
+                            if not (isinstance(value, float) and math.isnan(value)):
+                                values.append(value)
+                    
+                    if values:
+                        # Count values
+                        value_counts = Counter(values)
+                        neighbor_attrs[attr] = {str(val): count for val, count in value_counts.most_common(10)}
+            
+            # Include sample neighbors
+            sampled_neighbors = neighbors[:min(limit, len(neighbors))]
+            neighbor_details = []
+            for neighbor in sampled_neighbors:
+                neighbor_data = {
+                    "id": str(neighbor),
+                    "attributes": {k: str(v) for k, v in G.nodes[neighbor].items()}
+                }
+                neighbor_details.append(neighbor_data)
+            
+            result = {
+                "node_id": node_id,
+                "attributes": node_attrs,
+                "degree": G.degree(node_id),
+                "neighbor_count": len(neighbors),
+                "neighbor_attribute_distribution": neighbor_attrs,
+                "sample_neighbors": neighbor_details
+            }
+            
+        elif analysis_type == 'jlpt':
+            # JLPT level analysis
+            jlpt_distribution = {}
+            node_counts = {}
+            
+            # Check if JLPT attribute exists
+            has_jlpt = False
+            for node in list(G.nodes())[:min(1000, G.number_of_nodes())]:
+                if isinstance(node, float) and math.isnan(node):
+                    continue
+                if 'JLPT' in G.nodes[node]:
+                    has_jlpt = True
+                    break
+            
+            if not has_jlpt:
+                return jsonify({"error": "Graph does not contain JLPT data"}), 400
+            
+            # Count nodes by JLPT level
+            for node in G.nodes():
+                if isinstance(node, float) and math.isnan(node):
+                    continue
+                    
+                if 'JLPT' in G.nodes[node]:
+                    jlpt_value = G.nodes[node]['JLPT']
+                    if isinstance(jlpt_value, float) and math.isnan(jlpt_value):
+                        continue
+                        
+                    level = float(jlpt_value)
+                    if level not in jlpt_distribution:
+                        jlpt_distribution[level] = 0
+                        node_counts[level] = []
+                    
+                    jlpt_distribution[level] += 1
+                    
+                    # Store node IDs (limited to keep response size reasonable)
+                    if len(node_counts[level]) < limit:
+                        node_counts[level].append(str(node))
+            
+            # Calculate average degree by JLPT level
+            avg_degree_by_jlpt = {}
+            for level, nodes in node_counts.items():
+                if nodes:
+                    degrees = [G.degree(node) for node in nodes]
+                    avg_degree_by_jlpt[level] = sum(degrees) / len(degrees)
+                else:
+                    avg_degree_by_jlpt[level] = 0
+            
+            result = {
+                "jlpt_distribution": {f"N{level}": count for level, count in sorted(jlpt_distribution.items())},
+                "avg_degree_by_jlpt": {f"N{level}": avg_degree for level, avg_degree in sorted(avg_degree_by_jlpt.items())},
+                "sample_nodes_by_jlpt": {f"N{level}": nodes[:min(10, len(nodes))] for level, nodes in sorted(node_counts.items())}
+            }
+        
+        # Cache the result (expire after 1 day)
+        cache.set(cache_key, json.dumps(result), 24 * 60 * 60)
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Error in graph analysis: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/generate-exercise', methods=['GET'])
+def generate_exercise():
+    """
+    Endpoint to generate an interactive language learning exercise for a node.
+    This allows users to learn Japanese through interactive conversations about a word.
+    """
+    node_id = request.args.get('id', '')
+    level = int(request.args.get('level', '1'))
+    mode = request.args.get('mode', 'exercise')  # New parameter: 'exercise' or 'conversation'
+    
+    if not node_id:
+        return jsonify({"error": "No node ID provided"}), 400
+    
+    try:
+        # Check if exercise generation is available
+        if not exercises_script.is_available():
+            return jsonify({
+                "status": "error",
+                "message": "Exercise generation is not available. Please check your API key configuration."
+            }), 503
+        
+        # Generate exercise for the node
+        logger.info(f"Generating {mode} for node: {node_id} at level {level}")
+        
+        # Pass the mode to the generate_exercise function
+        result = exercises_script.generate_exercise(node_id, level, mode=mode)
+        
+        # Add node context
+        node_context = exercises_script.get_node_context(node_id)
+        if "error" not in node_context:
+            result["node_context"] = node_context
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        logger.error(f"Error generating {mode} for node {node_id}: {e}")
+        return jsonify({
+            "status": "error",
+            "message": f"An error occurred: {str(e)}",
+            "error": str(e)
+        }), 500
+
+@app.route('/continue-exercise', methods=['POST'])
+def continue_exercise():
+    """
+    Endpoint to continue an interactive language learning exercise.
+    This handles the conversation back-and-forth for the interactive learning session.
+    """
+    data = request.json
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+    
+    node_id = data.get('node_id', '')
+    level = int(data.get('level', '1'))
+    user_message = data.get('message', '')
+    session_history = data.get('history', [])
+    mode = data.get('mode', 'exercise')  # New parameter: 'exercise' or 'conversation'
+    
+    if not node_id:
+        return jsonify({"error": "No node ID provided"}), 400
+    
+    if not user_message:
+        return jsonify({"error": "No user message provided"}), 400
+    
+    try:
+        # Check if exercise generation is available
+        if not exercises_script.is_available():
+            return jsonify({
+                "status": "error",
+                "message": "Exercise generation is not available. Please check your API key configuration."
+            }), 503
+        
+        # Add the current message to history
+        if session_history:
+            # If history exists, add the user's message to the last entry
+            session_history.append({"user": user_message, "tutor": ""})
+        else:
+            # Initialize history with the current message
+            session_history = [{"user": user_message, "tutor": ""}]
+        
+        # Generate response, passing the mode parameter
+        logger.info(f"Continuing {mode} conversation for node: {node_id}")
+        result = exercises_script.generate_exercise(node_id, level, session_history, mode=mode)
+        
+        # Update the history with the tutor's response
+        if session_history:
+            session_history[-1]["tutor"] = result.get("content", "")
+            result["history"] = session_history
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        logger.error(f"Error continuing {mode} for node {node_id}: {e}")
+        return jsonify({
+            "status": "error",
+            "message": f"An error occurred: {str(e)}",
+            "error": str(e)
+        }), 500
+
+# Register exercise routes explicitly
+app.add_url_rule('/exercise-generate', view_func=generate_exercise, methods=['GET'])
+app.add_url_rule('/exercise-continue', view_func=continue_exercise, methods=['POST'])
+
 if __name__ == '__main__':
     # Run in debug mode locally
     if os.getenv('FLASK_ENV') == 'development':
@@ -515,4 +979,3 @@ if __name__ == '__main__':
             logger.error(f"SSL certificate error: {e}")
             # Fallback to non-SSL
             app.run(host='31.147.206.155', port=8003, debug=False)
->>>>>>> Stashed changes

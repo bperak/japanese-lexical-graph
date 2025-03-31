@@ -8,73 +8,62 @@
 </head>
 <body>
     <div class="app-container">
+        <!-- Header with search controls and menu button -->
+        <div class="app-header">
+            <div class="header-left">
+                <div class="header-search-container">
+                    <div class="header-search-row">
+                        <input type="text" id="search-input" placeholder="Search for a node...">
+                        <select id="search-attribute">
+                            <option value="kanji">Kanji</option>
+                            <option value="hiragana">Hiragana</option>
+                            <option value="POS">POS</option>
+                            <option value="translation">Translation</option>
+                            <option value="JLPT">JLPT</option>
+                            <option value="jlpt_jisho_lemma">JLPT Jisho Lemma</option>
+                            <option value="jlpt_jisho_synonym">JLPT Jisho Synonym</option>
+                        </select>
+                        <select id="search-depth" class="control-item">
+                            <option value="1">Depth 1</option>
+                            <option value="2">Depth 2</option>
+                            <option value="3">Depth 3</option>
+                        </select>
+                        <button id="search-button">Search</button>
+                        <label class="control-item checkbox-wrapper header-checkbox" title="When checked, searches for exact matches only. When unchecked, includes partial matches.">
+                            <input type="checkbox" id="exact-search-checkbox" name="exact-search" value="exact" checked>
+                            <span class="checkbox-label">Exact</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <button id="menu-btn" class="menu-button" onclick="toggleMenu()">
+                    <div class="hamburger-icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="menu-text">Menu</span>
+                </button>
+            </div>
+        </div>
+
         <!-- Left sidebar for information panels -->
         <div class="sidebar-left">
-            <!-- Search container -->
-            <div id="search-container">
-                <div class="search-row">
-                    <input type="text" id="search-input" placeholder="Search for a node...">
-                    <select id="search-attribute">
-                        <option value="kanji">Kanji</option>
-                        <option value="hiragana">Hiragana</option>
-                        <option value="POS">POS</option>
-                        <option value="translation">Translation</option>
-                        <option value="JLPT">JLPT</option>
-                        <option value="jlpt_jisho_lemma">JLPT Jisho Lemma</option>
-                        <option value="jlpt_jisho_synonym">JLPT Jisho Synonym</option>
-                    </select>
-                    <button id="search-button">Search</button>
-                </div>
-                <div class="search-row">
-                    <label class="control-item">
-                        <input type="checkbox" id="exact-search-checkbox" name="exact-search" value="exact" checked>
-                        Exact Search
-                    </label>
-                    <select id="search-depth" class="control-item">
-                        <option value="1">Depth 1</option>
-                        <option value="2">Depth 2</option>
-                        <option value="3">Depth 3</option>
-                    </select>
-                    <select id="dimension-select" class="control-item">
-                        <option value="2d">2D Graph</option>
-                        <option value="3d">3D Graph</option>
-                    </select>
-                </div>
-            </div>
-            
-            <!-- View controls -->
-            <div id="view-controls" class="info-card">
-                <div class="view-controls-content">
-                    <label class="control-item">
-                        <input type="checkbox" id="focus-checkbox" name="focus" value="focus">
-                        Focus on Node
-                    </label>
-                    <button id="fit-to-canvas-btn" class="control-button">Fit to Canvas</button>
-                </div>
-            </div>
-            
-            <!-- Search information -->
-            <div id="search-info" class="info-card">
-                <h4>Search Information</h4>
-                <div id="search-info-content"></div>
-            </div>
-            
-            <!-- Search matches -->
-            <div id="search-matches" class="info-card">
-                <h4>Search Matches</h4>
-                <div id="search-matches-content"></div>
-            </div>
-            
-            <!-- Selected node info -->
+            <!-- Node info -->
             <div id="node-info" class="info-card">
                 <h4>Selected Node</h4>
-                <div id="node-info-content"></div>
+                <div id="node-info-content">
+                    <p>No node selected. Click on a node in the graph to see its details.</p>
+                </div>
             </div>
             
-            <!-- Neighbors info -->
-            <div id="neighbors-info" class="info-card">
-                <h4>Neighboring Nodes</h4>
-                <div id="neighbors-list"></div>
+            <!-- Neighbors -->
+            <div id="neighbors-info" class="info-card scrollable">
+                <h4>Neighbors</h4>
+                <div id="neighbors-list">
+                    <p>No node selected. Click on a node to see its neighbors.</p>
+                </div>
             </div>
         </div>
         
@@ -83,38 +72,133 @@
             <div id="graph-container">
                 <div id="3d-graph"></div>
             </div>
-        </div>
-
-        <!-- New Right sidebar for Wikidata information -->
-        <div class="sidebar-right" id="wikidata-sidebar">
-            <div class="sidebar-header">
-                <h3>Wikidata Information</h3>
-                <button class="close-btn" onclick="toggleWikidataSidebar()">&times;</button>
+            
+            <!-- Search information panel -->
+            <div id="search-info" class="info-card">
+                <h4>Search Information</h4>
+                <div id="search-info-content">
+                    <p><strong>Total Nodes:</strong> <span>0</span></p>
+                    <p><strong>Total Links:</strong> <span>0</span></p>
+                    <p><strong>Search Term:</strong> <span>None</span></p>
+                    <p><strong>Search Field:</strong> <span>None</span></p>
+                </div>
             </div>
-            <div class="sidebar-content">
-                <div id="wikidata-details">
-                    <div class="no-data">Select a node to view Wikidata information</div>
+            
+            <!-- View Controls panel -->
+            <div id="view-controls-panel" class="info-card">
+                <h4>View Controls</h4>
+                <div id="view-controls-content">
+                    <div class="view-control-item">
+                        <select id="dimension-select" class="control-item">
+                            <option value="2d">2D Graph</option>
+                            <option value="3d">3D Graph</option>
+                        </select>
+                    </div>
+                    <div class="view-control-item">
+                        <label class="control-item checkbox-wrapper">
+                            <input type="checkbox" id="focus-checkbox" name="focus" value="focus">
+                            <span class="checkbox-label">Focus on Node</span>
+                        </label>
+                    </div>
+                    <div class="view-control-item">
+                        <button id="fit-to-canvas-btn" class="compact-button">Fit to Canvas</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search matches panel -->
+            <div id="search-matches" class="info-card scrollable">
+                <h4>Search Matches</h4>
+                <div id="search-matches-content">
+                    <p>No matches yet. Search for a term above.</p>
                 </div>
             </div>
         </div>
 
-        <!-- New Bottom sidebar for Gemini AI content -->
-        <div class="sidebar-bottom" id="gemini-sidebar">
-            <div class="sidebar-header">
-                <h3>AI Analysis (Gemini)</h3>
-                <button class="close-btn" onclick="toggleGeminiSidebar()">&times;</button>
+        <!-- New Bottom sidebar with tabbed interface for Gemini AI and Wikidata -->
+        <div class="sidebar-bottom" id="combined-sidebar">
+            <div class="sidebar-header" onclick="toggleCombinedSidebar()">
+                <h3>Node Information</h3>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="sidebar-tabs">
+                <button class="tab-button active" data-tab="gemini">AI Analysis</button>
+                <button class="tab-button" data-tab="wikidata">Wikidata</button>
+                <button class="tab-button" data-tab="ai-generation">AI Generation</button>
+                <button class="tab-button" data-tab="exercises">Lexical Exercises</button>
             </div>
             <div class="sidebar-content">
-                <div id="gemini-details">
-                    <div class="no-data">Select a node to view AI-enhanced information</div>
+                <div id="gemini-tab" class="tab-content active">
+                    <div id="gemini-details">
+                        <div class="no-data">Select a node to view AI-enhanced information</div>
+                    </div>
+                </div>
+                <div id="wikidata-tab" class="tab-content">
+                    <div id="wikidata-details">
+                        <div class="no-data">Select a node to view Wikidata information</div>
+                    </div>
+                </div>
+                <div id="ai-generation-tab" class="tab-content">
+                    <div id="ai-generation-details">
+                        <div class="no-data">Select a node to generate new lexical relations</div>
+                        <div id="ai-generation-controls" style="margin-top: 15px;">
+                            <button id="generate-relations-btn" class="compact-button" style="display: none;">Generate Relations</button>
+                            <button id="update-graph-btn" class="compact-button secondary-button">Update Graph Visualization</button>
+                            <div id="generation-status"></div>
+                        </div>
+                        <div id="generation-results"></div>
+                    </div>
+                </div>
+                <div id="exercises-tab" class="tab-content">
+                    <div class="exercise-subtabs">
+                        <button class="subtab-button active" data-subtab="learning">Learning Level</button>
+                        <button class="subtab-button" data-subtab="conversation">Conversation</button>
+                    </div>
+                    
+                    <div id="learning-subtab" class="subtab-content active">
+                        <div class="exercise-controls-bar">
+                            <div class="level-selector">
+                                <label for="learning-level">Learning Level:</label>
+                                <select id="learning-level" class="form-control">
+                                    <option value="1">Beginner 1</option>
+                                    <option value="2">Beginner 2</option>
+                                    <option value="3">Intermediate 1</option>
+                                    <option value="4">Intermediate 2</option>
+                                    <option value="5">Advanced 1</option>
+                                    <option value="6">Advanced 2</option>
+                                </select>
+                            </div>
+                            <button id="generate-exercise-btn" class="compact-button" style="display: none;">Start Lesson</button>
+                        </div>
+                    </div>
+                    
+                    <div id="conversation-subtab" class="subtab-content">
+                        <div class="conversation-controls">
+                            <button id="start-conversation-btn" class="compact-button" style="display: none;">Start Conversation</button>
+                        </div>
+                    </div>
+                    
+                    <div id="exercise-status"></div>
+                    
+                    <div class="exercise-chat-area">
+                        <div id="exercise-content" class="exercise-chat-container">
+                            <!-- Exercise content will be loaded here -->
+                        </div>
+                        <div id="exercise-input-container" style="display: none;">
+                            <div class="chat-input-group">
+                                <textarea id="exercise-user-input" class="form-control" rows="2" placeholder="Type your response here..."></textarea>
+                                <button id="exercise-submit-btn" class="compact-button">Send</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Side navigation for additional information -->
-    <nav id="side-nav">
-        <a href="javascript:void(0)" class="close-btn" onclick="toggleNav()">&times;</a>
+    <!-- Side navigation for additional information (menu) -->
+    <nav id="side-nav" class="menu-nav">
+        <a href="javascript:void(0)" class="close-btn" onclick="toggleMenu()">&times;</a>
         <div class="accordion">
             <!-- AI Information Panel -->
             <div class="accordion-item">
@@ -179,28 +263,6 @@
         </div>
     </nav>
 
-    <!-- Add the open navigation button -->
-    <button id="open-nav-btn" onclick="toggleNav()">
-        <div class="hamburger-icon">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-        <span class="menu-text">Menu</span>
-    </button>
-
-    <!-- Add button to toggle Wikidata sidebar -->
-    <button id="show-wikidata-btn" onclick="toggleWikidataSidebar()">
-        <span class="wiki-icon">W</span>
-        <span class="menu-text">Wikidata</span>
-    </button>
-
-    <!-- Add button to toggle Gemini sidebar -->
-    <button id="show-gemini-btn" onclick="toggleGeminiSidebar()">
-        <span class="ai-icon">AI</span>
-        <span class="menu-text">Gemini</span>
-    </button>
-
     <!-- Simple direct script loading -->
     <!-- First load Three.js -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.137.0/build/three.min.js"></script>
@@ -218,6 +280,9 @@
     <script src="https://cdn.jsdelivr.net/npm/force-graph@1.43.3/dist/force-graph.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/3d-force-graph@1.72.3/dist/3d-force-graph.min.js"></script>
     
+    <!-- Load Markdown library -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
     <!-- Load our application code -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     
@@ -234,22 +299,62 @@
             } else {
                 console.error('Graph container not found!');
             }
+            
+            // Initialize tab functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons and panes
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(pane => {
+                        pane.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked button and corresponding pane
+                    button.classList.add('active');
+                    const tabName = button.getAttribute('data-tab');
+                    document.getElementById(`${tabName}-tab`).classList.add('active');
+                });
+            });
+            
+            // Initialize subtab functionality for Exercises tab
+            const subtabButtons = document.querySelectorAll('.subtab-button');
+            subtabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all subtab buttons and contents
+                    subtabButtons.forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.subtab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked button and corresponding content
+                    button.classList.add('active');
+                    const subtabName = button.getAttribute('data-subtab');
+                    document.getElementById(`${subtabName}-subtab`).classList.add('active');
+                });
+            });
         });
         
         // Navigation functions
-        function toggleNav() {
+        function toggleMenu() {
             const sideNav = document.getElementById('side-nav');
             sideNav.classList.toggle('open');
         }
 
-        function toggleWikidataSidebar() {
-            const wikidataSidebar = document.getElementById('wikidata-sidebar');
-            wikidataSidebar.classList.toggle('open');
-        }
-
-        function toggleGeminiSidebar() {
-            const geminiSidebar = document.getElementById('gemini-sidebar');
-            geminiSidebar.classList.toggle('open');
+        function toggleCombinedSidebar() {
+            console.log('toggleCombinedSidebar called');
+            const combinedSidebar = document.getElementById('combined-sidebar');
+            combinedSidebar.classList.toggle('open');
+            
+            // Toggle the arrow direction
+            const arrow = combinedSidebar.querySelector('.arrow');
+            if (combinedSidebar.classList.contains('open')) {
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                arrow.style.transform = 'rotate(0deg)';
+            }
+            
+            console.log('Combined sidebar toggled, open state:', combinedSidebar.classList.contains('open'));
         }
 
         function toggleAccordion(header) {

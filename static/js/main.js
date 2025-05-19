@@ -10,6 +10,9 @@ let hoverNode = null;
 let wikidataCache = {};  // Cache for Wikidata results
 const geminiCache = {};
 const aiGenerationCache = {}; // Cache for AI Generation results
+// Visibility toggles for relation types
+let showSynonyms = true;
+let showAntonyms = true;
 
 document.addEventListener('DOMContentLoaded', function() {
     // Function to handle tab switching
@@ -27,7 +30,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Hide all tab content and show the selected one
                 tabContents.forEach(content => {
-                    if (content.id === `${tabName}-details`) {
+                    const targetId = `${tabName}-tab`;
+                    // Add 'active' class only to the matching tab pane, remove from others
+                    if (content.id === targetId) {
                         content.classList.add('active');
                     } else {
                         content.classList.remove('active');
@@ -162,13 +167,17 @@ function toggleAccordion(element) {
             return '#ffff00'; // Bright yellow for highlighted links
         }
         
-        // Color based on link type
-        const strength = parseFloat(link.synonym_strength) || 0.5;
+        // First distinguish antonyms (render in bright red)
+        if (link.relationship === 'antonym') {
+            return '#ff4d4d';
+        }
         
-        // Use a brighter color scheme for the dark background
-        // From light blue (weak) to bright magenta (strong) with higher luminosity
-        const hue = 240 - (strength * 180); // Blue (240) to magenta (300+)
-        return `hsl(${hue}, 80%, 70%)`; // Higher lightness (70%) for visibility on dark background
+        // Synonyms / others – keep gradient based on strength for visual cue of closeness
+        const strength = parseFloat(link.synonym_strength || link.weight || 0.5);
+        
+        // Gradient on dark background: light blue (weak) → magenta (strong)
+        const hue = 240 - (strength * 180); // 240 (blue) down to ~60 (magenta-ish)
+        return `hsl(${hue}, 80%, 70%)`; // high lightness for visibility
     }
 
     function getLinkWidth(link) {
@@ -225,6 +234,8 @@ function toggleAccordion(element) {
     const dimensionSelect = document.getElementById('dimension-select');
     const labelSizeSlider = document.getElementById('label-size-slider');
     const labelSizeValue = document.getElementById('label-size-value');
+    const toggleSynonymsChk = document.getElementById('toggle-synonyms');
+    const toggleAntonymsChk = document.getElementById('toggle-antonyms');
 
     // Check WebGL availability
     try {
@@ -258,14 +269,48 @@ function toggleAccordion(element) {
             '<div style="color: red; padding: 20px;">Error: Required libraries not loaded. Please check your internet connection and reload the page.</div>';
     }
 
-    // Add slider event listener
-    labelSizeSlider.addEventListener('input', (e) => {
-        labelSizeMultiplier = parseFloat(e.target.value);
-        labelSizeValue.textContent = `${labelSizeMultiplier}x`;
-        if (graphData) {
-            initializeGraph(graphData);
+    // Add slider event listener only if the slider exists
+    if (labelSizeSlider && labelSizeValue) {
+        labelSizeSlider.addEventListener('input', (e) => {
+            labelSizeMultiplier = parseFloat(e.target.value);
+            labelSizeValue.textContent = `${labelSizeMultiplier}x`;
+            if (graphData) {
+                initializeGraph(graphData);
+            }
+        });
+    }
+
+    // --- Relation visibility toggles ---
+    if (toggleSynonymsChk) {
+        toggleSynonymsChk.addEventListener('change', (e) => {
+            showSynonyms = e.target.checked;
+            applyLinkVisibility();
+            if (clickedNode) updateNeighborsList(clickedNode);
+        });
+    }
+
+    if (toggleAntonymsChk) {
+        toggleAntonymsChk.addEventListener('change', (e) => {
+            showAntonyms = e.target.checked;
+            applyLinkVisibility();
+            if (clickedNode) updateNeighborsList(clickedNode);
+        });
+    }
+
+    function applyLinkVisibility() {
+        if (!Graph) return;
+        Graph.linkVisibility(link => {
+            if (link.relationship === 'synonym' && !showSynonyms) return false;
+            if (link.relationship === 'antonym' && !showAntonyms) return false;
+            return true;
+        });
+        if (typeof Graph.refresh === 'function') {
+            Graph.refresh();
+        } else if (typeof Graph.forceEngine === 'function') {
+            // For 3D graphs trigger reheat and render
+            Graph.forceEngine().alpha(1).restart();
         }
-    });
+    }
 
     function fetchGraphData(term, attribute = 'kanji', exact = true) {
         if (!term.trim()) {
@@ -355,7 +400,7 @@ function toggleAccordion(element) {
             let matchesHtml = '<ul>';
             matches.forEach(match => {
                 const hiragana = match.hiragana ? match.hiragana : '';
-                const translation = match.translation ? match.translation : 'No translation available';
+                const translation = formatTranslation(match.translation);
                 matchesHtml += `
                     <li>
                         <div class="match-item">
@@ -769,17 +814,8 @@ function toggleAccordion(element) {
                 `;
             }
             
-            // Always show raw response for debugging if available
-            if (explanation.raw_response) {
-                html += `
-                    <div class="raw-response" style="margin-top: 15px; font-size: 0.8rem;">
-                        <details>
-                            <summary>Show Raw API Response</summary>
-                            <pre>${explanation.raw_response}</pre>
-                        </details>
-                    </div>
-                `;
-            }
+            // Removed raw response accordion
+            
         }
         
         html += '</div>'; // Close gemini-section
@@ -1104,6 +1140,9 @@ function toggleAccordion(element) {
             
             console.log('Graph instance stored in window.graph');
             
+            // Apply current visibility settings
+            applyLinkVisibility();
+            
             // Test if event handlers are properly attached
             console.log('Testing event handlers:');
             console.log('- onNodeClick handler:', typeof graph.onNodeClick);
@@ -1263,7 +1302,7 @@ function toggleAccordion(element) {
                             <a class="node-link" data-id="${neighbor.id}">${label}</a>
                             ${neighbor.english && neighbor.english.length ? 
                                 `<span class="translation">(${Array.isArray(neighbor.english) ? neighbor.english[0] : neighbor.english})</span>` : ''}
-                            ${neighbor.pos ? `<span class="pos">${neighbor.pos}</span>` : ''}
+                            ${neighbor.POS ? `<span class="pos">${neighbor.POS}</span>` : ''}
                             <span class="relation-strength">${typeof weight === 'number' ? weight.toFixed(2) : weight}</span>
                         </li>
                     `;
@@ -1330,6 +1369,11 @@ function toggleAccordion(element) {
                 // Skip id as it's already in the header, and skip internal properties
                 if (key !== 'id' && key !== 'x' && key !== 'y' && key !== 'z' && key !== 'vx' && key !== 'vy' && key !== 'vz' && key !== 'index' && key !== 'fx' && key !== 'fy' && key !== 'fz') {
                     let displayValue = value;
+                    
+                    // Special handling for translation objects
+                    if (key === 'translation') {
+                        displayValue = formatTranslation(value);
+                    }
                     
                     // Format arrays nicely
                     if (Array.isArray(value)) {
@@ -1400,7 +1444,7 @@ function toggleAccordion(element) {
             <div class="node-info-section">
                 <p><strong>Kanji:</strong> <span>${node.id}</span></p>
                 <p><strong>Hiragana:</strong> <span>${node.hiragana || 'N/A'}</span></p>
-                <p><strong>Translation:</strong> <span>${node.translation || 'N/A'}</span></p>
+                <p><strong>Translation:</strong> <span>${formatTranslation(node.translation)}</span></p>
                 <p><strong>POS:</strong> <span>${node.POS || 'N/A'}</span></p>
                 <p><strong>JLPT:</strong> <span>${node.JLPT || 'N/A'}</span></p>
             </div>
@@ -1447,7 +1491,7 @@ function toggleAccordion(element) {
                         <a href="#" class="node-link" data-id="${neighbor.id}">${neighbor.id}</a> 
                         ${strength}
                         <div class="neighbor-details">
-                            ${neighbor.translation ? `<span class="translation">${neighbor.translation}</span>` : ''}
+                            ${neighbor.translation ? `<span class="translation">${formatTranslation(neighbor.translation)}</span>` : ''}
                             ${neighbor.POS ? `<span class="pos">${neighbor.POS}</span>` : ''}
                         </div>
                     </div>
@@ -1879,7 +1923,7 @@ function toggleAccordion(element) {
                     <p><strong>Lemma:</strong> ${sourceLexeme.lemma}</p>
                     <p><strong>Hiragana:</strong> ${sourceLexeme.hiragana || 'N/A'}</p>
                     <p><strong>POS:</strong> ${sourceLexeme.POS || 'N/A'}</p>
-                    <p><strong>Translation:</strong> ${sourceLexeme.translation || 'N/A'}</p>
+                    <p><strong>Translation:</strong> ${formatTranslation(sourceLexeme.translation)}</p>
                 </div>
             `;
         }
@@ -1899,7 +1943,7 @@ function toggleAccordion(element) {
                             <span class="item-hiragana">${synonym.synonym_hiragana || ''}</span>
                             <span class="item-strength">(${strength})</span>
                         </p>
-                        <p><strong>Translation:</strong> ${synonym.synonym_translation || 'N/A'}</p>
+                        <p><strong>Translation:</strong> ${formatTranslation(synonym.synonym_translation)}</p>
                         <p><strong>POS:</strong> ${synonym.POS || 'N/A'}</p>
                         <p><strong>Mutual Sense:</strong> ${synonym.mutual_sense || ''} (${synonym.mutual_sense_translation || ''})</p>
                         <p><strong>Domain:</strong> ${synonym.synonymy_domain || ''} (${synonym.synonymy_domain_translation || ''})</p>
@@ -1925,7 +1969,7 @@ function toggleAccordion(element) {
                             <span class="item-hiragana">${antonym.antonym_hiragana || ''}</span>
                             <span class="item-strength">(${strength})</span>
                         </p>
-                        <p><strong>Translation:</strong> ${antonym.antonym_translation || 'N/A'}</p>
+                        <p><strong>Translation:</strong> ${formatTranslation(antonym.antonym_translation)}</p>
                         <p><strong>POS:</strong> ${antonym.POS || 'N/A'}</p>
                         <p><strong>Domain:</strong> ${antonym.antonymy_domain || ''} (${antonym.antonymy_domain_translation || ''})</p>
                     </div>
@@ -2072,7 +2116,7 @@ function toggleAccordion(element) {
                 value !== null && value !== undefined && value !== '') {
                 html += `<div class="node-property">
                     <div class="property-name">${key}</div>
-                    <div class="property-value">${value}</div>
+                    <div class="property-value">${key === 'translation' ? formatTranslation(value) : value}</div>
                 </div>`;
             }
         }
@@ -2150,31 +2194,60 @@ function toggleAccordion(element) {
             // Find the neighbor node object
             const neighborNode = graphData.nodes.find(n => n.id === neighborId);
             if (neighborNode) {
+                // Determine relationship strength using available attributes
+                const strengthVal = parseFloat(link.strength || link.weight || link.synonym_strength || 1);
                 neighbors.push({
                     id: neighborId,
                     hiragana: neighborNode.hiragana || '',
                     translation: neighborNode.translation || 'No translation',
-                    strength: link.strength || 1,
+                    strength: isNaN(strengthVal) ? 1 : strengthVal,
                     relationship: link.relationship || 'connected'
                 });
             }
         });
         
-        // Sort by strength (if available)
-        neighbors.sort((a, b) => b.strength - a.strength);
-        
-        // Create list items
-        neighbors.forEach(neighbor => {
-            html += `
-                <div class="neighbor-item">
-                    <a class="neighbor-kanji node-link" data-id="${neighbor.id}">${neighbor.id}</a>
-                    ${neighbor.hiragana ? `<span class="neighbor-hiragana">${neighbor.hiragana}</span>` : ''}
-                    <span class="neighbor-translation">${neighbor.translation}</span>
-                    <span class="neighbor-relation">${neighbor.relationship} (${neighbor.strength.toFixed(2)})</span>
-                </div>
-            `;
-        });
-        
+        // --- Classification & ordering with visibility filters ---
+        const allowedByToggle = (rel) => {
+            if (rel === 'synonym' && !showSynonyms) return false;
+            if (rel === 'antonym' && !showAntonyms) return false;
+            return true;
+        };
+
+        const visibleNeighbors = neighbors.filter(n => allowedByToggle(n.relationship));
+
+        // classify
+        const synonymsArr  = visibleNeighbors.filter(n => n.relationship === 'synonym');
+        const antonymsArr  = visibleNeighbors.filter(n => n.relationship === 'antonym');
+        const othersArr    = visibleNeighbors.filter(n => n.relationship !== 'synonym' && n.relationship !== 'antonym');
+
+        const sortDesc = (a, b) => b.strength - a.strength;
+        synonymsArr.sort(sortDesc);
+        antonymsArr.sort(sortDesc);
+        othersArr.sort(sortDesc);
+
+        // helper html builder
+        const renderGroup = (arr, heading=null) => {
+            if (arr.length === 0) return '';
+            let out = '';
+            if (heading) {
+                out += `<div class=\"neighbor-group-heading\">${heading}</div>`;
+            }
+            arr.forEach(neighbor => {
+                out += `
+                    <div class=\"neighbor-item\">
+                        <a class=\"neighbor-kanji node-link\" data-id=\"${neighbor.id}\">${neighbor.id}</a>
+                        ${neighbor.hiragana ? `<span class=\"neighbor-hiragana\">${neighbor.hiragana}</span>` : ''}
+                        <span class=\"neighbor-translation\">${formatTranslation(neighbor.translation)}</span>
+                        <span class=\"neighbor-relation\">${neighbor.relationship} (${neighbor.strength.toFixed(2)})</span>
+                    </div>`;
+            });
+            return out;
+        };
+
+        html += renderGroup(synonymsArr, 'Synonyms');
+        html += renderGroup(antonymsArr, 'Antonyms');
+        html += renderGroup(othersArr);
+         
         neighborsContainer.innerHTML = html;
         
         // Add event listeners to neighbor links
@@ -2470,5 +2543,34 @@ function toggleAccordion(element) {
             submitBtn.textContent = 'Send';
         });
     }
+
+    // ===== NEW UTILITY FUNCTION =====
+    /**
+     * Safely formats translation values that may be strings or complex objects.
+     * If the value is an object produced by AI Generation (e.g. { target_lemma, target_POS, ... }),
+     * we prioritise `target_lemma` and fall back to the first string value found.
+     *
+     * @param {any} translation - Raw translation value from node data.
+     * @returns {string} - Human-readable translation or 'N/A' when unavailable.
+     */
+    function formatTranslation(translation) {
+        if (!translation) return 'N/A';
+        if (typeof translation === 'string') return translation;
+        if (typeof translation === 'object') {
+            if (translation.target_lemma) return translation.target_lemma;
+            // Fallback: return first string property value if available
+            for (const val of Object.values(translation)) {
+                if (typeof val === 'string') return val;
+            }
+            // Last resort – stringify the object
+            try {
+                return JSON.stringify(translation);
+            } catch (e) {
+                return 'N/A';
+            }
+        }
+        return String(translation);
+    }
+    // ===== END UTILITY FUNCTION =====
 });
 

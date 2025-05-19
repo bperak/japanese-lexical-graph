@@ -1893,3 +1893,9 @@ body {
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+
+/* Ensure the side navigation panel opens correctly */
+#side-nav.open {
+    width: 300px; /* Override the default width: 0 from the base #side-nav rule */
+    left: auto;   /* Override .menu-nav's left: 0 to avoid conflicting with right: 0 */
+}

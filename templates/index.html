@@ -103,6 +103,17 @@
                     <div class="view-control-item">
                         <button id="fit-to-canvas-btn" class="compact-button">Fit to Canvas</button>
                     </div>
+                    <!-- Relation visibility toggles -->
+                    <div class="view-control-item relation-toggle-group">
+                        <label class="control-item checkbox-wrapper" title="Toggle display of synonym relations">
+                            <input type="checkbox" id="toggle-synonyms" checked>
+                            <span class="checkbox-label">Synonyms</span>
+                        </label>
+                        <label class="control-item checkbox-wrapper" title="Toggle display of antonym relations">
+                            <input type="checkbox" id="toggle-antonyms" checked>
+                            <span class="checkbox-label">Antonyms</span>
+                        </label>
+                    </div>
                 </div>
             </div>
             
@@ -215,49 +226,17 @@
                 </div>
             </div>
 
+            <!-- Publications -->
             <div class="accordion-item">
-                <button class="accordion-header" onclick="toggleAccordion(this)">
-                    <span>View Options</span>
-                    <span class="arrow">▼</span>
-                </button>
-                <div class="accordion-content">
-                    <div class="slider-container">
-                        <label for="label-size">Label Size:</label>
-                        <input type="range" id="label-size-slider" min="0.5" max="3.0" step="0.1" value="1.5">
-                        <span id="label-size-value">1.5x</span>
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <button class="accordion-header" onclick="toggleAccordion(this)">
-                    <span>About</span>
-                    <span class="arrow">▼</span>
-                </button>
-                <div class="accordion-content">
-                    <p>Japanese Synonym Graph Visualization Tool</p>
-                    <p>Version 1.0</p>
-                    <p>Developed by:</p>
-                    <p>Benedikt Perak, University of Rijeka</p>
-                    <p>Dragana Špica, University of Pula</p>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <button class="accordion-header" onclick="toggleAccordion(this)">
-                    <span>Contact</span>
-                    <span class="arrow">▼</span>
-                </button>
-                <div class="accordion-content">
-                    <p>Email: bperak@uniri.hr, dspica@unipu.hr</p>
-                </div>
-            </div>
-            <div class="accordion-item"></div>
-                <button class="accordion-header" onclick="toggleAccordion(this)">
+                <button class="accordion-header">
                     <span>Publications</span>
                     <span class="arrow">▼</span>
                 </button>
                 <div class="accordion-content">
-                    <p>2024-10: <a href="https://euralex.jezik.hr/wp-content/uploads/2021/09/Euralax-XXI-final-web.pdf" target="_blank">Špica, D., & Perak, B. (2024). Enhancing Japanese Lexical Networks Using Large Language Models. Euralex 21.</a></p>
-                    <p>2024-12: <a href="" target="_blank">Špica, D., & Perak, B. (2024). Automating Lexical Graph Construction with Large Language Models: A Scalable Approach to Japanese Multi-relation Lexical Networks. (Submitted for review.)</a></p>
+                    <ul>
+                        <li>Špica, Dragana; Perak, Benedikt. Enhancing Japanese Lexical Networks Using Large Language Models: Extracting Synonyms and Antonyms with GPT-4o // Lexicography and Semantics: Proceedings of the XXI EURALEX International Congress / Štrkalj Despot, Kristina; Ostroški Anić, Ana; Brač, Ivana (ur.). Zagreb: Institut za hrvatski jezik, 2024. str. 265-284</li>
+                        <li>Perak, Benedikt; Ban Kirigin, Tajana. Construction Grammar Conceptual Network: Coordination-based graph method for semantic association analysis // Natural Language Engineering, 29 (2023), 3; 584-614. doi: 10.1017/S1351324922000274</li>
+                    </ul>
                 </div>
             </div>
         </div>

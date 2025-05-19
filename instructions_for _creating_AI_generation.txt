@@ -1,0 +1,66 @@
+These are instructions for creating a script within a graph app to create AI generation of relations
+
+context:
+we are loading networkx graph to represent it in the app
+
+Sample edges with attributes:
+  Edge ジャンル -- パターン: {'synonym': {'synonym_strength': 0.4, 'relation_type': nan, 'mutual_sense': '形式', 'mutual_sense_hiragana': 'けいしき', 'mutual_sense_translation': 'form', 'synonymy_domain': '形状', 'synonymy_domain_hiragana': 'けいじょう', 'synonymy_domain_translation': 'shape', 'synonymy_explanation': 'Both refer to the form or structure of something.'}}
+  Edge 王位 -- 王女: {'synonym': {'synonym_strength': 0.45, 'relation_type': nan, 'mutual_sense': '王の娘', 'mutual_sense_hiragana': 'おうのむすめ', 'mutual_sense_translation': 'daughter of the king', 'synonymy_domain': '王権', 'synonymy_domain_hiragana': 'おうけん', 'synonymy_domain_translation': 'royal authority', 'synonymy_explanation': 'Both are related to the royal family.'}}
+  Edge 文意 -- 文脈: {'synonym': {'synonym_strength': 0.6, 'relation_type': nan, 'mutual_sense': '文意や文脈', 'mutual_sense_hiragana': 'ぶんいやぶんみゃく', 'mutual_sense_translation': 'meaning of the text or context', 'synonymy_domain': '文脈', 'synonymy_domain_hiragana': 'ぶんみゃく', 'synonymy_domain_translation': 'context', 'synonymy_explanation': 'Both refer to the meaning derived from the surrounding text.'}}      
+  Edge 嫁 -- 嫁入り後: {'synonym': {'synonym_strength': 0.4, 'relation_type': nan, 'mutual_sense': '結婚', 'mutual_sense_hiragana': 'けっこん', 'mutual_sense_translation': 'marriage', 'synonymy_domain': '婚姻', 'synonymy_domain_hiragana': 'こんいん', 'synonymy_domain_translation': 'marriage', 'synonymy_explanation': 'Both terms are related to the act of getting married.'}}
+  Edge 裁判 -- 訴訟: {'synonym': {'synonym_strength': 0.95, 'relation_type': nan, 'mutual_sense': '法的手続き', 'mutual_sense_hiragana': 'ほうてきてつづき', 'mutual_sense_translation': 'legal procedure', 'synonymy_domain': '法律', 'synonymy_domain_hiragana': 'ほうりつ', 'synonymy_domain_translation': 'law', 'synonymy_explanation': 'Both refer to legal processes.'}}
+
+synonym:
+    synonym_strength
+    relation_type
+    mutual_sense
+    mutual_sense_translation
+
+
+the graph is created with ai instructions
+
+we iterated over 12000 nodes searching for synonymity and oohyponimyty
+
+
+now i want to add in the Node Information a Tab called AI generation
+this will :
+given the Selected node use the prompt to generate nodes and relations
+
+the output of the graph will be stored in the already given networkx graph 
+G_synonyms_2024_09_18.pickle
+
+here is the prompt
+
+
+The tasks are to: 1) Translate lexeme to {target_language} and 2) to propose lexical relations in {source_language}.
+
+For a lexeme in japanese create a JSON dictionary with the following structure:
+Write data about lexeme (kanji is the ID) with keys: POS, hiragana, translation . 
+Inside this key determine:
+    Write response only in JSON format with only keys: source_lemma, source_lemma_reading_hiragana, source_POS (from a list of {source_language_POS_list}).
+output JSON results as dictionaries, separated with comma, do not make list out of multiple dictionaries.
+
+Write data about translated lexeme with key: 'lexeme_translation'. Inside this key determine:
+    Write response only in JSON format with only keys: target_language, target_lemma, target_POS.
+output JSON results as dictionaries, separated with comma, do not make list out of multiple dictionaries.
+
+Write data about the synonym relation to other lexemes in {source_language} with key: 'lexeme_synonyms'. Inside this key create list of dictionaries:
+  For each lempos determine at least 15 different synonyms in {source_language}, with their corresponding POS from a {source_language_POS_list}:
+  For each synonym determine strength of synonym relation as a float value in a range from 0.00 to 1.00.
+  Determine mutual sense and synonym domain in {source_language} language and write this in {source_language}.
+  Write response only in a JSON format with following keys: synonym_lemma, synonym_hiragana, POS, synonym_strenght, synonym_translation,  mutual_sense, mutual_sense_hiragana, mutual_sense_translation, synonymy_domain, synonymy_domain_hiragana, synonymy_explanation in {meta_language}, synonymy_domain_translation.
+
+Write data about the antonym relation to other lexemes in {source_language} with key: 'lexeme_antonyms'. Inside this key create list of dictionaries:
+  For each lempos determine at least 5 different antonyms in {source_language}, with their corresponding POS from a {source_language_POS_list}:
+  For each antonym determine strength of antonymy relation as a float value in a range from 0.00 to 1.00. Where 0 refers to no synonymy and 1 refers to same meaning
+  Explain the antonymy relation and determine antonymy domain in {source_language} language and write this in {source_language}.
+  Write response only in a JSON format with following keys:  antonym_lemma, antonym_hiragana, POS, antonym_translation, antonym_strenght, antonymy_domain, antonymy_domain_hiragana, antonym_explanation in {meta_language}, antonymy_domain_translation
+
+Overall, each lexeme has a JSON dictionary with following structure:""" + """
+{'source_lexeme':{'lemma':str,'hiragana':str, 'POS':str, 'translation':str, 'translation_POS':str},
+'lexeme_synonyms':[{'synonym_lemma':str, 'hiragana':str, 'POS':str, 'synonym_strenght':float,'translation':str, 'mutual_sense':str, 'mutual_sense_hiragana':str,'mutual_sense_translation':str,'synonymy_domain':str, 'synonymy_domain_hiragana':str, 'synonymy_domain_translation':str, 'synonymy_explanation':str}],
+'lexeme_antonyms':[{'antonym_lemma':str, 'hiragana':str, 'POS':str, 'translation':str, 'antonym_strenght':float, 'antonymy_domain':str, 'antonymy_domain_hiragana':str, 'antonymy_domain_translation':str, 'antonym_explanation':str}]
+},
+Do not write anything except JSON.
+Do NOT write additional keys or characters or labels or explanations!
+Source lempos: """

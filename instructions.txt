@@ -1,0 +1,17 @@
+https://www.icarushrvatska.hr/
+
+https://drive.google.com/file/d/1g5uMoRqVytStIV7KLT-7VW6Xrn0VaAsq/view
+
+
+
+Abstract The presentation, titled “Extraction of Semantic Networks using Contemporary AI Based Methods,” explores modern approaches for automatically extracting and analyzing lexical semantic networks within cultural heritage contexts. Focusing on Japanese examples—illustrated here by the term "Samurai"—the research demonstrates how advanced AI algorithms can identify key lexical elements and reveal their interconnections, such as synonyms, classifications, and relation strengths, from large text corpora.
+
+By leveraging integrated data sources like Wikidata, the approach retrieves relevant metadata, including concise definitions, classification attributes (e.g., instance of, subclass of), and even visual elements such as associated images. The method utilizes SPARQL queries on established knowledge graphs to pinpoint the entity corresponding to the target term and to extract its core attributes without delving into excessive detail.
+
+This dynamic extraction process results in interactive network representations that enrich digital cultural archives and museum collections. Users can engage with the network nodes to access supplementary information about the term, thereby gaining insights into historical narratives and cultural significance. The example of "Samurai" is abstracted to illustrate the process in a simplified manner, emphasizing the potential of these AI-based methods to enhance the interpretation and presentation of cultural heritage.
+
+Overall, this approach provides a scalable and efficient tool for digital preservation and scholarly exploration, opening new avenues for research and public engagement in the realm of cultural heritage.
+
+
+
+Colab: https://colab.research.google.com/drive/1EoarH4VBpzDfuVw-t2mhFC4Yqo9QgQ9Q?usp=sharing#scrollTo=oQQ2-R_gLDvO

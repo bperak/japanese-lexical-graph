@@ -72,12 +72,13 @@ def get_graph():
         logger.error(f"Error loading graph: {e}")
         return nx.Graph()  # Return empty graph on error
 
-def generate_lexical_relations(node_id, model_name=DEFAULT_MODEL):
+def generate_lexical_relations(node_id, G=None, model_name=DEFAULT_MODEL):
     """
     Generate AI-powered lexical relations for a single node.
     
     Args:
         node_id (str): The ID of the node (typically a Japanese word/kanji)
+        G (NetworkX graph): Optional in-memory graph to use instead of loading from disk
         model_name (str): Gemini model to use
         
     Returns:
@@ -95,8 +96,9 @@ def generate_lexical_relations(node_id, model_name=DEFAULT_MODEL):
         except json.JSONDecodeError:
             logger.warning(f"Invalid JSON in cache for node '{node_id}'. Regenerating content.")
     
-    # Get the graph and node data
-    G = get_graph()
+    # Prefer the provided in-memory graph; fall back to loading from disk if not supplied
+    if G is None:
+        G = get_graph()
     
     # Check if node exists in the graph
     if node_id not in G.nodes():
@@ -322,18 +324,20 @@ def generate_lexical_relations(node_id, model_name=DEFAULT_MODEL):
             }
         }
 
-def add_generated_relations_to_graph(node_id, generated_data):
+def add_generated_relations_to_graph(node_id, generated_data, G=None):
     """
     Add AI-generated lexical relations to the graph.
     
     Args:
         node_id (str): The ID of the node
         generated_data (dict): Generated lexical relations data
+        G (NetworkX graph): Optional in-memory graph to use instead of loading from disk
         
     Returns:
         dict: Summary of changes made to the graph
     """
-    G = get_graph()
+    if G is None:
+        G = get_graph()
     if node_id not in G.nodes():
         return {"error": f"Node '{node_id}' not found in the graph"}
     
@@ -373,10 +377,13 @@ def add_generated_relations_to_graph(node_id, generated_data):
             
             # Add or update the edge
             if not G.has_edge(node_id, synonym_lemma) or 'synonym' not in G[node_id][synonym_lemma]:
-                # Create synonym edge data
+                # Compute strength once to reuse
+                synonym_strength = synonym.get('synonym_strenght', 0.5)
+
+                # Create synonym edge data with explicit weight and type metadata
                 synonym_data = {
                     'synonym': {
-                        'synonym_strength': synonym.get('synonym_strenght', 0.5),
+                        'synonym_strength': synonym_strength,
                         'mutual_sense': synonym.get('mutual_sense', ''),
                         'mutual_sense_hiragana': synonym.get('mutual_sense_hiragana', ''),
                         'mutual_sense_translation': synonym.get('mutual_sense_translation', ''),
@@ -384,15 +391,19 @@ def add_generated_relations_to_graph(node_id, generated_data):
                         'synonymy_domain_hiragana': synonym.get('synonymy_domain_hiragana', ''),
                         'synonymy_domain_translation': synonym.get('synonymy_domain_translation', ''),
                         'synonymy_explanation': synonym.get('synonymy_explanation', '')
-                    }
+                    },
+                    'type': 'synonym',  # Explicitly mark relationship type
+                    'weight': synonym_strength  # Top-level weight for easy access
                 }
-                
-                # Add or update the edge
+
+                # Add or update the edge with new metadata
                 if G.has_edge(node_id, synonym_lemma):
                     G[node_id][synonym_lemma]['synonym'] = synonym_data['synonym']
+                    G[node_id][synonym_lemma]['type'] = 'synonym'
+                    G[node_id][synonym_lemma]['weight'] = synonym_strength
                 else:
                     G.add_edge(node_id, synonym_lemma, **synonym_data)
-                
+
                 changes["synonyms_added"] += 1
         except Exception as e:
             logger.warning(f"Error adding synonym '{synonym_lemma}': {e}")
@@ -415,23 +426,30 @@ def add_generated_relations_to_graph(node_id, generated_data):
             
             # Add or update the edge
             if not G.has_edge(node_id, antonym_lemma) or 'antonym' not in G[node_id][antonym_lemma]:
-                # Create antonym edge data
+                # Compute antonym strength once
+                antonym_strength = antonym.get('antonym_strenght', 0.5)
+
+                # Create antonym edge data with metadata
                 antonym_data = {
                     'antonym': {
-                        'antonym_strength': antonym.get('antonym_strenght', 0.5),
+                        'antonym_strength': antonym_strength,
                         'antonymy_domain': antonym.get('antonymy_domain', ''),
                         'antonymy_domain_hiragana': antonym.get('antonymy_domain_hiragana', ''),
                         'antonymy_domain_translation': antonym.get('antonymy_domain_translation', ''),
                         'antonym_explanation': antonym.get('antonym_explanation', '')
-                    }
+                    },
+                    'type': 'antonym',
+                    'weight': antonym_strength
                 }
-                
+
                 # Add or update the edge
                 if G.has_edge(node_id, antonym_lemma):
                     G[node_id][antonym_lemma]['antonym'] = antonym_data['antonym']
+                    G[node_id][antonym_lemma]['type'] = 'antonym'
+                    G[node_id][antonym_lemma]['weight'] = antonym_strength
                 else:
                     G.add_edge(node_id, antonym_lemma, **antonym_data)
-                
+
                 changes["antonyms_added"] += 1
         except Exception as e:
             logger.warning(f"Error adding antonym '{antonym_lemma}': {e}")
@@ -439,10 +457,28 @@ def add_generated_relations_to_graph(node_id, generated_data):
     
     # Save the updated graph
     try:
-        pickle_path = 'G_synonyms_2024_09_18.pickle'
+        # Use the same filename search logic as `get_graph()` so we overwrite the correct file
+        pickle_paths = [
+            os.path.join('graph_models', 'G_synonyms_2024_09_18.pickle'),
+            'G_synonyms_2024_09_18.pickle'
+        ]
+
+        pickle_path = None
+        for p in pickle_paths:
+            if os.path.exists(p):
+                pickle_path = p
+                break
+
+        # Default to first path if nothing found (new file will be created)
+        if pickle_path is None:
+            pickle_path = pickle_paths[0]
+
         with open(pickle_path, 'wb') as f:
             pickle.dump(G, f)
-        logger.info(f"Graph saved to {pickle_path} with {changes['synonyms_added']} new synonyms and {changes['antonyms_added']} new antonyms")
+        logger.info(
+            f"Graph saved to {pickle_path} with {changes['synonyms_added']} new synonyms and {changes['antonyms_added']} new antonyms"
+        )
+        # Optionally, you might also want to timestamp backups or keep versions here
     except Exception as e:
         logger.error(f"Error saving graph: {e}")
         changes["error_saving"] = str(e)
@@ -450,7 +486,7 @@ def add_generated_relations_to_graph(node_id, generated_data):
     return changes
 
 # Flask API endpoint function that can be imported in app.py
-def generate_node_relations(node_id):
+def generate_node_relations(node_id, G=None):
     """
     Generate AI-powered lexical relations for a node and add them to the graph.
     
@@ -458,6 +494,7 @@ def generate_node_relations(node_id):
     
     Args:
         node_id (str): The ID of the node
+        G (NetworkX graph): Optional in-memory graph to use instead of loading from disk
         
     Returns:
         dict: Generated data and changes made to the graph
@@ -466,7 +503,7 @@ def generate_node_relations(node_id):
         return {"error": "Gemini API is not available. Please check your API key."}
     
     # Generate relations
-    generated_data = generate_lexical_relations(node_id)
+    generated_data = generate_lexical_relations(node_id, G=G)
     
     # Check for generation error
     if "error" in generated_data and not generated_data.get('source_lexeme', {}).get('lemma'):
@@ -477,7 +514,7 @@ def generate_node_relations(node_id):
         }
     
     # Add to graph
-    changes = add_generated_relations_to_graph(node_id, generated_data)
+    changes = add_generated_relations_to_graph(node_id, generated_data, G=G)
     
     return {
         "status": "success" if "error" not in changes else "partial_success",
@@ -497,5 +534,6 @@ if __name__ == "__main__":
     term = sys.argv[1]
     print(f"Generating lexical relations for {term}...")
     
-    result = generate_node_relations(term)
+    G_cli = get_graph()
+    result = generate_node_relations(term, G_cli)
     print(json.dumps(result, indent=2, ensure_ascii=False)) 

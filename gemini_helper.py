@@ -9,11 +9,8 @@ import json
 import logging
 import google.generativeai as genai
 from PIL import Image
-from dotenv import load_dotenv
 from cache_helper import cache
-
-# Load environment variables
-load_dotenv()
+import config
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -21,32 +18,31 @@ logger = logging.getLogger(__name__)
 
 # Configure Gemini API
 try:
-    GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
-    if not GEMINI_API_KEY or GEMINI_API_KEY == 'your_gemini_api_key_here':
-        logger.warning("No valid Gemini API key found in environment variables.")
+    if not config.GEMINI_API_KEY or config.GEMINI_API_KEY == 'your_gemini_api_key_here':
+        logger.warning("No valid Gemini API key found in config.py.")
         HAS_VALID_API_KEY = False
     else:
-        genai.configure(api_key=GEMINI_API_KEY)
+        genai.configure(api_key=config.GEMINI_API_KEY)
         HAS_VALID_API_KEY = True
 except Exception as e:
     logger.error(f"Error configuring Gemini API: {e}")
     HAS_VALID_API_KEY = False
 
 # Default model to use
-DEFAULT_MODEL = 'gemini-2.0-flash'
+DEFAULT_MODEL = config.GEMINI_DEFAULT_MODEL
 
 def is_available():
     """Check if Gemini API is available with valid API key."""
     return HAS_VALID_API_KEY
 
-def generate_explanation(term, context=None, model_name=DEFAULT_MODEL):
+def generate_explanation(term, context=None, model_name=None):
     """
     Generate an explanation for a Japanese term using Gemini.
     
     Args:
         term (str): The Japanese term to explain
         context (dict, optional): Additional context to help with explanation
-        model_name (str): Gemini model to use
+        model_name (str, optional): Gemini model to use. Defaults to GEMINI_DEFAULT_MODEL from config.
         
     Returns:
         dict: The explanation results
@@ -54,8 +50,10 @@ def generate_explanation(term, context=None, model_name=DEFAULT_MODEL):
     if not HAS_VALID_API_KEY:
         return {"error": "No valid Gemini API key configured"}
 
+    current_model_name = model_name if model_name else DEFAULT_MODEL
+
     # Check cache first
-    cache_key = f"gemini_explanation_{term}_{model_name}"
+    cache_key = f"gemini_explanation_{term}_{current_model_name}"
     cached_result = cache.get(cache_key)
     if cached_result:
         try:
@@ -104,40 +102,11 @@ def generate_explanation(term, context=None, model_name=DEFAULT_MODEL):
             ONLY return the raw JSON object itself.
             """
         
-        # Add logging for debugging
-        logger.info(f"Sending request to Gemini API for term: {term} using model: {model_name}")
+        logger.info(f"Sending request to Gemini API for term: {term} using model: {current_model_name}")
         
-        # Try working models only - specifically avoid 'gemini-pro'
-        models_to_try = ['gemini-2.0-flash', 'gemini-2.0-flash-lite']
-        if model_name not in models_to_try:
-            # Add the provided model to the beginning of the list if it's not already there
-            models_to_try.insert(0, model_name)
-            
-        response = None
-        model_used = None
-        
-        for try_model in models_to_try:
-            try:
-                model = genai.GenerativeModel(try_model)
-                logger.info(f"Attempting with model: {try_model}")
-                response = model.generate_content(prompt)
-                model_used = try_model
-                logger.info(f"Successfully generated content with model: {try_model}")
-                break
-            except Exception as model_error:
-                logger.warning(f"Error with model {try_model}: {model_error}")
-                # Continue to next model in the list
-        
-        # If all models failed
-        if response is None:
-            logger.error("All model attempts failed")
-            return {
-                "overview": f"Error calling Gemini API for '{term}': All model attempts failed",
-                "cultural_context": "N/A",
-                "usage_examples": [],
-                "nuances": "N/A",
-                "error": "Failed to generate content with any model"
-            }
+        model = genai.GenerativeModel(current_model_name)
+        response = model.generate_content(prompt)
+        model_used = current_model_name
         
         # Log the raw response for debugging
         logger.info(f"Raw Gemini API response for term '{term}': {response.text!r}")
@@ -218,23 +187,25 @@ def generate_explanation(term, context=None, model_name=DEFAULT_MODEL):
             "error": str(e)
         }
 
-def analyze_relationship(term1, term2, model_name=DEFAULT_MODEL):
+def analyze_relationship(term1, term2, model_name=None):
     """
     Analyze the semantic relationship between two Japanese terms.
     
     Args:
         term1 (str): First Japanese term
         term2 (str): Second Japanese term
-        model_name (str): Gemini model to use
+        model_name (str, optional): Gemini model to use. Defaults to GEMINI_DEFAULT_MODEL from config.
         
     Returns:
         dict: Analysis of the relationship
     """
     if not HAS_VALID_API_KEY:
         return {"error": "No valid Gemini API key configured"}
+
+    current_model_name = model_name if model_name else DEFAULT_MODEL
     
     # Check cache first
-    cache_key = f"gemini_relationship_{term1}_{term2}_{model_name}"
+    cache_key = f"gemini_relationship_{term1}_{term2}_{current_model_name}"
     cached_result = cache.get(cache_key)
     if cached_result:
         try:
@@ -247,71 +218,40 @@ def analyze_relationship(term1, term2, model_name=DEFAULT_MODEL):
         prompt = f"""
         Analyze the semantic relationship between the Japanese terms "{term1}" and "{term2}".
         
+        Consider nuances, context, and any overlapping meanings.
+        
         IMPORTANT: Your response MUST be a valid JSON object with the EXACT following structure:
         {{
-            "relationship": "Description of semantic relationship",
-            "differences": "Key differences in meaning",
-            "usage_contexts": "Contexts where one would be preferred",
-            "similarity_score": 85  // numeric score between 0-100
+            "relationship_summary": "Brief summary of the relationship (e.g., synonym, antonym, related, hierarchical)",
+            "similarity_score": "A score from 0.0 to 1.0 indicating semantic similarity, where 1.0 is highly similar.",
+            "key_differences": ["Difference 1", "Difference 2"],
+            "key_similarities": ["Similarity 1", "Similarity 2"],
+            "contextual_comparison": "How their usage might differ in context"
         }}
         
         DO NOT include any text before or after the JSON.
         DO NOT use markdown formatting or code blocks around the JSON.
         ONLY return the raw JSON object itself.
-        
-        Consider:
-        1. How these terms are semantically related
-        2. Key differences in meaning
-        3. Contexts where one would be preferred over the other
-        4. A similarity score from 0-100 where 100 is identical meaning
         """
         
-        # Add logging for debugging
-        logger.info(f"Sending request to Gemini API for relationship between '{term1}' and '{term2}' using model: {model_name}")
+        logger.info(f"Sending relationship analysis request to Gemini API for '{term1}' and '{term2}' using model: {current_model_name}")
+
+        model = genai.GenerativeModel(current_model_name)
+        response = model.generate_content(prompt)
+        model_used = current_model_name
         
-        # Try working models only - specifically avoid 'gemini-pro'
-        models_to_try = ['gemini-2.0-flash', 'gemini-2.0-flash-lite'] 
-        if model_name not in models_to_try:
-            # Add the provided model to the beginning of the list if it's not already there
-            models_to_try.insert(0, model_name)
-            
-        response = None
-        model_used = None
-        
-        for try_model in models_to_try:
-            try:
-                model = genai.GenerativeModel(try_model)
-                logger.info(f"Attempting with model: {try_model}")
-                response = model.generate_content(prompt)
-                model_used = try_model
-                logger.info(f"Successfully generated content with model: {try_model}")
-                break
-            except Exception as model_error:
-                logger.warning(f"Error with model {try_model}: {model_error}")
-                # Continue to next model in the list
-                
-        # If all models failed
-        if response is None:
-            logger.error("All model attempts failed")
-            return {
-                "relationship": f"Error calling Gemini API: All model attempts failed",
-                "differences": "Error occurred",
-                "usage_contexts": "Error occurred",
-                "similarity_score": 0,
-                "error": "Failed to generate content with any model"
-            }
-        
-        # Log the raw response for debugging
+        # Log raw response
         logger.info(f"Raw Gemini API response for relationship '{term1}'-'{term2}': {response.text!r}")
         
         # Create an analysis with the raw response always included
         analysis = {
-            "relationship": f"Information about the relationship between '{term1}' and '{term2}' is currently unavailable.",
-            "differences": "No information available",
-            "usage_contexts": "No information available",
-            "similarity_score": 0,
-            "raw_response": response.text,  # Always include the raw response
-            "_model_used": model_used      # Include which model was used
+            "relationship_summary": f"Information about the relationship between '{term1}' and '{term2}' is currently unavailable.",
+            "similarity_score": 0.0,
+            "key_differences": ["Information not available"],
+            "key_similarities": ["Information not available"],
+            "contextual_comparison": "Information not available.",
+            "raw_response": response.text,
+            "_model_used": model_used
         }
             
         # Parse response as JSON - handle empty responses gracefully
@@ -343,20 +283,22 @@ def analyze_relationship(term1, term2, model_name=DEFAULT_MODEL):
                 analysis.update(parsed_json)
                 
                 # Ensure all required fields exist
-                required_fields = ["relationship", "differences", "usage_contexts", "similarity_score"]
+                required_fields = ["relationship_summary", "similarity_score", "key_differences", "key_similarities", "contextual_comparison"]
                 for field in required_fields:
                     if field not in analysis:
                         if field == "similarity_score":
-                            analysis[field] = 0
+                            analysis[field] = 0.0
+                        elif field in ["key_differences", "key_similarities"]:
+                            analysis[field] = []
                         else:
                             analysis[field] = f"No information about {field} available"
                 
-                # Ensure similarity_score is a number
-                if not isinstance(analysis["similarity_score"], (int, float)):
-                    try:
-                        analysis["similarity_score"] = float(analysis["similarity_score"])
-                    except (ValueError, TypeError):
-                        analysis["similarity_score"] = 0
+                # Ensure similarity_score is float
+                score_val = analysis.get("similarity_score")
+                if isinstance(score_val, str):
+                    analysis["similarity_score"] = float(score_val.strip())
+                elif not isinstance(score_val, float):
+                    analysis["similarity_score"] = 0.0
                 
             except (json.JSONDecodeError, AttributeError) as e:
                 logger.warning(f"Invalid response from Gemini API for relationship: {e}")
@@ -374,12 +316,58 @@ def analyze_relationship(term1, term2, model_name=DEFAULT_MODEL):
     except Exception as e:
         logger.error(f"Error analyzing relationship between {term1} and {term2}: {e}")
         return {
-            "relationship": f"An error occurred while analyzing the relationship between '{term1}' and '{term2}'.",
-            "differences": "Error occurred",
-            "usage_contexts": "Error occurred",
-            "similarity_score": 0,
+            "relationship_summary": f"An error occurred while analyzing the relationship between '{term1}' and '{term2}'.",
+            "similarity_score": 0.0,
+            "key_differences": ["Error occurred"],
+            "key_similarities": ["Error occurred"],
+            "contextual_comparison": "Error occurred",
             "error": str(e)
         }
+
+def get_image_description(image_path, prompt_text, model_name=None):
+    """
+    Generate a description for an image using Gemini Vision.
+
+    Args:
+        image_path (str): Path to the image file.
+        prompt_text (str): Text prompt to guide the description.
+        model_name (str, optional): Gemini model to use (should be a vision-capable model). 
+                                Defaults to GEMINI_DEFAULT_MODEL from config. 
+                                It's recommended to use a vision model like 'gemini-pro-vision' or a multimodal one.
+
+    Returns:
+        str: The generated description or an error message.
+    """
+    if not HAS_VALID_API_KEY:
+        return "Error: No valid Gemini API key configured"
+
+    current_model_name = model_name if model_name else DEFAULT_MODEL
+    
+    # A more robust solution would be to have a separate DEFAULT_VISION_MODEL in config
+    # or check capabilities if the genai library supports it.
+    
+    try:
+        logger.info(f"Loading image from path: {image_path}")
+        img = Image.open(image_path)
+        
+        logger.info(f"Sending image description request to Gemini API with model: {current_model_name}")
+
+        # Warning for non-vision models (simple check)
+        # gemini-1.5-pro-latest and gemini-1.5-flash-latest are multimodal
+        if not any(keyword in current_model_name for keyword in ["vision", "pro-latest", "flash-latest"]):
+             logger.warning(f"Model '{current_model_name}' might not be vision-capable. Consider using a specific vision or multimodal model.")
+
+        model = genai.GenerativeModel(current_model_name)
+        response = model.generate_content([prompt_text, img])
+        
+        logger.info(f"Raw Gemini API response for image description: {response.text!r}")
+        return response.text
+    except FileNotFoundError:
+        logger.error(f"Image file not found at path: {image_path}")
+        return f"Error: Image file not found at path: {image_path}"
+    except Exception as e:
+        logger.error(f"Error generating image description: {e}")
+        return f"Error: {e}"
 
 def get_neighbor_info(node_id):
     """
@@ -404,14 +392,41 @@ def get_neighbor_info(node_id):
         for neighbor_id in graph.neighbors(node_id):
             edge_data = graph.get_edge_data(node_id, neighbor_id)
             if edge_data:
-                # Get the first edge if there are multiple (using 0 as default key)
-                edge_key = list(edge_data.keys())[0] if edge_data else 0
-                edge_weight = edge_data[edge_key].get('weight', 1) if edge_key in edge_data else 1
-                
+                # Handle MultiGraph (multiple parallel edges) vs. simple Graph
+                if graph.is_multigraph():
+                    # For MultiGraph, get attribute dict of the first edge key
+                    edge_key = list(edge_data.keys())[0] if edge_data else 0
+                    edge_attr = edge_data[edge_key] if edge_key in edge_data else {}
+                else:
+                    # For regular Graph, edge_data is already the attribute dict
+                    edge_attr = edge_data
+
+                # Determine edge weight – prefer explicit 'weight', otherwise fall back to nested strength fields
+                edge_weight = edge_attr.get('weight')
+                if edge_weight is None:
+                    # Check nested synonym/antonym strength values
+                    if 'synonym' in edge_attr:
+                        edge_weight = edge_attr['synonym'].get('synonym_strength')
+                    elif 'antonym' in edge_attr:
+                        edge_weight = edge_attr['antonym'].get('antonym_strength')
+                    # Final fallback
+                    if edge_weight is None:
+                        edge_weight = 1
+
+                # Determine edge type – prefer explicit 'type', otherwise infer from nested keys
+                edge_type = edge_attr.get('type')
+                if edge_type is None:
+                    if 'synonym' in edge_attr:
+                        edge_type = 'synonym'
+                    elif 'antonym' in edge_attr:
+                        edge_type = 'antonym'
+                    else:
+                        edge_type = 'unknown'
+
                 neighbors.append({
                     'id': neighbor_id,
                     'edge_weight': edge_weight,
-                    'edge_type': edge_data[edge_key].get('type', 'unknown') if edge_key in edge_data else 'unknown'
+                    'edge_type': edge_type
                 })
         
         return neighbors
@@ -419,33 +434,46 @@ def get_neighbor_info(node_id):
         logger.error(f"Error getting neighbors for node {node_id}: {e}")
         return []
 
-def enhance_with_gemini(node_id, model_name=DEFAULT_MODEL):
+def enhance_with_gemini(node_id, model_name=None):
     """
     Enhance a node with information from the Gemini API.
+    This involves generating an explanation for the term and analyzing relationships
+    with its top neighbors.
 
     Args:
-        node_id (str): ID of the node to enhance
-        model_name (str): Gemini model to use
+        node_id (str): ID of the node to enhance.
+        model_name (str, optional): Gemini model to use for underlying calls. 
+                                Defaults to GEMINI_DEFAULT_MODEL from config.
 
     Returns:
-        dict: Enhanced node information
+        dict: Enhanced node information including explanation and relationships.
     """
+    current_model_name = model_name if model_name else DEFAULT_MODEL
+
+    if not HAS_VALID_API_KEY:
+        return {
+            'id': node_id,
+            'explanation': {"error": "No valid Gemini API key configured"},
+            'neighbors': [],
+            'relationships': [],
+            'status': "unavailable"
+        }
+
     try:
         # Attempt to get explanation for the term
-        explanation = generate_explanation(node_id, model_name=model_name)
+        explanation = generate_explanation(node_id, model_name=current_model_name)
         
         # Get neighbor information
         neighbors = get_neighbor_info(node_id)
         
-        # Analyze interesting relationships if we have enough neighbors
         relationships = []
         if neighbors and len(neighbors) > 0:
             # Sort neighbors by edge weight and get top ones
-            sorted_neighbors = sorted(neighbors, key=lambda x: x['edge_weight'], reverse=True)
+            sorted_neighbors = sorted(neighbors, key=lambda x: x.get('edge_weight', 0), reverse=True)
             top_neighbors = sorted_neighbors[:min(3, len(sorted_neighbors))]
             
             for neighbor in top_neighbors:
-                relationship = analyze_relationship(node_id, neighbor['id'], model_name=model_name)
+                relationship = analyze_relationship(node_id, neighbor['id'], model_name=current_model_name)
                 relationships.append({
                     'term1': node_id,
                     'term2': neighbor['id'],
@@ -456,11 +484,11 @@ def enhance_with_gemini(node_id, model_name=DEFAULT_MODEL):
             'id': node_id,
             'explanation': explanation,
             'neighbors': neighbors,
-            'relationships': relationships
+            'relationships': relationships,
+            '_model_used_for_enhancement': current_model_name
         }
     except Exception as e:
         logger.error(f"Error enhancing node {node_id} with Gemini: {e}")
-        # Return a structured error response
         return {
             'id': node_id,
             'explanation': {
@@ -470,6 +498,7 @@ def enhance_with_gemini(node_id, model_name=DEFAULT_MODEL):
                 'nuances': "No information available.",
                 'error': str(e)
             },
-            'neighbors': [],
-            'relationships': []
+            'neighbors': get_neighbor_info(node_id),
+            'relationships': [],
+            'error': str(e)
         } 

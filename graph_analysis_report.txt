@@ -1,0 +1,64 @@
+================================================================================
+GRAPH ANALYSIS REPORT
+Date: 2025-03-30 12:08:18
+Graph: G_synonyms_2024_09_18.pickle
+================================================================================
+
+BASIC GRAPH STATISTICS
+--------------------------------------------------------------------------------
+Number of nodes: 60,751
+Number of edges: 127,960
+Graph type: Undirected
+Graph density: 0.00006934
+
+NODE ATTRIBUTES
+--------------------------------------------------------------------------------
+Available node attributes: ['hiragana', 'POS', 'translation', 'JLPT', 'jlpt_jisho_lemma']
+
+Sample node values:
+  Node 1: 物
+  Node 2: 時間
+  Node 3: 用意
+  Node 4: 存続
+  Node 5: 有り
+
+EDGE ATTRIBUTES
+--------------------------------------------------------------------------------
+Error analyzing edge attributes: not enough values to unpack (expected 3, got 2)
+
+DEGREE DISTRIBUTION SUMMARY
+--------------------------------------------------------------------------------
+Average degree: 4.21
+Maximum degree: 79
+
+Degree frequency (top 20):
+  Degree 1: 39,611 nodes
+  Degree 2: 5,507 nodes
+  Degree 3: 2,065 nodes
+  Degree 4: 1,101 nodes
+  Degree 5: 637 nodes
+  Degree 6: 425 nodes
+  Degree 7: 386 nodes
+  Degree 8: 350 nodes
+  Degree 9: 402 nodes
+  Degree 10: 346 nodes
+  Degree 11: 426 nodes
+  Degree 12: 386 nodes
+  Degree 13: 476 nodes
+  Degree 14: 779 nodes
+  Degree 15: 1,620 nodes
+  Degree 16: 1,517 nodes
+  Degree 17: 1,031 nodes
+  Degree 18: 803 nodes
+  Degree 19: 594 nodes
+  Degree 20: 456 nodes
+
+ANALYSIS SUMMARY
+--------------------------------------------------------------------------------
+This analysis provides an overview of the graph structure including basic statistics,
+connectivity information, and degree distribution. For a more detailed analysis,
+run the graph_analysis.py script with advanced options.
+
+================================================================================
+END OF REPORT
+================================================================================

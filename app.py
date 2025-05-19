@@ -50,6 +50,30 @@ try:
     logger.info(f"Number of nodes: {G.number_of_nodes()}")
     logger.info(f"Number of edges: {G.number_of_edges()}")
 
+    # ------------------------------------------------------------------
+    # Ensure each edge has a numeric 'weight' attribute for consistency
+    # ------------------------------------------------------------------
+    # Reason: Several parts of the application (e.g. gemini_helper.get_neighbor_info)
+    #   expect a 'weight' attribute on edges to rank or filter relationships. The
+    #   original graph pickle only stores a 'synonym_strength' attribute. Here we
+    #   propagate that value (if present) to a unified 'weight' key. If neither
+    #   is available we default to 1 so existing behaviour is preserved.
+
+    for u, v, k, data in G.edges(data=True, keys=True):
+        # Skip if weight already present
+        if 'weight' in data:
+            continue
+
+        # Prefer explicit numeric synonym_strength when available
+        strength = data.get('synonym_strength')
+        if isinstance(strength, (int, float)) and not math.isnan(strength):
+            data['weight'] = float(strength)
+        else:
+            # Fallback to 1 to keep edge usable
+            data['weight'] = 1.0
+
+    logger.info("Edge 'weight' attribute normalisation complete.")
+
 except Exception as e:
     logger.error(f"Error loading graph: {e}")
     G = nx.Graph()  # Create empty graph if file can't be loaded
@@ -106,6 +130,19 @@ def graph_data():
     for u, v, key, data in subgraph.edges(data=True, keys=True):
         link = {'source': str(u), 'target': str(v)}
         link.update({k: str(v) if v is not None else None for k, v in data.items()})
+        # Determine relationship type for easier front-end rendering
+        # We inspect the multigraph edge key and known attribute patterns.
+        # Reason: Users want to distinguish synonyms from antonyms in the neighbour list.
+        relation_type = 'connected'
+        try:
+            if key == 'synonym' or 'synonym_strength' in data or 'synonym' in data:
+                relation_type = 'synonym'
+            elif key == 'antonym' or 'antonym_strength' in data or 'antonym' in data:
+                relation_type = 'antonym'
+        except Exception:
+            # Fallback to default if any issue arises
+            relation_type = 'connected'
+        link['relationship'] = relation_type
         link['id'] = f"{u}-{v}-{key}"
         links.append(link)
 
@@ -241,6 +278,7 @@ def node_details():
 @app.route('/gemini-explanation', methods=['GET'])
 def gemini_explanation():
     term = request.args.get('term', '')
+    model_name = request.args.get('model_name', None)
     if not term:
         return jsonify({"error": "No term provided"}), 400
     
@@ -277,7 +315,7 @@ def gemini_explanation():
             }
         
         # Generate explanation
-        explanation = gemini_helper.generate_explanation(term, context)
+        explanation = gemini_helper.generate_explanation(term, context=context, model_name=model_name)
         
         response = {
             "term": term,
@@ -296,6 +334,7 @@ def gemini_explanation():
 def gemini_analyze():
     term1 = request.args.get('term1', '')
     term2 = request.args.get('term2', '')
+    model_name = request.args.get('model_name', None)
     
     if not term1 or not term2:
         return jsonify({"error": "Both term1 and term2 must be provided"}), 400
@@ -312,7 +351,7 @@ def gemini_analyze():
     
     try:
         # Analyze relationship
-        analysis = gemini_helper.analyze_relationship(term1, term2)
+        analysis = gemini_helper.analyze_relationship(term1, term2, model_name=model_name)
         
         response = {
             "term1": term1,
@@ -349,7 +388,7 @@ def ai_generate_relations():
         
         # Generate relations for the node
         logger.info(f"Generating AI relations for node: {node_id}")
-        result = ai_generation_single.generate_node_relations(node_id)
+        result = ai_generation_single.generate_node_relations(node_id, G)
         logger.info(f"AI generation result status: {result.get('status')}")
 
         # If the generation was successful, include the updated graph data
@@ -390,6 +429,19 @@ def ai_generate_relations():
                         if u in subgraph.nodes() and v in subgraph.nodes():
                             link = {'source': str(u), 'target': str(v)}
                             link.update({k: str(v) if v is not None else None for k, v in data.items()})
+                            # Determine relationship type for easier front-end rendering
+                            # We inspect the multigraph edge key and known attribute patterns.
+                            # Reason: Users want to distinguish synonyms from antonyms in the neighbour list.
+                            relation_type = 'connected'
+                            try:
+                                if key == 'synonym' or 'synonym_strength' in data or 'synonym' in data:
+                                    relation_type = 'synonym'
+                                elif key == 'antonym' or 'antonym_strength' in data or 'antonym' in data:
+                                    relation_type = 'antonym'
+                            except Exception:
+                                # Fallback to default if any issue arises
+                                relation_type = 'connected'
+                            link['relationship'] = relation_type
                             link['id'] = f"{u}-{v}-{key}"
                             links.append(link)
                     
@@ -498,141 +550,26 @@ def ai_generate_relations():
 @app.route('/enhanced-node', methods=['GET'])
 def enhanced_node():
     node_id = request.args.get('id', '')
+    model_name = request.args.get('model_name', None)
     if not node_id:
         return jsonify({"error": "No node ID provided"}), 400
     
-    # Check cache first
-    cache_key = f"gemini_enhanced_node_{node_id}"
-    cached_result = cache.get(cache_key)
-    if cached_result:
-        return jsonify(cached_result)
-    
-    try:
-        if node_id not in G.nodes:
-            return jsonify({"error": "Node not found"}), 404
-        
-        # First get basic node details
-        node_attrs = dict(G.nodes[node_id])
-        japanese_term = node_attrs.get('japanese', node_id)  # Fallback to node_id if no japanese term
-        
-        # Get neighbors data with safer error handling
-        neighbors = []
-        try:
-            for neighbor in G.neighbors(node_id):
-                try:
-                    neighbor_attrs = dict(G.nodes[neighbor])
-                    edge_attrs = dict(G.edges[node_id, neighbor])
-                    neighbors.append({
-                        "id": neighbor,
-                        **neighbor_attrs,
-                        "edge": edge_attrs
-                    })
-                except Exception as ne:
-                    logger.warning(f"Error processing neighbor {neighbor} for node {node_id}: {ne}")
-                    # Still add the neighbor with minimal info
-                    neighbors.append({"id": neighbor, "edge": {"weight": 1}})
-        except Exception as e:
-            logger.warning(f"Error getting neighbors for node {node_id}: {e}")
-        
-        # Sort neighbors by weight if available
-        if neighbors:
-            try:
-                neighbors.sort(key=lambda x: x['edge'].get('weight', 0), reverse=True)
-            except Exception as e:
-                logger.warning(f"Error sorting neighbors for node {node_id}: {e}")
-        
-        # Create complete node data
-        node_data = {
-            "id": node_id,
-            "japanese": japanese_term,
-            "pos": node_attrs.get('pos', ''),
-            "english": node_attrs.get('english', []),
-            "neighbors": neighbors[:10]  # Limit to top 10 neighbors
-        }
-        
-        # Check if Gemini API is available
-        if not gemini_helper.is_available():
-            # If Gemini is not available, return basic node data with a status message
-            basic_data = {
-                **node_data,
-                "explanation": {
-                    "overview": f"Basic information for {japanese_term}",
-                    "cultural_context": "Gemini API is not available",
-                    "usage_examples": [],
-                    "nuances": "N/A"
-                }
-            }
-            # Cache the basic data
-            cache.set(cache_key, basic_data, 24 * 60 * 60)
-            return jsonify(basic_data)
-        
-        # Special direct handling for specific terms we know work well
-        try:
-            # Log which term we're handling
-            logger.info(f"Directly handling term: {node_id}")
-            
-            # Get explanation for the term - using the hardcoded implementations
-            explanation = gemini_helper.generate_explanation(node_id)
-            
-            # Get neighbor information
-            neighbor_info = gemini_helper.get_neighbor_info(node_id)
-            
-            # Analyze relationships with top neighbors
-            relationships = []
-            if neighbors and len(neighbors) > 0:
-                sorted_neighbors = sorted(neighbors, key=lambda x: x['edge'].get('weight', 0), reverse=True)
-                top_neighbors = sorted_neighbors[:min(3, len(sorted_neighbors))]
-                
-                for neighbor in top_neighbors:
-                    relationship = gemini_helper.analyze_relationship(node_id, neighbor['id'])
-                    relationships.append({
-                        'term1': node_id,
-                        'term2': neighbor['id'],
-                        'analysis': relationship
-                    })
-            
-            enhanced_data = {
-                'id': node_id,
-                'explanation': explanation,
-                'neighbors': neighbor_info or neighbors[:10],
-                'relationships': relationships
-            }
-            
-            # Cache for 24 hours
-            cache.set(cache_key, enhanced_data, 24 * 60 * 60)
-            return jsonify(enhanced_data)
-            
-        except Exception as e:
-            logger.error(f"Error enhancing node {node_id} with direct handling: {e}")
-            
-            # Return basic data with error message in the same structure as success
-            fallback_data = {
-                **node_data,
-                "explanation": {
-                    "overview": f"Basic information for {japanese_term}",
-                    "cultural_context": "N/A",
-                    "usage_examples": [],
-                    "nuances": "N/A",
-                    "error": str(e)
-                }
-            }
-            return jsonify(fallback_data)
-    except Exception as e:
-        logger.error(f"Error processing node {node_id}: {e}")
+    # Check if Gemini API is available (optional here if gemini_helper handles it, but good for early exit)
+    if not gemini_helper.is_available():
+        # Construct a more complete error response matching what enhance_with_gemini might return on error
         return jsonify({
             "id": node_id,
-            "explanation": {
-                "overview": f"An error occurred while processing node {node_id}",
-                "cultural_context": "N/A",
-                "usage_examples": [],
-                "nuances": "N/A",
-                "error": str(e)
-            },
-            "basic_info": {
-                "id": node_id,
-                "message": "An error occurred while processing this node, but you can still access other information."
-            }
-        }), 500
+            "explanation": {"error": "Gemini API is not available. Please check your API key."},
+            "neighbors": gemini_helper.get_neighbor_info(node_id), # Attempt to get basic neighbors
+            "relationships": [],
+            "error": "Gemini API is not available. Please check your API key."
+        }), 503
+
+    # Call the centralized enhance_with_gemini from gemini_helper.py
+    # This single call now handles explanation and relationship analysis internally.
+    enhanced_data = gemini_helper.enhance_with_gemini(node_id, model_name=model_name) 
+    
+    return jsonify(enhanced_data)
 
 # New endpoints for graph analysis
 @app.route('/graph-stats')

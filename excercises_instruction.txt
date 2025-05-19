@@ -1,0 +1,19 @@
+we want to create a new tab on the same level as Node Information  that would be a 
+Lexical exercise - a way to learn about the word by actively engaging in conversation
+
+there has to be diffenret levels of learing 
+1 - begginer 1
+2 - begginer 2
+3 - intermediate 1
+4 - intermediate 2
+5 - advanced 1
+6 - advanced 2
+
+This can be chosen as a dropdown
+
+i am thinking to have a kind of chatbot implementation , with chat memory for the session
+
+the conversation should initially begin with introducing the word in common theme, topic
+using the words from the instantiated graph, and with common constructions, appropriate for the level of learning
+
+in the begginer levels there should be transliteration and english transliteration

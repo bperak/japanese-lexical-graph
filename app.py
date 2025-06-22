@@ -18,8 +18,16 @@ import ai_generation_single
 # Import our new lexical exercises script
 import exercises_script
 
+# --- Auth and DB related imports ---
+from flask_jwt_extended import JWTManager, jwt_required # Added jwt_required
+from src.auth import auth_bp # Import the auth blueprint
+from src.database import SessionLocal, init_db # For DB session management if needed globally
+import config as app_config # Import app config to access JWT_SECRET_KEY etc.
+from src.decorators import log_interaction # Import the interaction logger decorator
+# --- End Auth and DB related imports ---
+
 # Load environment variables
-load_dotenv()
+load_dotenv() # Ensure this is called early
 
 # Configure logging
 logging.basicConfig(
@@ -30,7 +38,17 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-# Disable SSL certificate verification
+# --- JWT and Blueprint Configuration ---
+app.config["JWT_SECRET_KEY"] = app_config.JWT_SECRET_KEY  # Get JWT Secret Key from config.py
+app.config["SECRET_KEY"] = app_config.SECRET_KEY # For Flask session, flash messages etc.
+jwt = JWTManager(app)
+
+# Register Blueprints
+app.register_blueprint(auth_bp)
+# --- End JWT and Blueprint Configuration ---
+
+# Disable SSL certificate verification (IF REALLY NEEDED - review security implications)
+# Consider removing if not strictly necessary for a specific reason.
 ssl._create_default_https_context = ssl._create_unverified_context
 
 # Load the NetworkX graph from pickle file
@@ -368,6 +386,8 @@ def gemini_analyze():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/ai-generate-relations', methods=['GET'])
+@jwt_required()
+@log_interaction
 def ai_generate_relations():
     """
     Endpoint to generate AI-powered lexical relations for a node.
@@ -800,6 +820,8 @@ def graph_analysis():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/generate-exercise', methods=['GET'])
+@jwt_required()
+@log_interaction
 def generate_exercise():
     """
     Endpoint to generate an interactive language learning exercise for a node.
@@ -842,6 +864,8 @@ def generate_exercise():
         }), 500
 
 @app.route('/continue-exercise', methods=['POST'])
+@jwt_required()
+@log_interaction
 def continue_exercise():
     """
     Endpoint to continue an interactive language learning exercise.
@@ -899,8 +923,20 @@ def continue_exercise():
         }), 500
 
 # Register exercise routes explicitly
-app.add_url_rule('/exercise-generate', view_func=generate_exercise, methods=['GET'])
-app.add_url_rule('/exercise-continue', view_func=continue_exercise, methods=['POST'])
+# app.add_url_rule('/exercise-generate', view_func=generate_exercise, methods=['GET'])
+# app.add_url_rule('/exercise-continue', view_func=continue_exercise, methods=['POST'])
+# Commenting these out as they are already defined with @app.route, unless specific reason for add_url_rule
+
+# Teardown app context to close database connections
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db = getattr(request, '_database', None)
+    if db is not None:
+        db.close()
+    # Alternative if using a global SessionLocal directly in some places, though get_db is better
+    # session = SessionLocal.registry()
+    # if session:
+    #     session.close()
 
 if __name__ == '__main__':
     # Run in debug mode locally

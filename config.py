@@ -36,10 +36,22 @@ WIKIDATA_USER_AGENT = os.getenv('WIKIDATA_USER_AGENT', 'PythonWikidataLexicalGra
 # CACHE_TYPE = os.getenv('CACHE_TYPE', 'simple') # e.g., 'simple', 'redis'
 # CACHE_DEFAULT_TIMEOUT = int(os.getenv('CACHE_DEFAULT_TIMEOUT', 300))
 
+# Database Configuration (from UPGRADE.md)
+DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://user:password@host:port/db_name')
+
+# Flask Secret Key (from UPGRADE.md) - Used for session management and other security features
+SECRET_KEY = os.getenv('SECRET_KEY', 'your-default-secret-key')
+
+# JWT Configuration (from UPGRADE.md)
+JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'your-default-jwt-secret-key')
+
 if __name__ == '__main__':
     # For testing or displaying current config
     print("Current Configuration:")
     print(f"  Gemini API Key Loaded: {bool(GEMINI_API_KEY and GEMINI_API_KEY != 'your_gemini_api_key_here')}")
     print(f"  Gemini Default Model: {GEMINI_DEFAULT_MODEL}")
     print(f"  Available Gemini Models: {AVAILABLE_GEMINI_MODELS}")
-    print(f"  Wikidata User Agent: {WIKIDATA_USER_AGENT}") 
+    print(f"  Wikidata User Agent: {WIKIDATA_USER_AGENT}")
+    print(f"  Database URL: {DATABASE_URL}")
+    print(f"  Flask Secret Key: {'*' * len(SECRET_KEY) if SECRET_KEY else 'Not Set'}") # Avoid printing actual key
+    print(f"  JWT Secret Key: {'*' * len(JWT_SECRET_KEY) if JWT_SECRET_KEY else 'Not Set'}") # Avoid printing actual key

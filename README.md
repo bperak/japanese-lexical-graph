@@ -44,11 +44,30 @@ An interactive visualization and exploration tool for Japanese language lexical 
    REDIS_URL=redis://localhost:6379/0  # Optional
    FLASK_ENV=development
    FLASK_DEBUG=True
+
+   # --- New variables for Database and Authentication ---
+   # Replace with your actual PostgreSQL connection string
+   DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DB_NAME
+   # Generate strong random keys for these (e.g., using openssl rand -hex 32)
+   SECRET_KEY=your-flask-secret-key
+   JWT_SECRET_KEY=your-jwt-secret-key
+   # --- End new variables ---
    ```
+   Refer to `.env.example` for a full template.
 
 4. Obtain a Google Gemini API key:
    - Visit [Google AI Studio](https://ai.google.dev/) and create an account
    - Generate an API key and add it to your `.env` file
+
+5. **Database Setup (PostgreSQL):**
+   - Ensure you have PostgreSQL installed and running.
+   - Create a database for this application (e.g., `lexical_graph_db`).
+   - Update the `DATABASE_URL` in your `.env` file with your connection details.
+   - Apply database migrations:
+     ```bash
+     alembic upgrade head
+     ```
+     This command initializes the necessary tables (like `users`, `interaction_logs`). Run this after setting up your `.env` file.
 
 ### Running the Application
 
@@ -125,6 +144,37 @@ Supported model IDs (May 2025) include `gemini-2.5-pro-preview-05-06`, `gemini-2
 - **Three.js**: 3D visualization
 - **Force-Directed Graph**: Layout algorithm for network visualization
 - **Modern CSS**: Responsive design with accordion panels and tabs
+
+## API Authentication
+
+The API now uses JWT (JSON Web Tokens) for authentication on certain routes.
+
+### Authentication Endpoints:
+
+*   `POST /auth/signup`: Register a new user.
+    *   Payload: `{ "username": "youruser", "email": "user@example.com", "password": "yourpassword" }`
+*   `POST /auth/login`: Log in an existing user.
+    *   Payload: `{ "login_identifier": "youruser_or_email", "password": "yourpassword" }`
+    *   Returns: `access_token` and `refresh_token`.
+*   `POST /auth/refresh`: Obtain a new access token using a valid refresh token.
+    *   Requires `Authorization: Bearer <refresh_token>` header.
+*   `GET /auth/me`: Get details for the currently authenticated user.
+    *   Requires `Authorization: Bearer <access_token>` header.
+
+### Using JWTs:
+
+To access protected API routes, include the `access_token` in the `Authorization` header with the `Bearer` scheme:
+
+```
+Authorization: Bearer <your_access_token>
+```
+
+Protected routes currently include:
+*   `/ai-generate-relations`
+*   `/generate-exercise`
+*   `/continue-exercise`
+
+Interactions with these routes, as well as `/auth/me` and `/auth/refresh`, are logged for authenticated users.
 
 ## Contributing
 

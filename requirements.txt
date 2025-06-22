@@ -18,3 +18,10 @@ pillow==10.1.0
 python-dotenv==1.0.0
 redis==5.0.1
 flask_caching==2.1.0
+
+# Dependencies for Upgrade Plan (JWT, SQLAlchemy, PostgreSQL, Alembic)
+Flask-JWT-Extended
+SQLAlchemy
+psycopg2-binary
+alembic
+passlib # Added here as it's a core auth dependency from plan step 5

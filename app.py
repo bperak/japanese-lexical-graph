@@ -905,7 +905,7 @@ app.add_url_rule('/exercise-continue', view_func=continue_exercise, methods=['PO
 if __name__ == '__main__':
     # Run in debug mode locally
     if os.getenv('FLASK_ENV') == 'development':
-        app.run(host='127.0.0.1', port=5000, debug=True)
+        app.run(host='0.0.0.0', port=5000, debug=True)
     else:
         # Setup SSL context for secure HTTP in production
         try:

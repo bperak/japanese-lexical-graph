@@ -57,4 +57,4 @@ Thumbs.db
 *.swp
 *.bak
 .env
-config.local.js 
+config.local.js cache.db

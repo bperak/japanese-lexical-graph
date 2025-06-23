@@ -5,7 +5,21 @@ All notable changes to the Japanese Lexical Graph project will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - 2024-12-23
+## [Unreleased] - 2025-06-24
+
+### Added
+- **Production Deployment Infrastructure**
+  - Added `gunicorn==21.2.0` to requirements.txt for production WSGI server
+  - Created `start_production.sh` script for launching production server on port 5000
+  - Created `stop_production.sh` script for graceful server shutdown
+  - Created `production_status.sh` script for comprehensive server monitoring
+  - Added `japanese-lexical-graph.service` systemd service file for auto-start capability
+  - Implemented 4-worker Gunicorn configuration with optimized settings
+  - Added comprehensive logging with separate access and error logs
+  - Implemented PID file management for process control
+  - Added daemon mode for background operation independent of terminal sessions
+
+## [Previous - 2024-12-23]
 
 ### Added
 - **Japanese Readability Analysis Integration**

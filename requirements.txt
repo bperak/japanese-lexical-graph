@@ -21,3 +21,6 @@ flask_caching==2.1.0
 
 # Japanese readability analysis
 jreadability==1.1.4
+
+# Production WSGI server
+gunicorn==21.2.0

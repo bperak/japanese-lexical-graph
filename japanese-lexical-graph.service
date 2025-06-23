@@ -1,0 +1,19 @@
+[Unit]
+Description=Japanese Lexical Graph Web Application
+After=network.target
+
+[Service]
+Type=forking
+User=Liks
+Group=Liks
+WorkingDirectory=/home/Liks/japanese-lexical-graph
+Environment=PATH=/home/Liks/japanese-lexical-graph/venv/bin
+ExecStart=/home/Liks/japanese-lexical-graph/venv/bin/gunicorn --bind 0.0.0.0:5000 --workers 4 --daemon --pid /home/Liks/japanese-lexical-graph/gunicorn.pid --access-logfile /home/Liks/japanese-lexical-graph/gunicorn_access.log --error-logfile /home/Liks/japanese-lexical-graph/gunicorn.log wsgi:application
+ExecStop=/bin/kill -TERM $MAINPID
+ExecReload=/bin/kill -HUP $MAINPID
+PIDFile=/home/Liks/japanese-lexical-graph/gunicorn.pid
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target 

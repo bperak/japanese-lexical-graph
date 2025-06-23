@@ -55,7 +55,8 @@ An interactive visualization and exploration tool for Japanese language lexical 
 
 ### Running the Application
 
-1. Start the Flask server:
+#### Development Mode
+1. Start the Flask development server:
    ```
    python app.py
    ```
@@ -64,6 +65,50 @@ An interactive visualization and exploration tool for Japanese language lexical 
    ```
    http://localhost:5000
    ```
+
+#### Production Deployment
+
+For production environments, use the included Gunicorn-based deployment scripts:
+
+1. **Quick Production Start**:
+   ```bash
+   # Install production dependencies (includes Gunicorn)
+   pip install -r requirements.txt
+   
+   # Start production server on port 5000
+   ./start_production.sh
+   ```
+
+2. **Check Server Status**:
+   ```bash
+   ./production_status.sh
+   ```
+
+3. **Stop Production Server**:
+   ```bash
+   ./stop_production.sh
+   ```
+
+4. **System Service (Auto-start on boot)**:
+   ```bash
+   # Install as systemd service
+   sudo cp japanese-lexical-graph.service /etc/systemd/system/
+   sudo systemctl daemon-reload
+   sudo systemctl enable japanese-lexical-graph.service
+   sudo systemctl start japanese-lexical-graph.service
+   ```
+
+The production setup includes:
+- **Gunicorn WSGI server** for better performance and stability
+- **4 worker processes** for concurrent request handling
+- **Automatic restart** on failure
+- **Comprehensive logging** (access and error logs)
+- **PID file management** for process control
+- **Background daemon mode** - runs independently of terminal sessions
+
+**Production URLs**: The application will be accessible at `http://your-server-ip:5000`
+
+For comprehensive production deployment documentation, see the dedicated [Production Deployment Guide](PRODUCTION_DEPLOYMENT.md).
 
 ### Linux-Specific Installation
 
@@ -126,6 +171,7 @@ Supported model IDs (May 2025) include `gemini-2.5-pro-preview-05-06`, `gemini-2
 
 ### Backend Components
 - **Flask**: Web server and API endpoints
+- **Gunicorn**: Production WSGI server for deployment
 - **NetworkX**: Graph data structure and operations
 - **SPARQLWrapper**: Integration with Wikidata's SPARQL endpoint
 - **Google Generative AI**: Integration with Gemini API for AI features

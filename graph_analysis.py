@@ -749,25 +749,25 @@ def analyze_jlpt_level_patterns(G):
     """Analyze patterns related to JLPT levels in the graph."""
     print("\n=== JLPT LEVEL PATTERN ANALYSIS ===")
     
-    # Check if JLPT is an attribute in the graph
+    # Check if old_JLPT is an attribute in the graph
     sample_nodes = [n for n in list(G.nodes())[:100] if not (isinstance(n, float) and math.isnan(n))]
-    has_jlpt = any('JLPT' in G.nodes[n] for n in sample_nodes)
+    has_jlpt = any('old_JLPT' in G.nodes[n] for n in sample_nodes)
     
     if not has_jlpt:
-        print("JLPT attribute not found in graph nodes.")
+        print("old_JLPT attribute not found in graph nodes.")
         return
     
-    print("Analyzing patterns related to JLPT levels...")
+    print("Analyzing patterns related to old_JLPT levels...")
     
     try:
-        # Get all nodes with valid JLPT data
+        # Get all nodes with valid old_JLPT data
         jlpt_nodes = {}
         for node in G.nodes():
             if isinstance(node, float) and math.isnan(node):
                 continue
             
-            if 'JLPT' in G.nodes[node]:
-                jlpt_value = G.nodes[node]['JLPT']
+            if 'old_JLPT' in G.nodes[node]:
+                jlpt_value = G.nodes[node]['old_JLPT']
                 # Skip NaN JLPT values
                 if isinstance(jlpt_value, float) and math.isnan(jlpt_value):
                     continue
@@ -926,7 +926,7 @@ def detailed_node_analysis(G, num_nodes=10):
                 neighbor_attrs.update(G.nodes[n].keys())
             
             # For selected attributes, analyze distribution in neighbors
-            important_attrs = ['JLPT', 'POS'] if all(attr in neighbor_attrs for attr in ['JLPT', 'POS']) else list(neighbor_attrs)
+            important_attrs = ['old_JLPT', 'POS'] if all(attr in neighbor_attrs for attr in ['old_JLPT', 'POS']) else list(neighbor_attrs)
             
             for attr in important_attrs[:3]:  # Limit to first 3 attributes
                 print(f"  Neighbor {attr} distribution:")

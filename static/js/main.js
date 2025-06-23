@@ -2290,6 +2290,9 @@ function toggleAccordion(element) {
         document.getElementById('exercise-content').innerHTML = '';
         document.getElementById('exercise-status').innerHTML = '';
         
+        // Clear readability display
+        clearReadabilityDisplay();
+        
         // Hide the input area until we have an exercise
         document.getElementById('exercise-input-container').style.display = 'none';
         
@@ -2318,6 +2321,9 @@ function toggleAccordion(element) {
     function generateLexicalExercise(nodeId) {
         // Get the selected learning level
         const level = document.getElementById('learning-level').value;
+        
+        // Clear readability display when starting new exercise
+        clearReadabilityDisplay();
         
         // Show loading status and disable button
         const exerciseBtn = document.getElementById('generate-exercise-btn');
@@ -2374,6 +2380,9 @@ function toggleAccordion(element) {
         // Use level 6 (most advanced) for free conversation
         const level = 6;
         
+        // Clear readability display when starting new conversation
+        clearReadabilityDisplay();
+        
         // Show loading status and disable button
         const conversationBtn = document.getElementById('start-conversation-btn');
         const statusElement = document.getElementById('exercise-status');
@@ -2426,13 +2435,19 @@ function toggleAccordion(element) {
 
     // Function to update the exercise content in the UI
     function updateExerciseContent(data) {
+        console.log('=== EXERCISE DEBUG: updateExerciseContent called ===');
+        console.log('Data received:', data);
+        
         const container = document.getElementById('exercise-content');
         
         // Handle error case
         if (data.error) {
+            console.log('Error in exercise data:', data.error);
             container.innerHTML = `<div class="error">${data.error}</div>`;
             return;
         }
+        
+        console.log('Creating exercise content, data.content length:', data.content ? data.content.length : 'null');
         
         // Create a tutor message div
         const messageDiv = document.createElement('div');
@@ -2450,6 +2465,13 @@ function toggleAccordion(element) {
         container.dataset.history = JSON.stringify([
             { user: '', tutor: data.content }
         ]);
+        
+        console.log('About to call analyzeExerciseReadability with content:', data.content ? data.content.substring(0, 100) + '...' : 'null');
+        
+        // Analyze readability of the exercise content
+        analyzeExerciseReadability(data.content);
+        
+        console.log('analyzeExerciseReadability call completed');
     }
 
     // Function to format exercise content with proper styling
@@ -2572,5 +2594,146 @@ function toggleAccordion(element) {
         return String(translation);
     }
     // ===== END UTILITY FUNCTION =====
+
+    // ===== READABILITY ANALYSIS FUNCTIONS =====
+    
+    // Function to analyze readability of exercise content
+    function analyzeExerciseReadability(content) {
+        console.log('=== READABILITY DEBUG: analyzeExerciseReadability called ===');
+        console.log('Content length:', content ? content.length : 'null/undefined');
+        console.log('Content preview:', content ? content.substring(0, 100) : 'null');
+        
+        // Don't analyze if content is empty or very short
+        if (!content || content.trim().length < 5) {
+            console.log('Content too short, hiding display');
+            hideReadabilityDisplay();
+            return;
+        }
+        
+        console.log('Sending readability analysis request...');
+        
+        // Send readability analysis request
+        fetch('/analyze-readability', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                text: content,
+                japanese_only: true
+            })
+        })
+        .then(response => {
+            console.log('Readability response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Readability analysis result:', data);
+            updateReadabilityDisplay(data);
+        })
+        .catch(error => {
+            console.error('Error analyzing readability:', error);
+            hideReadabilityDisplay();
+        });
+    }
+
+    // Function to update the readability display
+    function updateReadabilityDisplay(analysisData) {
+        console.log('=== READABILITY DEBUG: updateReadabilityDisplay called ===');
+        console.log('Analysis data:', analysisData);
+        
+        const readabilityDisplay = document.getElementById('readability-display');
+        const readabilityLevel = document.getElementById('readability-level');
+        const readabilityScore = document.getElementById('readability-score');
+        
+        console.log('DOM elements found:');
+        console.log('- readabilityDisplay:', !!readabilityDisplay);
+        console.log('- readabilityLevel:', !!readabilityLevel);
+        console.log('- readabilityScore:', !!readabilityScore);
+        
+        if (!readabilityDisplay || !readabilityLevel || !readabilityScore) {
+            console.warn('Readability display elements not found');
+            return;
+        }
+        
+        // Handle unavailable analysis
+        if (!analysisData.available) {
+            hideReadabilityDisplay();
+            return;
+        }
+        
+        // Handle analysis errors
+        if (analysisData.error || !analysisData.score) {
+            readabilityLevel.textContent = 'Unable to analyze';
+            readabilityLevel.className = 'readability-level out-of-range';
+            readabilityScore.textContent = '';
+            showReadabilityDisplay();
+            return;
+        }
+        
+        // Update the display with analysis results
+        const score = analysisData.score;
+        const level = analysisData.level;
+        
+        // Set the level text and color class
+        readabilityLevel.textContent = level;
+        readabilityLevel.className = `readability-level ${level.toLowerCase().replace(/[^a-z]/g, '-')}`;
+        
+        // Set the score
+        readabilityScore.textContent = `(${score.toFixed(2)})`;
+        
+        // Show the display
+        showReadabilityDisplay();
+        
+        console.log(`Readability: ${level} (${score.toFixed(2)})`);
+    }
+
+    // Function to show the readability display
+    function showReadabilityDisplay() {
+        const readabilityDisplay = document.getElementById('readability-display');
+        if (readabilityDisplay) {
+            readabilityDisplay.style.display = 'block';
+            // Use setTimeout to ensure the transition works
+            setTimeout(() => {
+                readabilityDisplay.classList.add('show');
+            }, 10);
+        }
+    }
+
+    // Function to hide the readability display
+    function hideReadabilityDisplay() {
+        const readabilityDisplay = document.getElementById('readability-display');
+        if (readabilityDisplay) {
+            readabilityDisplay.classList.remove('show');
+            // Wait for transition to complete before hiding
+            setTimeout(() => {
+                readabilityDisplay.style.display = 'none';
+            }, 300);
+        }
+    }
+
+    // Function to clear readability display when starting new exercise
+    function clearReadabilityDisplay() {
+        hideReadabilityDisplay();
+        
+        // Reset content
+        const readabilityLevel = document.getElementById('readability-level');
+        const readabilityScore = document.getElementById('readability-score');
+        
+        if (readabilityLevel) {
+            readabilityLevel.textContent = 'Not analyzed';
+            readabilityLevel.className = 'readability-level';
+        }
+        
+        if (readabilityScore) {
+            readabilityScore.textContent = '';
+        }
+    }
+
+    // ===== END READABILITY ANALYSIS FUNCTIONS =====
 });
 
+/* Cache buster: Tue 24 Jun 2025 12:11:37 AM CEST */

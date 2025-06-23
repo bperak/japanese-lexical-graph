@@ -17,6 +17,8 @@ from collections import Counter, defaultdict
 import ai_generation_single
 # Import our new lexical exercises script
 import exercises_script
+# Import readability helper
+import readability_helper
 
 # Load environment variables
 load_dotenv()
@@ -612,16 +614,16 @@ def graph_stats():
             pos_distribution = {pos: count for pos, count in pos_counts.most_common(10)}
             stats["pos_distribution_sample"] = pos_distribution
         
-        # Get JLPT level distribution if available
-        if "JLPT" in attribute_keys:
+        # Get old_JLPT level distribution if available
+        if "old_JLPT" in attribute_keys:
             jlpt_distribution = {}
             jlpt_counts = Counter()
             
             for node in sample_nodes:
                 if isinstance(node, float) and math.isnan(node):
                     continue
-                if "JLPT" in G.nodes[node]:
-                    jlpt = G.nodes[node]["JLPT"]
+                if "old_JLPT" in G.nodes[node]:
+                    jlpt = G.nodes[node]["old_JLPT"]
                     if jlpt and not (isinstance(jlpt, float) and math.isnan(jlpt)):
                         jlpt_counts[jlpt] += 1
             
@@ -737,29 +739,29 @@ def graph_analysis():
             }
             
         elif analysis_type == 'jlpt':
-            # JLPT level analysis
+            # old_JLPT level analysis
             jlpt_distribution = {}
             node_counts = {}
             
-            # Check if JLPT attribute exists
+            # Check if old_JLPT attribute exists
             has_jlpt = False
             for node in list(G.nodes())[:min(1000, G.number_of_nodes())]:
                 if isinstance(node, float) and math.isnan(node):
                     continue
-                if 'JLPT' in G.nodes[node]:
+                if 'old_JLPT' in G.nodes[node]:
                     has_jlpt = True
                     break
             
             if not has_jlpt:
-                return jsonify({"error": "Graph does not contain JLPT data"}), 400
+                return jsonify({"error": "Graph does not contain old_JLPT data"}), 400
             
-            # Count nodes by JLPT level
+            # Count nodes by old_JLPT level
             for node in G.nodes():
                 if isinstance(node, float) and math.isnan(node):
                     continue
                     
-                if 'JLPT' in G.nodes[node]:
-                    jlpt_value = G.nodes[node]['JLPT']
+                if 'old_JLPT' in G.nodes[node]:
+                    jlpt_value = G.nodes[node]['old_JLPT']
                     if isinstance(jlpt_value, float) and math.isnan(jlpt_value):
                         continue
                         
@@ -774,7 +776,7 @@ def graph_analysis():
                     if len(node_counts[level]) < limit:
                         node_counts[level].append(str(node))
             
-            # Calculate average degree by JLPT level
+            # Calculate average degree by old_JLPT level
             avg_degree_by_jlpt = {}
             for level, nodes in node_counts.items():
                 if nodes:
@@ -901,6 +903,155 @@ def continue_exercise():
 # Register exercise routes explicitly
 app.add_url_rule('/exercise-generate', view_func=generate_exercise, methods=['GET'])
 app.add_url_rule('/exercise-continue', view_func=continue_exercise, methods=['POST'])
+
+@app.route('/analyze-readability', methods=['GET', 'POST'])
+def analyze_readability():
+    """
+    Endpoint to analyze the readability of Japanese text using jreadability.
+    Supports both GET and POST requests.
+    """
+    try:
+        # Handle both GET and POST requests
+        if request.method == 'GET':
+            text = request.args.get('text', '')
+            japanese_only = request.args.get('japanese_only', 'true').lower() == 'true'
+        else:  # POST
+            data = request.json or {}
+            text = data.get('text', '')
+            japanese_only = data.get('japanese_only', True)
+        
+        if not text:
+            return jsonify({"error": "No text provided"}), 400
+        
+        # Check if readability analysis is available
+        if not readability_helper.is_readability_available():
+            return jsonify({
+                "available": False,
+                "error": "jreadability library not available. Please install with: pip install jreadability"
+            }), 503
+        
+        # Perform readability analysis
+        logger.info(f"Analyzing readability for text: {text[:50]}...")
+        analysis = readability_helper.analyze_text_readability(text, japanese_only)
+        
+        return jsonify(analysis)
+    
+    except Exception as e:
+        logger.error(f"Error analyzing text readability: {e}")
+        return jsonify({
+            "available": True,
+            "error": f"Failed to analyze readability: {str(e)}"
+        }), 500
+
+@app.route('/analyze-exercise-readability', methods=['POST'])
+def analyze_exercise_readability():
+    """
+    Endpoint to analyze readability for exercise content.
+    Designed specifically for the lexical exercises system.
+    """
+    try:
+        data = request.json
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        # Extract exercise content or text to analyze
+        content = ""
+        for field in ['content', 'text', 'question', 'prompt']:
+            if field in data and data[field]:
+                content = data[field]
+                break
+        
+        if not content:
+            return jsonify({"error": "No content found to analyze"}), 400
+        
+        # Check if readability analysis is available
+        if not readability_helper.is_readability_available():
+            return jsonify({
+                "available": False,
+                "error": "jreadability library not available"
+            }), 503
+        
+        # Perform analysis
+        analysis = readability_helper.analyze_text_readability(content, japanese_only=True)
+        
+        # Add exercise metadata to the response
+        analysis['exercise_data'] = {
+            'level': data.get('level'),
+            'type': data.get('type'),
+            'node_id': data.get('node_id')
+        }
+        
+        return jsonify(analysis)
+    
+    except Exception as e:
+        logger.error(f"Error analyzing exercise readability: {e}")
+        return jsonify({
+            "available": True,
+            "error": f"Failed to analyze exercise readability: {str(e)}"
+        }), 500
+
+@app.route('/extract-japanese-text', methods=['POST'])
+def extract_japanese_text():
+    """
+    Endpoint to extract Japanese text from provided content.
+    Returns both the original text and the extracted Japanese characters.
+    """
+    try:
+        data = request.json
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        # Extract text from various possible fields
+        text = ""
+        for field in ['text', 'content', 'message', 'html']:
+            if field in data and data[field]:
+                text = data[field]
+                break
+        
+        if not text:
+            return jsonify({"error": "No text provided"}), 400
+        
+        # Check if readability analysis is available
+        if not readability_helper.is_readability_available():
+            return jsonify({
+                "available": False,
+                "error": "jreadability library not available"
+            }), 503
+        
+        # Use the ReadabilityAnalyzer to extract Japanese text
+        analyzer = readability_helper.ReadabilityAnalyzer()
+        japanese_text = analyzer.extract_japanese_text(text)
+        
+        # Also extract different types of Japanese characters
+        import re
+        hiragana = ''.join(re.findall(r'[\u3040-\u309F]', text))  # Hiragana
+        katakana = ''.join(re.findall(r'[\u30A0-\u30FF]', text))  # Katakana
+        kanji = ''.join(re.findall(r'[\u4E00-\u9FAF]', text))     # Kanji
+        punctuation = ''.join(re.findall(r'[\u3000-\u303F\uFF01-\uFF60\u30FC]', text))  # Japanese punctuation
+        
+        return jsonify({
+            "original_text": text,
+            "original_length": len(text),
+            "japanese_text": japanese_text,
+            "japanese_length": len(japanese_text),
+            "breakdown": {
+                "hiragana": hiragana,
+                "hiragana_count": len(hiragana),
+                "katakana": katakana,
+                "katakana_count": len(katakana),
+                "kanji": kanji,
+                "kanji_count": len(kanji),
+                "punctuation": punctuation,
+                "punctuation_count": len(punctuation)
+            }
+        })
+    
+    except Exception as e:
+        logger.error(f"Error extracting Japanese text: {e}")
+        return jsonify({
+            "available": True,
+            "error": f"Failed to extract Japanese text: {str(e)}"
+        }), 500
 
 if __name__ == '__main__':
     # Run in debug mode locally

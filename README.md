@@ -14,6 +14,8 @@ An interactive visualization and exploration tool for Japanese language lexical 
 - **Wikidata Integration**: Access structured data about Japanese terms from Wikidata
 - **AI-Powered Analysis**: Get AI-generated explanations and relationship analysis using Google's Gemini API
 - **Term Comparison**: Compare two Japanese terms to understand semantic differences and similarities
+- **Japanese Readability Analysis**: Automatic readability assessment of Japanese text using the jreadability library
+- **Interactive Learning Exercises**: AI-generated exercises with difficulty level validation
 - **Caching System**: Optimized performance with in-memory and Redis-based caching
 
 ## Setup and Installation
@@ -22,6 +24,7 @@ An interactive visualization and exploration tool for Japanese language lexical 
 - Python 3.8 or higher
 - Pip package manager
 - Redis (optional, for enhanced caching)
+- Japanese text analysis dependencies (installed automatically with jreadability)
 
 ### Installation
 
@@ -83,7 +86,14 @@ For detailed instructions on setting up and running the application on Linux, pl
 ### Sidebar Features
 - **Wikidata Information**: View structured data about the selected term
 - **AI Analysis**: Access Gemini-powered explanations and relationship analysis
+- **Interactive Exercises**: Generate AI-powered learning exercises with automatic readability analysis
 - **Graph Controls**: Adjust visualization parameters
+
+### Readability Analysis
+- **Automatic Assessment**: Japanese text is automatically analyzed for readability level
+- **6-Level Scale**: From Lower-elementary to Upper-advanced proficiency levels
+- **Visual Indicators**: Color-coded badges show difficulty levels for generated exercises
+- **Educational Alignment**: Helps learners choose appropriate difficulty content
 
 ### Selecting the Gemini Model
 
@@ -119,6 +129,7 @@ Supported model IDs (May 2025) include `gemini-2.5-pro-preview-05-06`, `gemini-2
 - **NetworkX**: Graph data structure and operations
 - **SPARQLWrapper**: Integration with Wikidata's SPARQL endpoint
 - **Google Generative AI**: Integration with Gemini API for AI features
+- **jreadability**: Japanese text readability analysis library
 - **Redis/In-memory Cache**: Performance optimization
 
 ### Frontend Components

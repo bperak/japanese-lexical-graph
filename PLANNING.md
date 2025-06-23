@@ -8,6 +8,7 @@
     - Integrate AI-powered analysis (term explanations, comparisons, search suggestions) using Google's Gemini API.
     - Provide an interactive AI-driven language learning module (exercises, conversation practice).
     - Incorporate external data from Wikidata for richer term information.
+    - Add Japanese text readability analysis to support educational applications.
     - Add spatial understanding capabilities for 3D visualization of cultural concepts (if feasible and aligned with core goals).
     - Improve the user interface for better accessibility, information display, and overall user experience.
     - Demonstrate AI-based methods for extracting and analyzing lexical semantic networks within cultural heritage contexts.
@@ -32,6 +33,7 @@
             - Vision / streaming variants as published (e.g., `gemini-2.0-flash-preview-image-generation`, `gemini-2.0-flash-live-001`).
         - Set the default with `GEMINI_DEFAULT_MODEL` in `.env`; individual requests can override with the `model_name` query parameter.
     - **PIL/Pillow**: For image processing (if image analysis features are pursued with Gemini Vision API).
+    - **jreadability**: For Japanese text readability analysis and educational content assessment.
     - **Caching**: Werkzeug (built-in with Flask, for in-memory) or Flask-Caching for more advanced strategies including Redis (optional).
 - **API Structure Considerations**:
     - **Core Graph API**:
@@ -48,6 +50,9 @@
         - (Potentially) `/gemini/image-analysis`: If image-based features are implemented. (Can be updated to accept `model_name`)
         - (Potentially) `/gemini/search-suggestions`: To augment search. (Can be updated to accept `model_name`)
         - `/enhanced-node`: Provides comprehensive AI-enhanced details for a node. (Accepts `model_name` parameter for underlying Gemini calls)
+    - **Japanese Readability API Endpoints**:
+        - `/analyze-readability`: General-purpose Japanese text readability analysis
+        - `/analyze-exercise-readability`: Exercise-specific readability analysis with educational context
 
 #### Frontend Architecture
 - **Core Technologies**: HTML, CSS, JavaScript.
@@ -77,6 +82,7 @@
 - `wikidata_helper.py`: Interface for Wikidata SPARQL endpoint.
 - `exercises_script.py`: Logic for the interactive learning module.
 - `ai_generation_single.py`: Script for AI-driven enrichment of graph data.
+- `readability_helper.py`: Japanese text readability analysis functionality.
 - `cache_helper.py`: Caching functionalities.
 - `graph_analysis.py`: Advanced graph algorithms and operations.
 - `graph_visualize.py`: Helpers for graph visualization.
@@ -137,7 +143,7 @@
 ### 5. Dependencies & Setup
 - Managed via `requirements.txt`.
 - Environment variables (e.g., API keys, `GEMINI_DEFAULT_MODEL`) managed via a `.env` file and loaded using `python-dotenv` through `config.py`.
-- Key dependencies include: Flask, NetworkX, google-generativeai, SPARQLWrapper, python-dotenv, Werkzeug (for caching, or Flask-Caching), requests. (Add others as identified).
+- Key dependencies include: Flask, NetworkX, google-generativeai, SPARQLWrapper, python-dotenv, Werkzeug (for caching, or Flask-Caching), requests, jreadability (for Japanese text analysis). (Add others as identified).
 
 ### 6. Deployment Plan
 

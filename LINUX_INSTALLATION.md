@@ -55,6 +55,13 @@ sudo pacman -S python-numpy python-scipy
    pip install --upgrade pip
    pip install -r requirements.txt
    ```
+   
+   **Note**: The `jreadability` library will automatically download Japanese language models (including MeCab and UniDic) during installation. This may take a few minutes on first install.
+
+   If you encounter issues with Japanese text analysis, you can manually reinstall:
+   ```bash
+   pip install --force-reinstall jreadability
+   ```
 
 4. Create a `.env` file with your API key
    ```bash
@@ -192,6 +199,26 @@ which pip  # Should point to your virtual environment
 
 # Reinstall requirements with verbose output
 pip install -v -r requirements.txt
+```
+
+### Japanese Text Analysis Issues
+If readability analysis is not working correctly:
+```bash
+# Check if jreadability is properly installed
+python -c "import jreadability; print('jreadability available')"
+
+# Reinstall Japanese language dependencies
+pip install --force-reinstall jreadability fugashi unidic-lite
+
+# If MeCab issues persist on some systems, you may need system MeCab
+# Debian/Ubuntu
+sudo apt install -y mecab mecab-ipadic-utf8
+
+# Red Hat/Fedora
+sudo dnf install -y mecab mecab-ipadic
+
+# Test readability analysis
+python -c "from readability_helper import analyze_text_readability; print(analyze_text_readability('これはテストです。'))"
 ```
 
 ### Memory Issues with Large Graph Files

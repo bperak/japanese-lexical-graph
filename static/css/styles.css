@@ -47,7 +47,7 @@ body, html {
 
 /* Adjust main content when sidebar is open */
 .sidebar-bottom.open ~ .main-content {
-    height: calc(100vh - 50vh - 60px); /* Adjust for sidebar height */
+    height: calc(100vh - 70vh - 70px); /* Adjust for larger sidebar height */
 }
 
 /* Graph container takes full space of main content */
@@ -849,9 +849,9 @@ input[type="checkbox"]:checked::after {
     height: 40px; /* Only show the header */
 }
 
-/* Open state - expanded to 50% of viewport height */
+/* Open state - expanded to 70% of viewport height */
 .sidebar-bottom.open {
-    height: 50vh; /* Increase to 50% of viewport height */
+    height: 70vh; /* Increase to 70% of viewport height */
     overflow-y: auto;
 }
 
@@ -1898,4 +1898,101 @@ body {
 #side-nav.open {
     width: 300px; /* Override the default width: 0 from the base #side-nav rule */
     left: auto;   /* Override .menu-nav's left: 0 to avoid conflicting with right: 0 */
+}
+
+/* Readability Display Styling */
+.readability-info {
+    margin: 10px 0;
+    background-color: rgba(42, 42, 42, 0.9);
+    border-radius: 6px;
+    padding: 8px 12px;
+    border-left: 4px solid #007bff;
+    transition: all 0.3s ease-in-out;
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.readability-info.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.readability-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.readability-label {
+    color: #cccccc;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.readability-level {
+    background-color: #007bff;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 70px;
+    text-align: center;
+}
+
+.readability-score {
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 500;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 8px;
+}
+
+/* Color coding for different readability levels */
+.readability-level.upper-advanced {
+    background-color: #8B0000;
+}
+
+.readability-level.lower-advanced {
+    background-color: #FF4500;
+}
+
+.readability-level.upper-intermediate {
+    background-color: #FF8C00;
+}
+
+.readability-level.lower-intermediate {
+    background-color: #FFD700;
+    color: #333333;
+}
+
+.readability-level.upper-elementary {
+    background-color: #9ACD32;
+    color: #333333;
+}
+
+.readability-level.lower-elementary {
+    background-color: #32CD32;
+    color: #333333;
+}
+
+.readability-level.out-of-range {
+    background-color: #808080;
+}
+
+/* Responsive design for readability badge */
+@media (max-width: 480px) {
+    .readability-badge {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .readability-level {
+        min-width: auto;
+    }
 }

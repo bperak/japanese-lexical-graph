@@ -18,7 +18,7 @@
         "hiragana": "ほうりつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "law",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -59,7 +59,7 @@
         "hiragana": "ほんのう",
         "POS": "名詞-普通名詞-一般",
         "translation": "instinct",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -70,7 +70,7 @@
         "hiragana": "ひざし",
         "POS": "名詞-普通名詞-一般",
         "translation": "sunlight",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -91,7 +91,7 @@
         "hiragana": "さいげん",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "reproduction",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -102,7 +102,7 @@
         "hiragana": "おまわり",
         "POS": "名詞-普通名詞-一般",
         "translation": "policeman",
-        "JLPT": 4.0
+        "old_JLPT": 4.0
       }
     },
     {
@@ -193,7 +193,7 @@
         "hiragana": "こんぱく",
         "POS": "名詞-普通名詞-一般",
         "translation": "soul",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -444,7 +444,7 @@
         "hiragana": "しゃざい",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "apology",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -455,7 +455,7 @@
         "hiragana": "いってい",
         "POS": "名詞-普通名詞-一般",
         "translation": "fixed",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -466,7 +466,7 @@
         "hiragana": "ちず",
         "POS": "名詞-普通名詞-一般",
         "translation": "map",
-        "JLPT": 4.0,
+        "old_JLPT": 4.0,
         "jlpt_jisho_lemma": 3.0
       }
     },
@@ -498,7 +498,7 @@
         "hiragana": "ぐんとう",
         "POS": "名詞-普通名詞-一般",
         "translation": "archipelago",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -569,7 +569,7 @@
         "hiragana": "しか",
         "POS": "名詞-普通名詞-一般",
         "translation": "dentistry",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -580,7 +580,7 @@
         "hiragana": "ちんれつ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "display",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -601,7 +601,7 @@
         "hiragana": "しょうべん",
         "POS": "名詞-普通名詞-一般",
         "translation": "urine",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -622,7 +622,7 @@
         "hiragana": "りく",
         "POS": "名詞-普通名詞-一般",
         "translation": "land",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -653,7 +653,7 @@
         "hiragana": "りゆう",
         "POS": "名詞-普通名詞-一般",
         "translation": "reason",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -764,7 +764,7 @@
         "hiragana": "たんがん",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "petition",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -855,7 +855,7 @@
         "hiragana": "らいじん",
         "POS": "名詞-普通名詞-一般",
         "translation": "Thunder God",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -947,7 +947,7 @@
         "hiragana": "かし",
         "POS": "名詞-普通名詞-一般",
         "translation": "lower limb",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -968,7 +968,7 @@
         "hiragana": "ゆうこん",
         "POS": "名詞-普通名詞-一般",
         "translation": "ghost",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -1029,7 +1029,7 @@
         "hiragana": "ふうぞく",
         "POS": "名詞-普通名詞-一般",
         "translation": "customs",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -1060,7 +1060,7 @@
         "hiragana": "かしや",
         "POS": "名詞-普通名詞-一般",
         "translation": "rental house",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -1131,7 +1131,7 @@
         "hiragana": "とうろく",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "registration",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -1172,7 +1172,7 @@
         "hiragana": "さいせい",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "regeneration",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -1233,7 +1233,7 @@
         "hiragana": "あかみ",
         "POS": "名詞-普通名詞-一般",
         "translation": "redness",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -1284,7 +1284,7 @@
         "hiragana": "めいひん",
         "POS": "名詞-普通名詞-一般",
         "translation": "famous product",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -1385,7 +1385,7 @@
         "hiragana": "じか",
         "POS": "名詞-普通名詞-一般",
         "translation": "market value",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -1436,7 +1436,7 @@
         "hiragana": "あぷろーち",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "approach",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -1467,7 +1467,7 @@
         "hiragana": "けんしゅう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "training",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -1548,7 +1548,7 @@
         "hiragana": "かんろ",
         "POS": "名詞-普通名詞-一般",
         "translation": "nectar",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -1619,7 +1619,7 @@
         "hiragana": "てんたい",
         "POS": "名詞-普通名詞-一般",
         "translation": "celestial body",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -1800,7 +1800,7 @@
         "hiragana": "かぬー",
         "POS": "名詞-普通名詞-一般",
         "translation": "canoe",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -1921,7 +1921,7 @@
         "hiragana": "じゅそ",
         "POS": "名詞-普通名詞-一般",
         "translation": "curse",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -1942,7 +1942,7 @@
         "hiragana": "かくしん",
         "POS": "名詞-普通名詞-一般",
         "translation": "innovation",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -2003,7 +2003,7 @@
         "hiragana": "さーくる",
         "POS": "名詞-普通名詞-一般",
         "translation": "circle",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -2044,7 +2044,7 @@
         "hiragana": "しめい",
         "POS": "名詞-普通名詞-一般",
         "translation": "mission",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -2095,7 +2095,7 @@
         "hiragana": "せいどう",
         "POS": "名詞-普通名詞-一般",
         "translation": "right path",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -2166,7 +2166,7 @@
         "hiragana": "さいあく",
         "POS": "名詞-普通名詞-一般",
         "translation": "worst",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -2257,7 +2257,7 @@
         "hiragana": "そうとう",
         "POS": "名詞-普通名詞-一般",
         "translation": "supreme leader",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -2278,7 +2278,7 @@
         "hiragana": "ぎゃくがわ",
         "POS": "名詞-普通名詞-一般",
         "translation": "opposite side",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -2399,7 +2399,7 @@
         "hiragana": "もうしこみ",
         "POS": "名詞-普通名詞-一般",
         "translation": "application",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -2470,7 +2470,7 @@
         "hiragana": "でんぶ",
         "POS": "名詞-普通名詞-一般",
         "translation": "buttocks",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -2521,7 +2521,7 @@
         "hiragana": "みけつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "undecided",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -2572,7 +2572,7 @@
         "hiragana": "ためいき",
         "POS": "名詞-普通名詞-一般",
         "translation": "sigh",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -2613,7 +2613,7 @@
         "hiragana": "せいけい",
         "POS": "名詞-普通名詞-一般",
         "translation": "livelihood",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -2664,7 +2664,7 @@
         "hiragana": "そうば",
         "POS": "名詞-普通名詞-一般",
         "translation": "market price",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -2745,7 +2745,7 @@
         "hiragana": "そうじ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "cleaning",
-        "JLPT": 4.0,
+        "old_JLPT": 4.0,
         "jlpt_jisho_lemma": 3.0
       }
     },
@@ -2777,7 +2777,7 @@
         "hiragana": "ほうでん",
         "POS": "名詞-普通名詞-一般",
         "translation": "discharge",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -2798,7 +2798,7 @@
         "hiragana": "にぎり",
         "POS": "名詞-普通名詞-一般",
         "translation": "grip",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -2809,7 +2809,7 @@
         "hiragana": "りょうあし",
         "POS": "名詞-普通名詞-一般",
         "translation": "both legs",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -2840,7 +2840,7 @@
         "hiragana": "きょうたん",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "astonishment",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -2892,7 +2892,7 @@
         "hiragana": "ほんやく",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "translation",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -2913,7 +2913,7 @@
         "hiragana": "とうけつ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "freeze",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -2944,7 +2944,7 @@
         "hiragana": "しーずん",
         "POS": "名詞-普通名詞-一般",
         "translation": "season",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -2955,7 +2955,7 @@
         "hiragana": "しょうじょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "certificate",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -2966,7 +2966,7 @@
         "hiragana": "まよい",
         "POS": "名詞-普通名詞-一般",
         "translation": "hesitation",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -2977,7 +2977,7 @@
         "hiragana": "のうぎょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "agriculture",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -3008,7 +3008,7 @@
         "hiragana": "げっぷ",
         "POS": "名詞-普通名詞-一般",
         "translation": "installment",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -3019,7 +3019,7 @@
         "hiragana": "ぱねる",
         "POS": "名詞-普通名詞-一般",
         "translation": "panel",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -3040,7 +3040,7 @@
         "hiragana": "き",
         "POS": "名詞-普通名詞-一般",
         "translation": "tree",
-        "JLPT": 4.0
+        "old_JLPT": 4.0
       }
     },
     {
@@ -3101,7 +3101,7 @@
         "hiragana": "みがき",
         "POS": "名詞-普通名詞-一般",
         "translation": "polish",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -3192,7 +3192,7 @@
         "hiragana": "けっしん",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "determination",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -3223,7 +3223,7 @@
         "hiragana": "しゃべり",
         "POS": "名詞-普通名詞-一般",
         "translation": "chat",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -3264,7 +3264,7 @@
         "hiragana": "いっしき",
         "POS": "名詞-普通名詞-一般",
         "translation": "set",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -3275,7 +3275,7 @@
         "hiragana": "けっか",
         "POS": "名詞-普通名詞-一般",
         "translation": "result",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -3286,7 +3286,7 @@
         "hiragana": "じゅうかん",
         "POS": "名詞-普通名詞-一般",
         "translation": "longitudinal",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -3297,7 +3297,7 @@
         "hiragana": "がくい",
         "POS": "名詞-普通名詞-一般",
         "translation": "degree",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -3328,7 +3328,7 @@
         "hiragana": "ゆうだち",
         "POS": "名詞-普通名詞-一般",
         "translation": "evening shower",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -3359,7 +3359,7 @@
         "hiragana": "きょうふう",
         "POS": "名詞-普通名詞-一般",
         "translation": "strong wind",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -3480,7 +3480,7 @@
         "hiragana": "ちょうりょく",
         "POS": "名詞-普通名詞-一般",
         "translation": "hearing ability",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -3581,7 +3581,7 @@
         "hiragana": "じせつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "next section",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -3662,7 +3662,7 @@
         "hiragana": "めかにずむ",
         "POS": "名詞-普通名詞-一般",
         "translation": "mechanism",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -3783,7 +3783,7 @@
         "hiragana": "やまみち",
         "POS": "名詞-普通名詞-一般",
         "translation": "mountain path",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -3804,7 +3804,7 @@
         "hiragana": "にくへん",
         "POS": "名詞-普通名詞-一般",
         "translation": "meat piece",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -3815,7 +3815,7 @@
         "hiragana": "きょうがく",
         "POS": "名詞-普通名詞-一般",
         "translation": "coeducation",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -3826,7 +3826,7 @@
         "hiragana": "ばいてん",
         "POS": "名詞-普通名詞-一般",
         "translation": "kiosk",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -3887,7 +3887,7 @@
         "hiragana": "きゅうじょう",
         "POS": "名詞-普通名詞-形状詞可能",
         "translation": "spherical",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -4028,7 +4028,7 @@
         "hiragana": "ちょこれーと",
         "POS": "名詞-普通名詞-一般",
         "translation": "chocolate",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -4069,7 +4069,7 @@
         "hiragana": "ぶい",
         "POS": "名詞-普通名詞-一般",
         "translation": "military might",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -4090,7 +4090,7 @@
         "hiragana": "ごほう",
         "POS": "名詞-普通名詞-一般",
         "translation": "grammar",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -4121,7 +4121,7 @@
         "hiragana": "きゅうけい",
         "POS": "名詞-普通名詞-一般",
         "translation": "spherical shape",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -4132,7 +4132,7 @@
         "hiragana": "だんりゅう",
         "POS": "名詞-普通名詞-一般",
         "translation": "warm current",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -4273,7 +4273,7 @@
         "hiragana": "ふきん",
         "POS": "名詞-普通名詞-一般",
         "translation": "vicinity",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -4284,7 +4284,7 @@
         "hiragana": "だいやる",
         "POS": "名詞-普通名詞-一般",
         "translation": "dial",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -4355,7 +4355,7 @@
         "hiragana": "ぜんけい",
         "POS": "名詞-普通名詞-一般",
         "translation": "panorama",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -4466,7 +4466,7 @@
         "hiragana": "とくせい",
         "POS": "名詞-普通名詞-一般",
         "translation": "characteristic",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -4527,7 +4527,7 @@
         "hiragana": "みせば",
         "POS": "名詞-普通名詞-一般",
         "translation": "highlight",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -4538,7 +4538,7 @@
         "hiragana": "かそう",
         "POS": "名詞-普通名詞-一般",
         "translation": "lower layer",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -4639,7 +4639,7 @@
         "hiragana": "もうふ",
         "POS": "名詞-普通名詞-一般",
         "translation": "blanket",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -4750,7 +4750,7 @@
         "hiragana": "おもいで",
         "POS": "名詞-普通名詞-一般",
         "translation": "memory",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -4791,7 +4791,7 @@
         "hiragana": "しょうやく",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "abridged translation",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -4812,7 +4812,7 @@
         "hiragana": "さんろく",
         "POS": "名詞-普通名詞-一般",
         "translation": "foot of a mountain",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -4873,7 +4873,7 @@
         "hiragana": "じせい",
         "POS": "名詞-普通名詞-一般",
         "translation": "tense",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -4914,7 +4914,7 @@
         "hiragana": "はば",
         "POS": "名詞-普通名詞-一般",
         "translation": "width",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -5005,7 +5005,7 @@
         "hiragana": "まごころ",
         "POS": "名詞-普通名詞-一般",
         "translation": "sincerity",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -5166,7 +5166,7 @@
         "hiragana": "せんらん",
         "POS": "名詞-普通名詞-一般",
         "translation": "war",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -5177,7 +5177,7 @@
         "hiragana": "あいよう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "favorite use",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -5248,7 +5248,7 @@
         "hiragana": "しらが",
         "POS": "名詞-普通名詞-一般",
         "translation": "gray hair",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -5309,7 +5309,7 @@
         "hiragana": "ぐっぴー",
         "POS": "名詞-普通名詞-一般",
         "translation": "guppy",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -5340,7 +5340,7 @@
         "hiragana": "ぷらかーど",
         "POS": "名詞-普通名詞-一般",
         "translation": "placard",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -5391,7 +5391,7 @@
         "hiragana": "ぞうふく",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "amplification",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -5402,7 +5402,7 @@
         "hiragana": "かばん",
         "POS": "名詞-普通名詞-一般",
         "translation": "bag",
-        "JLPT": 4.0
+        "old_JLPT": 4.0
       }
     },
     {
@@ -5513,7 +5513,7 @@
         "hiragana": "ちい",
         "POS": "名詞-普通名詞-一般",
         "translation": "status",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -5544,7 +5544,7 @@
         "hiragana": "ちょうし",
         "POS": "名詞-普通名詞-一般",
         "translation": "long poem",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -5695,7 +5695,7 @@
         "hiragana": "むく",
         "POS": "名詞-普通名詞-一般",
         "translation": "innocence",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -5856,7 +5856,7 @@
         "hiragana": "てらす",
         "POS": "名詞-普通名詞-一般",
         "translation": "terrace",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -5887,7 +5887,7 @@
         "hiragana": "こんきょ",
         "POS": "名詞-普通名詞-一般",
         "translation": "basis",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -5918,7 +5918,7 @@
         "hiragana": "なんとう",
         "POS": "名詞-普通名詞-一般",
         "translation": "southeast",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -6079,7 +6079,7 @@
         "hiragana": "むしょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "asexual",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -6110,7 +6110,7 @@
         "hiragana": "はん",
         "POS": "名詞-普通名詞-一般",
         "translation": "half",
-        "JLPT": 4.0
+        "old_JLPT": 4.0
       }
     },
     {
@@ -6141,7 +6141,7 @@
         "hiragana": "れんぞく",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "continuation",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -6172,7 +6172,7 @@
         "hiragana": "しゅうらい",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "invasion",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -6233,7 +6233,7 @@
         "hiragana": "ざっか",
         "POS": "名詞-普通名詞-一般",
         "translation": "miscellaneous goods",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -6304,7 +6304,7 @@
         "hiragana": "きいろ",
         "POS": "名詞-普通名詞-一般",
         "translation": "yellow",
-        "JLPT": 4.0
+        "old_JLPT": 4.0
       }
     },
     {
@@ -6335,7 +6335,7 @@
         "hiragana": "ようしょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "childhood",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -6356,7 +6356,7 @@
         "hiragana": "めいさつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "famous temple",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -6408,7 +6408,7 @@
         "hiragana": "ひょうじ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "display",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -6519,7 +6519,7 @@
         "hiragana": "ぜんしん",
         "POS": "名詞-普通名詞-一般",
         "translation": "goodwill",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -6580,7 +6580,7 @@
         "hiragana": "てのうち",
         "POS": "名詞-普通名詞-一般",
         "translation": "inside of the hand",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -6601,7 +6601,7 @@
         "hiragana": "ぎゅうにく",
         "POS": "名詞-普通名詞-一般",
         "translation": "beef",
-        "JLPT": 4.0
+        "old_JLPT": 4.0
       }
     },
     {
@@ -6632,7 +6632,7 @@
         "hiragana": "はれもの",
         "POS": "名詞-普通名詞-一般",
         "translation": "swelling",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -6663,7 +6663,7 @@
         "hiragana": "なさけ",
         "POS": "名詞-普通名詞-一般",
         "translation": "compassion",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -6704,7 +6704,7 @@
         "hiragana": "おすい",
         "POS": "名詞-普通名詞-一般",
         "translation": "sewage",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -6735,7 +6735,7 @@
         "hiragana": "しゃんぷー",
         "POS": "名詞-普通名詞-一般",
         "translation": "shampoo",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -6746,7 +6746,7 @@
         "hiragana": "かーとん",
         "POS": "名詞-普通名詞-一般",
         "translation": "carton",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -6827,7 +6827,7 @@
         "hiragana": "じゅうあつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "pressure",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -6838,7 +6838,7 @@
         "hiragana": "せっぺん",
         "POS": "名詞-普通名詞-一般",
         "translation": "snowflake",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -6969,7 +6969,7 @@
         "hiragana": "こうじょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "factory",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -6990,7 +6990,7 @@
         "hiragana": "えいぞく",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "permanence",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7001,7 +7001,7 @@
         "hiragana": "じんぐう",
         "POS": "名詞-普通名詞-一般",
         "translation": "shrine",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7052,7 +7052,7 @@
         "hiragana": "スロットル",
         "POS": "名詞-普通名詞-一般",
         "translation": "throttle",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7073,7 +7073,7 @@
         "hiragana": "はと",
         "POS": "名詞-普通名詞-一般",
         "translation": "pigeon",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7084,7 +7084,7 @@
         "hiragana": "てん",
         "POS": "名詞-普通名詞-一般",
         "translation": "heaven",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -7095,7 +7095,7 @@
         "hiragana": "みんゆう",
         "POS": "名詞-普通名詞-一般",
         "translation": "public ownership",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7136,7 +7136,7 @@
         "hiragana": "はっきん",
         "POS": "名詞-普通名詞-一般",
         "translation": "platinum",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7287,7 +7287,7 @@
         "hiragana": "ばんぐみ",
         "POS": "名詞-普通名詞-一般",
         "translation": "program",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -7298,7 +7298,7 @@
         "hiragana": "あしかせ",
         "POS": "名詞-普通名詞-一般",
         "translation": "shackle",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7309,7 +7309,7 @@
         "hiragana": "すてっき",
         "POS": "名詞-普通名詞-一般",
         "translation": "cane",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7350,7 +7350,7 @@
         "hiragana": "じっせん",
         "POS": "名詞-普通名詞-一般",
         "translation": "solid line",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7371,7 +7371,7 @@
         "hiragana": "ちそく",
         "POS": "名詞-普通名詞-一般",
         "translation": "speed",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7462,7 +7462,7 @@
         "hiragana": "ぱーてぃー",
         "POS": "名詞-普通名詞-一般",
         "translation": "party",
-        "JLPT": 4.0,
+        "old_JLPT": 4.0,
         "jlpt_jisho_lemma": 1.0
       }
     },
@@ -7615,7 +7615,7 @@
         "hiragana": "おーけすとら",
         "POS": "名詞-普通名詞-一般",
         "translation": "orchestra",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -7626,7 +7626,7 @@
         "hiragana": "かどち",
         "POS": "名詞-普通名詞-一般",
         "translation": "corner lot",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7657,7 +7657,7 @@
         "hiragana": "みんげい",
         "POS": "名詞-普通名詞-一般",
         "translation": "folk art",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7709,7 +7709,7 @@
         "hiragana": "さかいめ",
         "POS": "名詞-普通名詞-一般",
         "translation": "boundary",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7720,7 +7720,7 @@
         "hiragana": "ぎれい",
         "POS": "名詞-普通名詞-一般",
         "translation": "etiquette",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7761,7 +7761,7 @@
         "hiragana": "こうき",
         "POS": "名詞-普通名詞-一般",
         "translation": "radiance",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7782,7 +7782,7 @@
         "hiragana": "おおゆき",
         "POS": "名詞-普通名詞-一般",
         "translation": "heavy snow",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7823,7 +7823,7 @@
         "hiragana": "はばたき",
         "POS": "名詞-普通名詞-一般",
         "translation": "flapping",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -7834,7 +7834,7 @@
         "hiragana": "はん",
         "POS": "名詞-普通名詞-一般",
         "translation": "judgment",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -7925,7 +7925,7 @@
         "hiragana": "しょくもつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "food",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -8036,7 +8036,7 @@
         "hiragana": "ごうはん",
         "POS": "名詞-普通名詞-一般",
         "translation": "plywood",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -8047,7 +8047,7 @@
         "hiragana": "ださく",
         "POS": "名詞-普通名詞-一般",
         "translation": "poor work",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -8148,7 +8148,7 @@
         "hiragana": "てきとう",
         "POS": "名詞-普通名詞-一般",
         "translation": "appropriate",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -8219,7 +8219,7 @@
         "hiragana": "ぶつどう",
         "POS": "名詞-普通名詞-一般",
         "translation": "Buddhism",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -8340,7 +8340,7 @@
         "hiragana": "ふるさと",
         "POS": "名詞-普通名詞-一般",
         "translation": "hometown",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -8351,7 +8351,7 @@
         "hiragana": "きょこう",
         "POS": "名詞-普通名詞-一般",
         "translation": "fiction",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -8392,7 +8392,7 @@
         "hiragana": "いこう",
         "POS": "名詞-普通名詞-一般",
         "translation": "remains",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -8423,7 +8423,7 @@
         "hiragana": "ぼうけん",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "adventure",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -8544,7 +8544,7 @@
         "hiragana": "せんす",
         "POS": "名詞-普通名詞-一般",
         "translation": "sense",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -8555,7 +8555,7 @@
         "hiragana": "じゅうりょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "Juryo",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -8606,7 +8606,7 @@
         "hiragana": "とうてん",
         "POS": "名詞-普通名詞-一般",
         "translation": "comma",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -8627,7 +8627,7 @@
         "hiragana": "ぞくしん",
         "POS": "名詞-普通名詞-一般",
         "translation": "superstition",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -8648,7 +8648,7 @@
         "hiragana": "はんい",
         "POS": "名詞-普通名詞-一般",
         "translation": "range",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -8699,7 +8699,7 @@
         "hiragana": "ぎょもう",
         "POS": "名詞-普通名詞-一般",
         "translation": "fishnet",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -8800,7 +8800,7 @@
         "hiragana": "ぶつじ",
         "POS": "名詞-普通名詞-一般",
         "translation": "Buddhist temple",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -8811,7 +8811,7 @@
         "hiragana": "だんめん",
         "POS": "名詞-普通名詞-一般",
         "translation": "cross-section",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -8922,7 +8922,7 @@
         "hiragana": "こうし",
         "POS": "名詞-普通名詞-一般",
         "translation": "public and private",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -9023,7 +9023,7 @@
         "hiragana": "のりつぎ",
         "POS": "名詞-普通名詞-一般",
         "translation": "transfer",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -9034,7 +9034,7 @@
         "hiragana": "ひょうしょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "emblem",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -9075,7 +9075,7 @@
         "hiragana": "じょうどう",
         "POS": "名詞-普通名詞-一般",
         "translation": "emotion",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -9086,7 +9086,7 @@
         "hiragana": "おと",
         "POS": "名詞-普通名詞-一般",
         "translation": "sound",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -9097,7 +9097,7 @@
         "hiragana": "つゆいり",
         "POS": "名詞-普通名詞-一般",
         "translation": "start of the rainy season",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -9118,7 +9118,7 @@
         "hiragana": "てっきょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "iron bridge",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -9249,7 +9249,7 @@
         "hiragana": "ごちょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "tone",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -9260,7 +9260,7 @@
         "hiragana": "わかもの",
         "POS": "名詞-普通名詞-一般",
         "translation": "young person",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -9321,7 +9321,7 @@
         "hiragana": "いえねこ",
         "POS": "名詞-普通名詞-一般",
         "translation": "house cat",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -9332,7 +9332,7 @@
         "hiragana": "そふぼ",
         "POS": "名詞-普通名詞-一般",
         "translation": "grandparents",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -9383,7 +9383,7 @@
         "hiragana": "せきひ",
         "POS": "名詞-普通名詞-一般",
         "translation": "monument",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -9444,7 +9444,7 @@
         "hiragana": "じつざい",
         "POS": "名詞-普通名詞-一般",
         "translation": "existence",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -9455,7 +9455,7 @@
         "hiragana": "しんてん",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "progress",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -9466,7 +9466,7 @@
         "hiragana": "たな",
         "POS": "名詞-普通名詞-一般",
         "translation": "shelf",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -9517,7 +9517,7 @@
         "hiragana": "およぎ",
         "POS": "名詞-普通名詞-一般",
         "translation": "swimming",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -9918,7 +9918,7 @@
         "hiragana": "ちゅうどう",
         "POS": "名詞-普通名詞-一般",
         "translation": "middle way",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -10019,7 +10019,7 @@
         "hiragana": "かけい",
         "POS": "名詞-普通名詞-一般",
         "translation": "family line",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -10060,7 +10060,7 @@
         "hiragana": "いっかく",
         "POS": "名詞-普通名詞-一般",
         "translation": "corner",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -10201,7 +10201,7 @@
         "hiragana": "はくどう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "pulsation",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -10222,7 +10222,7 @@
         "hiragana": "くちびる",
         "POS": "名詞-普通名詞-一般",
         "translation": "lips",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -10233,7 +10233,7 @@
         "hiragana": "きょうねん",
         "POS": "名詞-普通名詞-一般",
         "translation": "bad year",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -10274,7 +10274,7 @@
         "hiragana": "びょうく",
         "POS": "名詞-普通名詞-一般",
         "translation": "suffering from illness",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -10315,7 +10315,7 @@
         "hiragana": "ないがい",
         "POS": "名詞-普通名詞-一般",
         "translation": "inside and outside",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -10416,7 +10416,7 @@
         "hiragana": "いちだん",
         "POS": "名詞-普通名詞-一般",
         "translation": "group",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -10527,7 +10527,7 @@
         "hiragana": "しゃしょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "conductor",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -10578,7 +10578,7 @@
         "hiragana": "きん",
         "POS": "名詞-普通名詞-一般",
         "translation": "bacteria",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -10789,7 +10789,7 @@
         "hiragana": "じんけん",
         "POS": "名詞-普通名詞-一般",
         "translation": "human rights",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -10830,7 +10830,7 @@
         "hiragana": "あかいろ",
         "POS": "名詞-普通名詞-一般",
         "translation": "red color",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -11011,7 +11011,7 @@
         "hiragana": "てんまく",
         "POS": "名詞-普通名詞-一般",
         "translation": "tent",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -11152,7 +11152,7 @@
         "hiragana": "ゆーもあ",
         "POS": "名詞-普通名詞-一般",
         "translation": "humor",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -11193,7 +11193,7 @@
         "hiragana": "ぷりんと",
         "POS": "名詞-普通名詞-一般",
         "translation": "print",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -11204,7 +11204,7 @@
         "hiragana": "なんごく",
         "POS": "名詞-普通名詞-一般",
         "translation": "southern country",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -11305,7 +11305,7 @@
         "hiragana": "らんそう",
         "POS": "名詞-普通名詞-一般",
         "translation": "ovary",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -11336,7 +11336,7 @@
         "hiragana": "しんせつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "kindness",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -11407,7 +11407,7 @@
         "hiragana": "ぜんよう",
         "POS": "名詞-普通名詞-一般",
         "translation": "whole picture",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -11518,7 +11518,7 @@
         "hiragana": "すてーたす",
         "POS": "名詞-普通名詞-一般",
         "translation": "status",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -11549,7 +11549,7 @@
         "hiragana": "ちんぱんじー",
         "POS": "名詞-普通名詞-一般",
         "translation": "chimpanzee",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -11610,7 +11610,7 @@
         "hiragana": "うぉーきんぐ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "walking",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -11671,7 +11671,7 @@
         "hiragana": "りょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "quantity",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -11702,7 +11702,7 @@
         "hiragana": "じょそう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "weeding",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -11753,7 +11753,7 @@
         "hiragana": "わかば",
         "POS": "名詞-普通名詞-一般",
         "translation": "young leaves",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -11774,7 +11774,7 @@
         "hiragana": "ちしお",
         "POS": "名詞-普通名詞-一般",
         "translation": "blood tide",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -11815,7 +11815,7 @@
         "hiragana": "いんさつ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "printing",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -11846,7 +11846,7 @@
         "hiragana": "あくせい",
         "POS": "名詞-普通名詞-一般",
         "translation": "malignancy",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -11897,7 +11897,7 @@
         "hiragana": "えきむ",
         "POS": "名詞-普通名詞-一般",
         "translation": "service",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -11998,7 +11998,7 @@
         "hiragana": "ぱぴー",
         "POS": "名詞-普通名詞-一般",
         "translation": "puppy",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -12009,7 +12009,7 @@
         "hiragana": "しょくりょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "food",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -12040,7 +12040,7 @@
         "hiragana": "ふぃっとねす",
         "POS": "名詞-普通名詞-一般",
         "translation": "fitness",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -12101,7 +12101,7 @@
         "hiragana": "しふく",
         "POS": "名詞-普通名詞-一般",
         "translation": "bliss",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -12142,7 +12142,7 @@
         "hiragana": "じつむ",
         "POS": "名詞-普通名詞-一般",
         "translation": "practical work",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -12163,7 +12163,7 @@
         "hiragana": "かいさん",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "dissolution",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -12244,7 +12244,7 @@
         "hiragana": "むしぶろ",
         "POS": "名詞-普通名詞-一般",
         "translation": "steam bath",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -12305,7 +12305,7 @@
         "hiragana": "せいき",
         "POS": "名詞-普通名詞-一般",
         "translation": "vitality",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -12326,7 +12326,7 @@
         "hiragana": "せいとう",
         "POS": "名詞-普通名詞-一般",
         "translation": "political party",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -12337,7 +12337,7 @@
         "hiragana": "きげん",
         "POS": "名詞-普通名詞-一般",
         "translation": "origin",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -12348,7 +12348,7 @@
         "hiragana": "てぃーすぷーん",
         "POS": "名詞-普通名詞-一般",
         "translation": "teaspoon",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -12459,7 +12459,7 @@
         "hiragana": "あだぷたー",
         "POS": "名詞-普通名詞-一般",
         "translation": "adapter",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -12480,7 +12480,7 @@
         "hiragana": "ちょうぶ",
         "POS": "名詞-普通名詞-一般",
         "translation": "top",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -12511,7 +12511,7 @@
         "hiragana": "ちょっかん",
         "POS": "名詞-普通名詞-一般",
         "translation": "intuition",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -12552,7 +12552,7 @@
         "hiragana": "ひと",
         "POS": "名詞-普通名詞-一般",
         "translation": "person",
-        "JLPT": 4.0
+        "old_JLPT": 4.0
       }
     },
     {
@@ -12593,7 +12593,7 @@
         "hiragana": "いこう",
         "POS": "名詞-普通名詞-一般",
         "translation": "intention",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -12604,7 +12604,7 @@
         "hiragana": "すずめ",
         "POS": "名詞-普通名詞-一般",
         "translation": "sparrow",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -12625,7 +12625,7 @@
         "hiragana": "かてい",
         "POS": "名詞-普通名詞-一般",
         "translation": "family",
-        "JLPT": 4.0
+        "old_JLPT": 4.0
       }
     },
     {
@@ -12646,7 +12646,7 @@
         "hiragana": "ぼうはん",
         "POS": "名詞-普通名詞-一般",
         "translation": "crime prevention",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -12657,7 +12657,7 @@
         "hiragana": "れいはい",
         "POS": "名詞-普通名詞-一般",
         "translation": "worship",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -12698,7 +12698,7 @@
         "hiragana": "なん",
         "POS": "名詞-普通名詞-一般",
         "translation": "difficulty",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -12729,7 +12729,7 @@
         "hiragana": "しお",
         "POS": "名詞-普通名詞-一般",
         "translation": "tide",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -12760,7 +12760,7 @@
         "hiragana": "あうとらいん",
         "POS": "名詞-普通名詞-一般",
         "translation": "outline",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -12831,7 +12831,7 @@
         "hiragana": "さついれ",
         "POS": "名詞-普通名詞-一般",
         "translation": "wallet",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -13192,7 +13192,7 @@
         "hiragana": "さいじつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "holiday",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -13213,7 +13213,7 @@
         "hiragana": "はんじ",
         "POS": "名詞-普通名詞-一般",
         "translation": "judge",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -13264,7 +13264,7 @@
         "hiragana": "ほうき",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "uprising",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -13295,7 +13295,7 @@
         "hiragana": "まねき",
         "POS": "名詞-普通名詞-一般",
         "translation": "invitation",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -13356,7 +13356,7 @@
         "hiragana": "たしゅ",
         "POS": "名詞-普通名詞-一般",
         "translation": "variety",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -13367,7 +13367,7 @@
         "hiragana": "あまみず",
         "POS": "名詞-普通名詞-一般",
         "translation": "rainwater",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -13508,7 +13508,7 @@
         "hiragana": "ひとり",
         "POS": "名詞-普通名詞-一般",
         "translation": "alone",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -13579,7 +13579,7 @@
         "hiragana": "ひのもと",
         "POS": "名詞-普通名詞-一般",
         "translation": "origin of fire",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -13590,7 +13590,7 @@
         "hiragana": "ほっぺ",
         "POS": "名詞-普通名詞-一般",
         "translation": "cheek",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -13601,7 +13601,7 @@
         "hiragana": "きぶん",
         "POS": "名詞-普通名詞-一般",
         "translation": "mood",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -13692,7 +13692,7 @@
         "hiragana": "みそ",
         "POS": "名詞-普通名詞-一般",
         "translation": "miso",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -13813,7 +13813,7 @@
         "hiragana": "こたつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "kotatsu",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -13844,7 +13844,7 @@
         "hiragana": "せいさく",
         "POS": "名詞-普通名詞-一般",
         "translation": "policy",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -14035,7 +14035,7 @@
         "hiragana": "きちょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "captain",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -14076,7 +14076,7 @@
         "hiragana": "どあい",
         "POS": "名詞-普通名詞-一般",
         "translation": "degree",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -14087,7 +14087,7 @@
         "hiragana": "とくめい",
         "POS": "名詞-普通名詞-一般",
         "translation": "special mission",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -14138,7 +14138,7 @@
         "hiragana": "しゅがん",
         "POS": "名詞-普通名詞-一般",
         "translation": "main point",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -14219,7 +14219,7 @@
         "hiragana": "しゅう",
         "POS": "名詞-普通名詞-一般",
         "translation": "state",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -14230,7 +14230,7 @@
         "hiragana": "おちば",
         "POS": "名詞-普通名詞-一般",
         "translation": "fallen leaves",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -14371,7 +14371,7 @@
         "hiragana": "むざい",
         "POS": "名詞-普通名詞-一般",
         "translation": "innocence",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -14422,7 +14422,7 @@
         "hiragana": "はいきんぐ",
         "POS": "名詞-普通名詞-一般",
         "translation": "hiking",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -14523,7 +14523,7 @@
         "hiragana": "げんてい",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "limitation",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -14564,7 +14564,7 @@
         "hiragana": "くろねこ",
         "POS": "名詞-普通名詞-一般",
         "translation": "black cat",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -14625,7 +14625,7 @@
         "hiragana": "そうむ",
         "POS": "名詞-普通名詞-一般",
         "translation": "general affairs",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -14696,7 +14696,7 @@
         "hiragana": "せだん",
         "POS": "名詞-普通名詞-一般",
         "translation": "sedan",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -14777,7 +14777,7 @@
         "hiragana": "どくさい",
         "POS": "名詞-普通名詞-一般",
         "translation": "dictatorship",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -14808,7 +14808,7 @@
         "hiragana": "どれい",
         "POS": "名詞-普通名詞-一般",
         "translation": "slave",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -14899,7 +14899,7 @@
         "hiragana": "あいびょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "pet cat",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -14910,7 +14910,7 @@
         "hiragana": "さんきゅう",
         "POS": "名詞-普通名詞-一般",
         "translation": "maternity leave",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -14961,7 +14961,7 @@
         "hiragana": "ナプキン",
         "POS": "名詞-普通名詞-一般",
         "translation": "napkin",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -15002,7 +15002,7 @@
         "hiragana": "めいゆう",
         "POS": "名詞-普通名詞-一般",
         "translation": "ally",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -15053,7 +15053,7 @@
         "hiragana": "のうは",
         "POS": "名詞-普通名詞-一般",
         "translation": "brain wave",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -15074,7 +15074,7 @@
         "hiragana": "こんぺ",
         "POS": "名詞-普通名詞-一般",
         "translation": "competition",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -15205,7 +15205,7 @@
         "hiragana": "ひぐれ",
         "POS": "名詞-普通名詞-一般",
         "translation": "dusk",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -15226,7 +15226,7 @@
         "hiragana": "ぎんが",
         "POS": "名詞-普通名詞-一般",
         "translation": "galaxy",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -15257,7 +15257,7 @@
         "hiragana": "けんび",
         "POS": "名詞-普通名詞-一般",
         "translation": "microscopy",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -15278,7 +15278,7 @@
         "hiragana": "うけもち",
         "POS": "名詞-普通名詞-一般",
         "translation": "responsibility",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -15299,7 +15299,7 @@
         "hiragana": "みーとぼーる",
         "POS": "名詞-普通名詞-一般",
         "translation": "meatball",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -15470,7 +15470,7 @@
         "hiragana": "しんぶ",
         "POS": "名詞-普通名詞-一般",
         "translation": "depth",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -15481,7 +15481,7 @@
         "hiragana": "うわばき",
         "POS": "名詞-普通名詞-一般",
         "translation": "indoor shoes",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -15502,7 +15502,7 @@
         "hiragana": "すきる",
         "POS": "名詞-普通名詞-一般",
         "translation": "skill",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -15583,7 +15583,7 @@
         "hiragana": "みち",
         "POS": "名詞-普通名詞-一般",
         "translation": "road",
-        "JLPT": 4.0
+        "old_JLPT": 4.0
       }
     },
     {
@@ -15804,7 +15804,7 @@
         "hiragana": "ろんり",
         "POS": "名詞-普通名詞-一般",
         "translation": "logic",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -15895,7 +15895,7 @@
         "hiragana": "さいかい",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "resumption",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -15946,7 +15946,7 @@
         "hiragana": "ふたご",
         "POS": "名詞-普通名詞-一般",
         "translation": "twins",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -15997,7 +15997,7 @@
         "hiragana": "しもやけ",
         "POS": "名詞-普通名詞-一般",
         "translation": "chilblain",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -16058,7 +16058,7 @@
         "hiragana": "せんさい",
         "POS": "名詞-普通名詞-一般",
         "translation": "war damage",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -16089,7 +16089,7 @@
         "hiragana": "そくざ",
         "POS": "名詞-普通名詞-一般",
         "translation": "immediate",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -16170,7 +16170,7 @@
         "hiragana": "しゅけん",
         "POS": "名詞-普通名詞-一般",
         "translation": "sovereignty",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -16191,7 +16191,7 @@
         "hiragana": "むけつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "bloodless",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -16232,7 +16232,7 @@
         "hiragana": "いねかり",
         "POS": "名詞-普通名詞-一般",
         "translation": "rice harvesting",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -16573,7 +16573,7 @@
         "hiragana": "えきじょう",
         "POS": "名詞-普通名詞-形状詞可能",
         "translation": "liquid",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -16594,7 +16594,7 @@
         "hiragana": "あくえん",
         "POS": "名詞-普通名詞-一般",
         "translation": "bad connection",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -16775,7 +16775,7 @@
         "hiragana": "しきょ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "death",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -16796,7 +16796,7 @@
         "hiragana": "じったい",
         "POS": "名詞-普通名詞-一般",
         "translation": "reality",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -16817,7 +16817,7 @@
         "hiragana": "うつわ",
         "POS": "名詞-普通名詞-一般",
         "translation": "vessel",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -16858,7 +16858,7 @@
         "hiragana": "あとつぎ",
         "POS": "名詞-普通名詞-一般",
         "translation": "successor",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -16869,7 +16869,7 @@
         "hiragana": "かせん",
         "POS": "名詞-普通名詞-一般",
         "translation": "synthetic fiber",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -16900,7 +16900,7 @@
         "hiragana": "しゃわー",
         "POS": "名詞-普通名詞-一般",
         "translation": "shower",
-        "JLPT": 4.0,
+        "old_JLPT": 4.0,
         "jlpt_jisho_lemma": 3.0
       }
     },
@@ -16932,7 +16932,7 @@
         "hiragana": "こいし",
         "POS": "名詞-普通名詞-一般",
         "translation": "pebble",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -16993,7 +16993,7 @@
         "hiragana": "いしころ",
         "POS": "名詞-普通名詞-一般",
         "translation": "pebble",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -17004,7 +17004,7 @@
         "hiragana": "えんぴつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "pencil",
-        "JLPT": 4.0,
+        "old_JLPT": 4.0,
         "jlpt_jisho_lemma": 1.0
       }
     },
@@ -17236,7 +17236,7 @@
         "hiragana": "ふたつき",
         "POS": "名詞-普通名詞-一般",
         "translation": "with lid",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -17247,7 +17247,7 @@
         "hiragana": "ぐたい",
         "POS": "名詞-普通名詞-一般",
         "translation": "concrete",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -17268,7 +17268,7 @@
         "hiragana": "すいどう",
         "POS": "名詞-普通名詞-一般",
         "translation": "water supply",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -17309,7 +17309,7 @@
         "hiragana": "げんゆ",
         "POS": "名詞-普通名詞-一般",
         "translation": "crude oil",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -17370,7 +17370,7 @@
         "hiragana": "だば",
         "POS": "名詞-普通名詞-一般",
         "translation": "nag",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -17431,7 +17431,7 @@
         "hiragana": "みすてりー",
         "POS": "名詞-普通名詞-一般",
         "translation": "mystery",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -17512,7 +17512,7 @@
         "hiragana": "のうしゅく",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "concentration",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -17573,7 +17573,7 @@
         "hiragana": "しんぽ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "progress",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -17604,7 +17604,7 @@
         "hiragana": "はかい",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "destruction",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -17655,7 +17655,7 @@
         "hiragana": "さいりょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "best",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -17806,7 +17806,7 @@
         "hiragana": "さいぼう",
         "POS": "名詞-普通名詞-一般",
         "translation": "cell",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -17867,7 +17867,7 @@
         "hiragana": "やじるし",
         "POS": "名詞-普通名詞-一般",
         "translation": "arrow",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -18058,7 +18058,7 @@
         "hiragana": "かたぐち",
         "POS": "名詞-普通名詞-一般",
         "translation": "shoulder",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -18069,7 +18069,7 @@
         "hiragana": "がんたん",
         "POS": "名詞-普通名詞-一般",
         "translation": "New Year's Day",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -18080,7 +18080,7 @@
         "hiragana": "こうよう",
         "POS": "名詞-普通名詞-一般",
         "translation": "utility",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -18171,7 +18171,7 @@
         "hiragana": "れんめい",
         "POS": "名詞-普通名詞-一般",
         "translation": "alliance",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -18232,7 +18232,7 @@
         "hiragana": "がいかつ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "summary",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -18323,7 +18323,7 @@
         "hiragana": "きょうさん",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "sponsorship",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -18344,7 +18344,7 @@
         "hiragana": "しおん",
         "POS": "名詞-普通名詞-一般",
         "translation": "Aster",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -18355,7 +18355,7 @@
         "hiragana": "ねんちゃく",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "adhesion",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -18537,7 +18537,7 @@
         "hiragana": "ぶんみゃく",
         "POS": "名詞-普通名詞-一般",
         "translation": "context",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -18568,7 +18568,7 @@
         "hiragana": "たるみ",
         "POS": "名詞-普通名詞-一般",
         "translation": "slack",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -18579,7 +18579,7 @@
         "hiragana": "ふどう",
         "POS": "名詞-普通名詞-一般",
         "translation": "immovable",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -18670,7 +18670,7 @@
         "hiragana": "たこく",
         "POS": "名詞-普通名詞-一般",
         "translation": "foreign country",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -18681,7 +18681,7 @@
         "hiragana": "しきゅう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "provision",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -18702,7 +18702,7 @@
         "hiragana": "そつぎょう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "graduation",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -18814,7 +18814,7 @@
         "hiragana": "びよう",
         "POS": "名詞-普通名詞-一般",
         "translation": "beauty",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -18855,7 +18855,7 @@
         "hiragana": "せいいく",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "growth",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -19036,7 +19036,7 @@
         "hiragana": "がっしょう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "chorus",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -19097,7 +19097,7 @@
         "hiragana": "しょー",
         "POS": "名詞-普通名詞-一般",
         "translation": "show",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -19118,7 +19118,7 @@
         "hiragana": "すずらん",
         "POS": "名詞-普通名詞-一般",
         "translation": "lily of the valley",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -19179,7 +19179,7 @@
         "hiragana": "く",
         "POS": "名詞-普通名詞-一般",
         "translation": "ward",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -19220,7 +19220,7 @@
         "hiragana": "いがく",
         "POS": "名詞-普通名詞-一般",
         "translation": "medicine",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -19271,7 +19271,7 @@
         "hiragana": "かんしん",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "admiration",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -19312,7 +19312,7 @@
         "hiragana": "つばさ",
         "POS": "名詞-普通名詞-一般",
         "translation": "wing",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -19533,7 +19533,7 @@
         "hiragana": "ぶん",
         "POS": "名詞-普通名詞-一般",
         "translation": "sentence",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -19554,7 +19554,7 @@
         "hiragana": "あんぷ",
         "POS": "名詞-普通名詞-一般",
         "translation": "amplifier",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -19565,7 +19565,7 @@
         "hiragana": "ぱーとなー",
         "POS": "名詞-普通名詞-一般",
         "translation": "partner",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -19586,7 +19586,7 @@
         "hiragana": "すなっぷ",
         "POS": "名詞-普通名詞-一般",
         "translation": "snap",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -19747,7 +19747,7 @@
         "hiragana": "ゆかざい",
         "POS": "名詞-普通名詞-一般",
         "translation": "flooring material",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -19768,7 +19768,7 @@
         "hiragana": "むえん",
         "POS": "名詞-普通名詞-一般",
         "translation": "helplessness",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -19799,7 +19799,7 @@
         "hiragana": "とうかつ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "supervision",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -19810,7 +19810,7 @@
         "hiragana": "ぜったい",
         "POS": "名詞-普通名詞-一般",
         "translation": "tongue coating",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -19831,7 +19831,7 @@
         "hiragana": "きかん",
         "POS": "名詞-普通名詞-一般",
         "translation": "quarterly",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -19852,7 +19852,7 @@
         "hiragana": "ひとさし",
         "POS": "名詞-普通名詞-一般",
         "translation": "index finger",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -19903,7 +19903,7 @@
         "hiragana": "ぜんかい",
         "POS": "名詞-普通名詞-一般",
         "translation": "full throttle",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -19964,7 +19964,7 @@
         "hiragana": "せいめい",
         "POS": "名詞-普通名詞-一般",
         "translation": "life",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -20015,7 +20015,7 @@
         "hiragana": "てんよう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "diversion",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -20176,7 +20176,7 @@
         "hiragana": "うちけし",
         "POS": "名詞-普通名詞-一般",
         "translation": "negation",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -20197,7 +20197,7 @@
         "hiragana": "かしぬし",
         "POS": "名詞-普通名詞-一般",
         "translation": "lender",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -20218,7 +20218,7 @@
         "hiragana": "せい",
         "POS": "名詞-普通名詞-一般",
         "translation": "correct",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -20359,7 +20359,7 @@
         "hiragana": "まんまえ",
         "POS": "名詞-普通名詞-一般",
         "translation": "right in front",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -20380,7 +20380,7 @@
         "hiragana": "ちあん",
         "POS": "名詞-普通名詞-一般",
         "translation": "public safety",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -20411,7 +20411,7 @@
         "hiragana": "こういん",
         "POS": "名詞-普通名詞-一般",
         "translation": "descendant",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -20442,7 +20442,7 @@
         "hiragana": "しばかり",
         "POS": "名詞-普通名詞-一般",
         "translation": "lawn mowing",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -20513,7 +20513,7 @@
         "hiragana": "あんじ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "suggestion",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -20664,7 +20664,7 @@
         "hiragana": "えぽきし",
         "POS": "名詞-普通名詞-一般",
         "translation": "epoxy",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -20725,7 +20725,7 @@
         "hiragana": "しめきり",
         "POS": "名詞-普通名詞-一般",
         "translation": "deadline",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -20886,7 +20886,7 @@
         "hiragana": "こんご",
         "POS": "名詞-普通名詞-副詞可能",
         "translation": "future",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -20917,7 +20917,7 @@
         "hiragana": "せつげん",
         "POS": "名詞-普通名詞-一般",
         "translation": "snowfield",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -21018,7 +21018,7 @@
         "hiragana": "かいせい",
         "POS": "名詞-普通名詞-一般",
         "translation": "clear weather",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -21049,7 +21049,7 @@
         "hiragana": "ふろしき",
         "POS": "名詞-普通名詞-一般",
         "translation": "wrapping cloth",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -21070,7 +21070,7 @@
         "hiragana": "ぶてぃっく",
         "POS": "名詞-普通名詞-一般",
         "translation": "boutique",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -21151,7 +21151,7 @@
         "hiragana": "こうばい",
         "POS": "名詞-普通名詞-一般",
         "translation": "slope",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -21182,7 +21182,7 @@
         "hiragana": "かみくず",
         "POS": "名詞-普通名詞-一般",
         "translation": "waste paper",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -21273,7 +21273,7 @@
         "hiragana": "じかん",
         "POS": "名詞-普通名詞-一般",
         "translation": "time",
-        "JLPT": 4.0,
+        "old_JLPT": 4.0,
         "jlpt_jisho_lemma": 5.0
       }
     },
@@ -21315,7 +21315,7 @@
         "hiragana": "てぬい",
         "POS": "名詞-普通名詞-一般",
         "translation": "hand sewing",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -21366,7 +21366,7 @@
         "hiragana": "なみ",
         "POS": "名詞-普通名詞-一般",
         "translation": "average",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -21547,7 +21547,7 @@
         "hiragana": "うみべ",
         "POS": "名詞-普通名詞-一般",
         "translation": "seaside",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -21608,7 +21608,7 @@
         "hiragana": "いね",
         "POS": "名詞-普通名詞-一般",
         "translation": "rice plant",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -21739,7 +21739,7 @@
         "hiragana": "すうろん",
         "POS": "名詞-普通名詞-一般",
         "translation": "number theory",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -21830,7 +21830,7 @@
         "hiragana": "がっぺい",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "merger",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -21851,7 +21851,7 @@
         "hiragana": "むーど",
         "POS": "名詞-普通名詞-一般",
         "translation": "mood",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -21892,7 +21892,7 @@
         "hiragana": "おととし",
         "POS": "名詞-普通名詞-一般",
         "translation": "the year before last",
-        "JLPT": 4.0
+        "old_JLPT": 4.0
       }
     },
     {
@@ -21953,7 +21953,7 @@
         "hiragana": "そこぬけ",
         "POS": "名詞-普通名詞-一般",
         "translation": "bottomless",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -21994,7 +21994,7 @@
         "hiragana": "かっき",
         "POS": "名詞-普通名詞-一般",
         "translation": "vitality",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -22015,7 +22015,7 @@
         "hiragana": "きりとり",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "cutting",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -22046,7 +22046,7 @@
         "hiragana": "くうふく",
         "POS": "名詞-普通名詞-一般",
         "translation": "hunger",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -22057,7 +22057,7 @@
         "hiragana": "てっかん",
         "POS": "名詞-普通名詞-一般",
         "translation": "iron pipe",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -22098,7 +22098,7 @@
         "hiragana": "じょきょく",
         "POS": "名詞-普通名詞-一般",
         "translation": "overture",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -22139,7 +22139,7 @@
         "hiragana": "おれんじ",
         "POS": "名詞-普通名詞-一般",
         "translation": "orange",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -22170,7 +22170,7 @@
         "hiragana": "らいひん",
         "POS": "名詞-普通名詞-一般",
         "translation": "guest",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -22251,7 +22251,7 @@
         "hiragana": "つぎめ",
         "POS": "名詞-普通名詞-一般",
         "translation": "joint",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -22262,7 +22262,7 @@
         "hiragana": "ひだりむね",
         "POS": "名詞-普通名詞-一般",
         "translation": "left chest",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -22333,7 +22333,7 @@
         "hiragana": "はんにん",
         "POS": "名詞-普通名詞-一般",
         "translation": "criminal",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -22344,7 +22344,7 @@
         "hiragana": "に",
         "POS": "名詞-普通名詞-一般",
         "translation": "load",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -22385,7 +22385,7 @@
         "hiragana": "しゅし",
         "POS": "名詞-普通名詞-一般",
         "translation": "fingers",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -22486,7 +22486,7 @@
         "hiragana": "じかたび",
         "POS": "名詞-普通名詞-一般",
         "translation": "tabi boots",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -22507,7 +22507,7 @@
         "hiragana": "ようい",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "preparation",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -22538,7 +22538,7 @@
         "hiragana": "ちょうちょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "butterfly",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -22549,7 +22549,7 @@
         "hiragana": "にくしみ",
         "POS": "名詞-普通名詞-一般",
         "translation": "hatred",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -22570,7 +22570,7 @@
         "hiragana": "こうぶつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "mineral",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -22731,7 +22731,7 @@
         "hiragana": "ほうめん",
         "POS": "名詞-普通名詞-一般",
         "translation": "release",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -22742,7 +22742,7 @@
         "hiragana": "むすびつき",
         "POS": "名詞-普通名詞-一般",
         "translation": "connection",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -22803,7 +22803,7 @@
         "hiragana": "つれあい",
         "POS": "名詞-普通名詞-一般",
         "translation": "companion",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -22854,7 +22854,7 @@
         "hiragana": "いぶくろ",
         "POS": "名詞-普通名詞-一般",
         "translation": "stomach",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -22865,7 +22865,7 @@
         "hiragana": "おくゆき",
         "POS": "名詞-普通名詞-一般",
         "translation": "depth",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23016,7 +23016,7 @@
         "hiragana": "はいかん",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "discontinuation of publication",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23077,7 +23077,7 @@
         "hiragana": "みちゃく",
         "POS": "名詞-普通名詞-一般",
         "translation": "not yet arrived",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23088,7 +23088,7 @@
         "hiragana": "がんえん",
         "POS": "名詞-普通名詞-一般",
         "translation": "rock salt",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23189,7 +23189,7 @@
         "hiragana": "みにすかーと",
         "POS": "名詞-普通名詞-一般",
         "translation": "miniskirt",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23210,7 +23210,7 @@
         "hiragana": "やづつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "quiver",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23261,7 +23261,7 @@
         "hiragana": "ほうぎょく",
         "POS": "名詞-普通名詞-一般",
         "translation": "jewel",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23322,7 +23322,7 @@
         "hiragana": "そういん",
         "POS": "名詞-普通名詞-一般",
         "translation": "all hands",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23363,7 +23363,7 @@
         "hiragana": "しゅうゆう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "tour",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23374,7 +23374,7 @@
         "hiragana": "すがお",
         "POS": "名詞-普通名詞-一般",
         "translation": "bare face",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23385,7 +23385,7 @@
         "hiragana": "どうさつ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "insight",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23406,7 +23406,7 @@
         "hiragana": "おうか",
         "POS": "名詞-普通名詞-一般",
         "translation": "cherry blossom",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23447,7 +23447,7 @@
         "hiragana": "おんしゃ",
         "POS": "名詞-普通名詞-一般",
         "translation": "pardon",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23488,7 +23488,7 @@
         "hiragana": "てんもん",
         "POS": "名詞-普通名詞-一般",
         "translation": "astronomy",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23499,7 +23499,7 @@
         "hiragana": "くさかり",
         "POS": "名詞-普通名詞-一般",
         "translation": "mowing",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23520,7 +23520,7 @@
         "hiragana": "てんかい",
         "POS": "名詞-普通名詞-一般",
         "translation": "heaven",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23531,7 +23531,7 @@
         "hiragana": "かいしゅう",
         "POS": "名詞-普通名詞-一般",
         "translation": "congregation",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23622,7 +23622,7 @@
         "hiragana": "ぼうや",
         "POS": "名詞-普通名詞-一般",
         "translation": "boy",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -23653,7 +23653,7 @@
         "hiragana": "くさき",
         "POS": "名詞-普通名詞-一般",
         "translation": "plants",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -23884,7 +23884,7 @@
         "hiragana": "だいしょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "size",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -23945,7 +23945,7 @@
         "hiragana": "ぼたん",
         "POS": "名詞-普通名詞-一般",
         "translation": "button",
-        "JLPT": 4.0,
+        "old_JLPT": 4.0,
         "jlpt_jisho_lemma": 1.0
       }
     },
@@ -24007,7 +24007,7 @@
         "hiragana": "きえつ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "joy",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -24078,7 +24078,7 @@
         "hiragana": "りょうめん",
         "POS": "名詞-普通名詞-一般",
         "translation": "both sides",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -24099,7 +24099,7 @@
         "hiragana": "ちゅうは",
         "POS": "名詞-普通名詞-一般",
         "translation": "medium wave",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -24140,7 +24140,7 @@
         "hiragana": "ねんれい",
         "POS": "名詞-普通名詞-一般",
         "translation": "age",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -24201,7 +24201,7 @@
         "hiragana": "しょくたく",
         "POS": "名詞-普通名詞-一般",
         "translation": "dining table",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -24232,7 +24232,7 @@
         "hiragana": "てつぶん",
         "POS": "名詞-普通名詞-一般",
         "translation": "iron content",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -24253,7 +24253,7 @@
         "hiragana": "びく",
         "POS": "名詞-普通名詞-一般",
         "translation": "monk",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -24294,7 +24294,7 @@
         "hiragana": "じょうせつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "permanent",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -24345,7 +24345,7 @@
         "hiragana": "ぼんだな",
         "POS": "名詞-普通名詞-一般",
         "translation": "Bon shelf",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -24406,7 +24406,7 @@
         "hiragana": "おとこ",
         "POS": "名詞-普通名詞-一般",
         "translation": "man",
-        "JLPT": 4.0,
+        "old_JLPT": 4.0,
         "jlpt_jisho_lemma": 3.0
       }
     },
@@ -24428,7 +24428,7 @@
         "hiragana": "すなば",
         "POS": "名詞-普通名詞-一般",
         "translation": "sandbox",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -24489,7 +24489,7 @@
         "hiragana": "やしき",
         "POS": "名詞-普通名詞-一般",
         "translation": "mansion",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -24700,7 +24700,7 @@
         "hiragana": "しはつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "first train",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -24791,7 +24791,7 @@
         "hiragana": "おうりょう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "embezzlement",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -24802,7 +24802,7 @@
         "hiragana": "じい",
         "POS": "名詞-普通名詞-一般",
         "translation": "old man",
-        "JLPT": 4.0
+        "old_JLPT": 4.0
       }
     },
     {
@@ -24823,7 +24823,7 @@
         "hiragana": "まくろ",
         "POS": "名詞-普通名詞-一般",
         "translation": "macro",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -24884,7 +24884,7 @@
         "hiragana": "さくら",
         "POS": "名詞-普通名詞-一般",
         "translation": "cherry blossom",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -24905,7 +24905,7 @@
         "hiragana": "ぼすとんばっぐ",
         "POS": "名詞-普通名詞-一般",
         "translation": "Boston bag",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -24976,7 +24976,7 @@
         "hiragana": "ふぉと",
         "POS": "名詞-普通名詞-一般",
         "translation": "photo",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -24987,7 +24987,7 @@
         "hiragana": "てんとう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "lighting",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -25058,7 +25058,7 @@
         "hiragana": "しょっぷ",
         "POS": "名詞-普通名詞-一般",
         "translation": "shop",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -25139,7 +25139,7 @@
         "hiragana": "ずかん",
         "POS": "名詞-普通名詞-一般",
         "translation": "encyclopedia",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -25170,7 +25170,7 @@
         "hiragana": "きざし",
         "POS": "名詞-普通名詞-一般",
         "translation": "sign",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -25201,7 +25201,7 @@
         "hiragana": "せいとん",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "tidiness",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -25272,7 +25272,7 @@
         "hiragana": "ろしゅつ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "exposure",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -25293,7 +25293,7 @@
         "hiragana": "えいきゅう",
         "POS": "名詞-普通名詞-一般",
         "translation": "eternity",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -25334,7 +25334,7 @@
         "hiragana": "せいかい",
         "POS": "名詞-普通名詞-一般",
         "translation": "correct answer",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -25355,7 +25355,7 @@
         "hiragana": "こうほう",
         "POS": "名詞-普通名詞-一般",
         "translation": "construction method",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -25366,7 +25366,7 @@
         "hiragana": "せつだん",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "cutting",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -25477,7 +25477,7 @@
         "hiragana": "じょうほう",
         "POS": "名詞-普通名詞-一般",
         "translation": "information",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -25568,7 +25568,7 @@
         "hiragana": "みずあび",
         "POS": "名詞-普通名詞-一般",
         "translation": "bathing",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -25649,7 +25649,7 @@
         "hiragana": "ぷれーやー",
         "POS": "名詞-普通名詞-一般",
         "translation": "player",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -25760,7 +25760,7 @@
         "hiragana": "しょくいん",
         "POS": "名詞-普通名詞-一般",
         "translation": "staff",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -25841,7 +25841,7 @@
         "hiragana": "えたのーる",
         "POS": "名詞-普通名詞-一般",
         "translation": "ethanol",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -25902,7 +25902,7 @@
         "hiragana": "さっくす",
         "POS": "名詞-普通名詞-一般",
         "translation": "saxophone",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -25973,7 +25973,7 @@
         "hiragana": "ゆうしょう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "victory",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -26044,7 +26044,7 @@
         "hiragana": "ばっきん",
         "POS": "名詞-普通名詞-一般",
         "translation": "fine",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -26155,7 +26155,7 @@
         "hiragana": "よりみち",
         "POS": "名詞-普通名詞-一般",
         "translation": "detour",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -26206,7 +26206,7 @@
         "hiragana": "ほうち",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "neglect",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -26247,7 +26247,7 @@
         "hiragana": "たけ",
         "POS": "名詞-普通名詞-一般",
         "translation": "height",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -26268,7 +26268,7 @@
         "hiragana": "はいざい",
         "POS": "名詞-普通名詞-一般",
         "translation": "waste material",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -26309,7 +26309,7 @@
         "hiragana": "ふうき",
         "POS": "名詞-普通名詞-一般",
         "translation": "wealth and honor",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -26380,7 +26380,7 @@
         "hiragana": "そうさい",
         "POS": "名詞-普通名詞-一般",
         "translation": "funeral",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -26391,7 +26391,7 @@
         "hiragana": "とうそつ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "leadership",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -26402,7 +26402,7 @@
         "hiragana": "おぶつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "filth",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -26443,7 +26443,7 @@
         "hiragana": "むいちもん",
         "POS": "名詞-普通名詞-一般",
         "translation": "penniless",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -26484,7 +26484,7 @@
         "hiragana": "せじ",
         "POS": "名詞-普通名詞-一般",
         "translation": "flattery",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -26495,7 +26495,7 @@
         "hiragana": "ちゅうと",
         "POS": "名詞-普通名詞-一般",
         "translation": "midway",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -26556,7 +26556,7 @@
         "hiragana": "すうじ",
         "POS": "名詞-普通名詞-一般",
         "translation": "number",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -26587,7 +26587,7 @@
         "hiragana": "さつりく",
         "POS": "名詞-普通名詞-一般",
         "translation": "massacre",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -26648,7 +26648,7 @@
         "hiragana": "とまと",
         "POS": "名詞-普通名詞-一般",
         "translation": "tomato",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -26719,7 +26719,7 @@
         "hiragana": "めいもく",
         "POS": "名詞-普通名詞-一般",
         "translation": "pretext",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -26730,7 +26730,7 @@
         "hiragana": "こだい",
         "POS": "名詞-普通名詞-一般",
         "translation": "ancient times",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -26901,7 +26901,7 @@
         "hiragana": "かくめい",
         "POS": "名詞-普通名詞-一般",
         "translation": "revolution",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -26912,7 +26912,7 @@
         "hiragana": "きんだい",
         "POS": "名詞-普通名詞-一般",
         "translation": "modern times",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -26963,7 +26963,7 @@
         "hiragana": "きんせい",
         "POS": "名詞-普通名詞-一般",
         "translation": "symmetry",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -27024,7 +27024,7 @@
         "hiragana": "くび",
         "POS": "名詞-普通名詞-一般",
         "translation": "neck",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -27035,7 +27035,7 @@
         "hiragana": "めんこ",
         "POS": "名詞-普通名詞-一般",
         "translation": "face",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -27136,7 +27136,7 @@
         "hiragana": "りくつ",
         "POS": "名詞-普通名詞-一般",
         "translation": "reason",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -27157,7 +27157,7 @@
         "hiragana": "てつづき",
         "POS": "名詞-普通名詞-一般",
         "translation": "procedure",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -27178,7 +27178,7 @@
         "hiragana": "じゅだく",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "acceptance",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -27409,7 +27409,7 @@
         "hiragana": "ていど",
         "POS": "名詞-普通名詞-一般",
         "translation": "degree",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -27570,7 +27570,7 @@
         "hiragana": "りぼるばー",
         "POS": "名詞-普通名詞-一般",
         "translation": "revolver",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -27791,7 +27791,7 @@
         "hiragana": "じょりょく",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "assistance",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -27812,7 +27812,7 @@
         "hiragana": "まるた",
         "POS": "名詞-普通名詞-一般",
         "translation": "log",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -27903,7 +27903,7 @@
         "hiragana": "すすみ",
         "POS": "名詞-普通名詞-一般",
         "translation": "progress",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -27944,7 +27944,7 @@
         "hiragana": "しゅぎ",
         "POS": "名詞-普通名詞-一般",
         "translation": "principle",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -28105,7 +28105,7 @@
         "hiragana": "いいん",
         "POS": "名詞-普通名詞-一般",
         "translation": "committee member",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -28196,7 +28196,7 @@
         "hiragana": "ていぎ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "definition",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -28207,7 +28207,7 @@
         "hiragana": "すなぼこり",
         "POS": "名詞-普通名詞-一般",
         "translation": "dust",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -28218,7 +28218,7 @@
         "hiragana": "さしず",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "instruction",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -28229,7 +28229,7 @@
         "hiragana": "しんあい",
         "POS": "名詞-普通名詞-一般",
         "translation": "affection",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -28360,7 +28360,7 @@
         "hiragana": "しっかん",
         "POS": "名詞-普通名詞-一般",
         "translation": "disease",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -28441,7 +28441,7 @@
         "hiragana": "ていこく",
         "POS": "名詞-普通名詞-一般",
         "translation": "empire",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -28502,7 +28502,7 @@
         "hiragana": "かんげき",
         "POS": "名詞-普通名詞-一般",
         "translation": "gap",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -28513,7 +28513,7 @@
         "hiragana": "きのう",
         "POS": "名詞-普通名詞-副詞可能",
         "translation": "yesterday",
-        "JLPT": 4.0
+        "old_JLPT": 4.0
       }
     },
     {
@@ -28524,7 +28524,7 @@
         "hiragana": "てぃーぽっと",
         "POS": "名詞-普通名詞-一般",
         "translation": "teapot",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -28565,7 +28565,7 @@
         "hiragana": "ぜんしゅう",
         "POS": "名詞-普通名詞-一般",
         "translation": "complete works",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -28576,7 +28576,7 @@
         "hiragana": "てきたい",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "hostility",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -28697,7 +28697,7 @@
         "hiragana": "くりいろ",
         "POS": "名詞-普通名詞-一般",
         "translation": "chestnut color",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -28708,7 +28708,7 @@
         "hiragana": "はいじょ",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "exclusion",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -28789,7 +28789,7 @@
         "hiragana": "ねんしょう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "combustion",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -28800,7 +28800,7 @@
         "hiragana": "たんせい",
         "POS": "名詞-普通名詞-一般",
         "translation": "handsome",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -28831,7 +28831,7 @@
         "hiragana": "はたご",
         "POS": "名詞-普通名詞-一般",
         "translation": "inn",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -28852,7 +28852,7 @@
         "hiragana": "しんぴん",
         "POS": "名詞-普通名詞-一般",
         "translation": "new product",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -28883,7 +28883,7 @@
         "hiragana": "しょうへき",
         "POS": "名詞-普通名詞-一般",
         "translation": "barrier",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -28904,7 +28904,7 @@
         "hiragana": "ちょうぼ",
         "POS": "名詞-普通名詞-一般",
         "translation": "ledger",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -28965,7 +28965,7 @@
         "hiragana": "すずむし",
         "POS": "名詞-普通名詞-一般",
         "translation": "bell cricket",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -29006,7 +29006,7 @@
         "hiragana": "あか",
         "POS": "名詞-普通名詞-一般",
         "translation": "dirt",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -29017,7 +29017,7 @@
         "hiragana": "すず",
         "POS": "名詞-普通名詞-一般",
         "translation": "bell",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -29078,7 +29078,7 @@
         "hiragana": "しなりお",
         "POS": "名詞-普通名詞-一般",
         "translation": "scenario",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -29109,7 +29109,7 @@
         "hiragana": "えんすい",
         "POS": "名詞-普通名詞-一般",
         "translation": "cone",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -29120,7 +29120,7 @@
         "hiragana": "てぎわ",
         "POS": "名詞-普通名詞-一般",
         "translation": "skill",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -29211,7 +29211,7 @@
         "hiragana": "じばん",
         "POS": "名詞-普通名詞-一般",
         "translation": "ground",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -29262,7 +29262,7 @@
         "hiragana": "むへん",
         "POS": "名詞-普通名詞-一般",
         "translation": "infinity",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -29293,7 +29293,7 @@
         "hiragana": "のう",
         "POS": "名詞-普通名詞-一般",
         "translation": "ability",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -29324,7 +29324,7 @@
         "hiragana": "いりょう",
         "POS": "名詞-普通名詞-一般",
         "translation": "medical care",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -29345,7 +29345,7 @@
         "hiragana": "あす",
         "POS": "名詞-普通名詞-副詞可能",
         "translation": "tomorrow",
-        "JLPT": 4.0
+        "old_JLPT": 4.0
       }
     },
     {
@@ -29456,7 +29456,7 @@
         "hiragana": "ようじょう",
         "POS": "名詞-普通名詞-形状詞可能",
         "translation": "leaf-shaped",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -29477,7 +29477,7 @@
         "hiragana": "たる",
         "POS": "名詞-普通名詞-一般",
         "translation": "barrel",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -29528,7 +29528,7 @@
         "hiragana": "ろんこう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "essay",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -29550,7 +29550,7 @@
         "hiragana": "こんたくと",
         "POS": "名詞-普通名詞-一般",
         "translation": "contact",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -29611,7 +29611,7 @@
         "hiragana": "しあい",
         "POS": "名詞-普通名詞-一般",
         "translation": "match",
-        "JLPT": 3.0
+        "old_JLPT": 3.0
       }
     },
     {
@@ -29622,7 +29622,7 @@
         "hiragana": "びがく",
         "POS": "名詞-普通名詞-一般",
         "translation": "aesthetics",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -29753,7 +29753,7 @@
         "hiragana": "ひだりかた",
         "POS": "名詞-普通名詞-一般",
         "translation": "left shoulder",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -29814,7 +29814,7 @@
         "hiragana": "かしま",
         "POS": "名詞-普通名詞-一般",
         "translation": "rented room",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -29845,7 +29845,7 @@
         "hiragana": "かん",
         "POS": "名詞-普通名詞-一般",
         "translation": "ring",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -30056,7 +30056,7 @@
         "hiragana": "しんかん",
         "POS": "名詞-普通名詞-一般",
         "translation": "new publication",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -30067,7 +30067,7 @@
         "hiragana": "けらい",
         "POS": "名詞-普通名詞-一般",
         "translation": "retainer",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -30098,7 +30098,7 @@
         "hiragana": "ていきゅう",
         "POS": "名詞-普通名詞-一般",
         "translation": "low-grade",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -30149,7 +30149,7 @@
         "hiragana": "こうずい",
         "POS": "名詞-普通名詞-一般",
         "translation": "flood",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -30160,7 +30160,7 @@
         "hiragana": "そうび",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "equipment",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -30221,7 +30221,7 @@
         "hiragana": "げんわ",
         "POS": "名詞-普通名詞-一般",
         "translation": "original story",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -30262,7 +30262,7 @@
         "hiragana": "しゅうり",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "repair",
-        "JLPT": 2.0
+        "old_JLPT": 2.0
       }
     },
     {
@@ -30303,7 +30303,7 @@
         "hiragana": "じじょ",
         "POS": "名詞-普通名詞-一般",
         "translation": "second daughter",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {
@@ -30474,7 +30474,7 @@
         "hiragana": "へんどう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "fluctuation",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -30515,7 +30515,7 @@
         "hiragana": "そしょう",
         "POS": "名詞-普通名詞-サ変可能",
         "translation": "lawsuit",
-        "JLPT": 1.0
+        "old_JLPT": 1.0
       }
     },
     {
@@ -30526,7 +30526,7 @@
         "hiragana": "えきでん",
         "POS": "名詞-普通名詞-一般",
         "translation": "Ekiden",
-        "JLPT": 0.0
+        "old_JLPT": 0.0
       }
     },
     {

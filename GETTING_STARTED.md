@@ -46,6 +46,24 @@ http://localhost:5000
 
 ## Step 3: Using the New Features
 
+### Japanese Readability Analysis
+
+The application now includes automatic readability analysis for Japanese text:
+
+1. Navigate to any node in the graph and click on it
+2. Open the side navigation panel and go to the "Exercises" tab
+3. Generate a new exercise using the AI system
+4. The readability level will be automatically displayed with a color-coded badge
+5. The system shows 6 proficiency levels from Lower-elementary to Upper-advanced
+
+### Interactive Learning Exercises
+
+1. Select a node in the graph
+2. Click on the "Exercises" tab in the side panel
+3. Choose your learning level from the dropdown
+4. Click "Start Lesson" to generate AI-powered exercises
+5. The readability badge will show the actual difficulty of the generated content
+
 ### Wikidata Integration
 
 1. Search for a Japanese term using the search box
@@ -91,6 +109,14 @@ If the application fails to start:
 - Verify that your Python version is 3.8 or higher
 - Look for error messages in the console where you ran `python app.py`
 - If referencing Redis issues, either set up Redis or remove the Redis URL from the `.env` file
+
+### Readability Analysis Issues
+
+If readability analysis is not working:
+- The jreadability library requires additional Japanese language models that are installed automatically
+- If you see "jreadability not available" messages, try reinstalling: `pip install --force-reinstall jreadability`
+- The readability badge may not appear if the generated text is too short (requires substantial Japanese content)
+- Clear your browser cache if the readability display is not updating (Ctrl+F5 or Cmd+Shift+R)
 
 ## Next Steps
 

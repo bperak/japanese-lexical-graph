@@ -1,0 +1,64 @@
+How to Write Your Paper for the JSET Research Reports
+      Taro NIHON*1  Jiro KYOUIKU*1, *2  Hanako KOUGAKU*2
+Nihon Kyouiku University*1
+Nihon City Kougaku Elementary School*2
+Abstract The Japan Society for Educational Technology holds a national conference twice a year. Manuscripts of presentations are published as "Proceedings of the Japan Society for Educational Technology". Manuscripts should be written according to this manuscript template. Manuscripts must be submitted online in PDF format by the deadline after checking the "発表について" section on the conference website. This is where you write an abstract of about 100 words. The style of this paragraph is set to ‘Outline’.
+Keywords Educational Technology, National Conference, Manuscript Template
+ 
+1.	Introduction
+At the Japan Society for Educational Technology National Conference, you can present your research on educational technology. In principle, the presentation manuscript should be created based on this manuscript template. If the submitted file does not follow the manuscript template, the Conference Planning Committee may request that you make corrections. Please note that we will not respond to individual requests for replacement in principle.
+Manuscripts must be complete at a certain level. The Conference Planning Committee will judge whether to accept submissions that state ‘the results will be announced at the venue on the day of the conference’, etc., and may request revisions. In addition, it is not possible to submit similar or serialized content to be divided between multiple presenters.
+The date of publication of the proceedings is the date when they become available for download for those who have pre-registered. Furthermore, you must agree to allow the conference to post your submitted manuscript on its website, etc. The details of the manuscript preparation are as follows.
+For details on issues such as copyright, consideration for the human rights of others, citation notation, and the format of references, please refer to the Requirements for submission, Instructions for authors, and paper template for the Journal of Japan Society for Educational Technology.
+2.	Preparation and Submission of Manuscript File
+2.1.	Manuscript Template Format
+The font size, column layout and other formatting has been set for the title, author name, chapter/section/subsection headings and main text of this manuscript template.
+2.2.	Font, Column Layout
+The English title is Times New Roman (Bold) 16 point, and the English author’s name and English affiliation are Century 10 point.
+Chapter headings are Times New Roman (Bold) 10.5-point, section headings and subsection headings are Times New Roman (Bold) 10 point. The main text is Century 10-point. If the title, chapter or section heading is long and spans multiple lines, break it at an appropriate point (Shift and Enter) and adjust it so that it is easy to read. Each paragraph should be indented by two half-width characters at the beginning.
+The main text is set in two columns, with approximately 40 characters per line and 50 lines per page. By preparing your manuscript in this format, you can write in a style that conforms to the specified number of characters per line and number of lines per page.
+2.3.	How to Avoid Losing Formatting
+To avoid losing formatting, please note the following two points.
+(1) When copying and pasting text from another Word file, be careful not to paste the formatting along with it. After copying the text in the original document, select [Home] > [Paste Special] > [Paste as] and then select ‘Text’ in the [Paste as] box in the template.
+(2) If the formatting is broken, place the cursor within the paragraph and select the style you want from the [Style] box in the [Home] ribbon menu.
+3.	Instructions for Authors
+3.1.	Number of Pages and File Format of Manuscripts
+3.1.1.	Limitation on the Number of Pages
+The number of pages of the manuscript that can be submitted is 2. Manuscripts with more than 3 pages or less than 1 page will not be accepted. Please note that page numbers are not required.
+3.1.2.	Points to Note when Creating PDF Files
+Manuscript files should be submitted in PDF format. When converting from a Word file to a PDF file, please set the quality of the figures and images so that they do not deteriorate excessively.
+In addition, when converting from a Word file to a PDF file, there have been cases where the text in the figures has become garbled or text on the page has been lost. Please check the contents after converting to PDF (the Conference Planning Committee will not check).
+3.2.	Beginning of the Manuscript
+3.2.1.	Title
+The title of the manuscript should clearly indicate the contents of the manuscript and should not include ‘Report No.x’ or similar.
+The first letter of each word in the English title should be capitalized, except for prepositions.
+3.2.2.	Author Names and Affiliations
+For author names and affiliations, use superscripts of ‘*’ and ‘number’ as in *1, *2.
+For English author names, write the first name first, and write the last name (family name) in all capital letters.
+For affiliations, write only the name of the institution (in the case of a university, write ‘○○ University’ only. This is different from the journal and research report).
+3.3.	Abstract and Keywords
+The abstract should begin with Abstract, followed by a single space, and should be approximately 100 words in length. Keywords should be written as Keywords, followed by a space and a list of three key words.
+3.4.	Main Text
+To accurately convey the author's argument to the reader, please note the following points.
+(1) With the diverse professional backgrounds of the journal's readers in mind, please keep the text concise and clear.
+(2) Set up superscript and subscript letters (e.g. χ2 test).
+(3) Statistical symbols (e.g. p, t, F, SD, etc.) in the main text and in tables and figures should be in italics.
+(4) For foreign words other than proper nouns, the original spelling should be used only for the first time it appears in the text. For example, write it as CAI (Computer Assisted Instruction). For English titles, use the original spelling, not the abbreviated form. When using it as a keyword, use the original spelling when it first appears in the main text.
+3.5.	Figures and Tables
+As shown in ‘Figure 1’ and ‘Table 1’, the series number should be written in Times New Roman (bold), and a title should be included. A half-width space should be inserted between the figure/table number and the title. The title should be written below the figure and above the table.
+Figures and tables may be displayed in color. In principle, figures and tables should be placed in the four corners of the page: top left, top right, bottom left, and bottom right. To ensure that figures and tables are easy to read and understand, please take care not to make the text in the figures and tables extremely small compared to the main text. Also, as shown in Table 1, the font used in tables should be Century.
+3.6.	References
+For information on citations and references, please refer to the “Japan Society for Educational Technology Journal: Instructions for authors (https://www.jset.gr.jp/journal/instructions-for-authors/)”.
+When citing references in the main text, the notation differs depending on the number of authors (Table 1).
+References cited in the main text should be listed at the end of the manuscript in alphabetical order by author's surname. If a single bibliographic entry spans more than one line, the second and subsequent lines should be indented to the right.
+4.	Instructions for Manuscript Submission
+4.1.	Consideration for Copyright and Human Rights
+When writing a manuscript, please be sure to give due consideration to the privacy and honor of other people's copyrights and the privacy and honor of individuals and groups involved in the research (individuals and groups who are the subject of the research and individuals and groups related to the research). For more details, please check “2. Copyright of Submitted Manuscripts” and the following sections of the “Submission Guidelines for the Journal of Japan Society for Educational Technology” (https://www.jset.gr.jp/journal/requirements-for-submissions/).
+4.2.	Submitting the Manuscript File
+After registering your presentation on the relevant National Convention webpage, you can submit your manuscript electronically using the “registration number” and “password” issued when you applied for your presentation on your “My Page”. The file format for your presentation manuscript should be PDF (up to 10MB in size). Please note that this template is spread over three pages, but We cannot accept manuscripts other than those for two pages. In addition, we will not accept manuscripts submitted by email in principle.
+References
+Information and Technology in Education and Learning (2020) Author guidelines．https://www.j-itel.org/guidelines.html (accessed 2023.04.01)
+YAMAUCHI, Y.  (2021)  On the Launch of Information and Technology in Education and Learning (ITEL) ，an English-language Journal Jointly Published by the Japan Society for Educational Technology and the Japanese Society for Information and Systems in Education. Educational Technology Research, 43 (1)：1
+
+ 
+

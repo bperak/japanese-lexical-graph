@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Japanese Synonym Graph</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}?v={{ range(1, 999999) | random }}">
 </head>
 <body>
     <div class="app-container">
@@ -179,7 +179,16 @@
                                     <option value="6">Advanced 2</option>
                                 </select>
                             </div>
+                            <div id="readability-display" class="readability-info" style="display: none;">
+                                <div class="readability-badge">
+                                    <span class="readability-label">Text Readability:</span>
+                                    <span id="readability-level" class="readability-level">Not analyzed</span>
+                                    <span id="readability-score" class="readability-score"></span>
+                                </div>
+                            </div>
                             <button id="generate-exercise-btn" class="compact-button" style="display: none;">Start Lesson</button>
+                            <button id="test-readability-btn" class="compact-button" style="background: orange; margin-left: 10px;">📊 Analyze Current Text</button>
+                            <button id="extract-text-btn" class="compact-button" style="background: lightblue; margin-left: 10px;">📝 Extract Japanese Text</button>
                         </div>
                     </div>
                     
@@ -250,6 +259,43 @@
     <script>
         console.log('Three.js loaded:', THREE.REVISION);
         window.THREE = THREE;
+        
+        // Clipboard utility function
+        async function copyToClipboard(text) {
+            try {
+                // Modern clipboard API (preferred)
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                    return true;
+                } else {
+                    // Fallback for older browsers or non-HTTPS contexts
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    textArea.style.position = 'fixed';
+                    textArea.style.left = '-9999px';
+                    textArea.style.top = '-9999px';
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    
+                    try {
+                        const successful = document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        if (successful) {
+                            return true;
+                        } else {
+                            throw new Error('Copy command failed');
+                        }
+                    } catch (err) {
+                        document.body.removeChild(textArea);
+                        throw err;
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to copy text to clipboard:', err);
+                throw err;
+            }
+        }
     </script>
     
     <!-- Then load dependencies -->
@@ -263,12 +309,201 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <!-- Load our application code -->
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}?v={{ range(1, 999999) | random }}"></script>
     
     <!-- Debug script for DOM loaded event -->
     <script>
         window.addEventListener('DOMContentLoaded', () => {
             console.log('DOM loaded');
+            
+            // Test readability functions
+            console.log('=== READABILITY TEST ===');
+            console.log('analyzeExerciseReadability function exists:', typeof analyzeExerciseReadability);
+            console.log('updateReadabilityDisplay function exists:', typeof updateReadabilityDisplay);
+            
+            // Test DOM elements
+            const readabilityDisplay = document.getElementById('readability-display');
+            const readabilityLevel = document.getElementById('readability-level');
+            const readabilityScore = document.getElementById('readability-score');
+            console.log('readability-display element found:', !!readabilityDisplay);
+            console.log('readability-level element found:', !!readabilityLevel);
+            console.log('readability-score element found:', !!readabilityScore);
+            
+            // Add test button functionality
+            const testBtn = document.getElementById('test-readability-btn');
+            if (testBtn) {
+                testBtn.addEventListener('click', () => {
+                    console.log('=== MANUAL READABILITY TEST ===');
+                    
+                    // Get text from the exercise content area
+                    const exerciseContainer = document.getElementById('exercise-content');
+                    let testText = '';
+                    
+                    if (exerciseContainer) {
+                        // Extract text content from all chat messages
+                        const chatMessages = exerciseContainer.querySelectorAll('.chat-message');
+                        if (chatMessages.length > 0) {
+                            // Get the latest tutor message (should contain Japanese text)
+                            const tutorMessages = exerciseContainer.querySelectorAll('.chat-message.tutor-message');
+                            if (tutorMessages.length > 0) {
+                                // Get the last tutor message
+                                const lastMessage = tutorMessages[tutorMessages.length - 1];
+                                testText = lastMessage.textContent || lastMessage.innerText || '';
+                                console.log('Found exercise text:', testText.substring(0, 100) + '...');
+                            }
+                        }
+                    }
+                    
+                    // Fallback to sample text if no exercise content found
+                    if (!testText || testText.length < 10) {
+                        testText = 'こんにちは！はじめまして！私の名前は田中です。今日はいい天気ですね。';
+                        console.log('No exercise content found, using sample text');
+                    }
+                    
+                    fetch('/analyze-readability', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            text: testText,
+                            japanese_only: true
+                        })
+                    })
+                    .then(response => {
+                        console.log('Manual test response status:', response.status);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Manual test analysis result:', data);
+                        
+                        // Manually update the display
+                        if (readabilityDisplay && readabilityLevel && readabilityScore) {
+                            readabilityLevel.textContent = data.level || 'Test result';
+                            readabilityLevel.className = `readability-level ${(data.level || '').toLowerCase().replace(/[^a-z]/g, '-')}`;
+                            readabilityScore.textContent = data.score ? `(${data.score.toFixed(2)})` : '';
+                            readabilityDisplay.style.display = 'block';
+                            readabilityDisplay.classList.add('show');
+                            console.log('✅ Manually updated readability display');
+                        } else {
+                            console.log('❌ Could not update display - elements missing');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Manual test error:', error);
+                    });
+                });
+            }
+            
+            // Add text extraction button functionality
+            const extractBtn = document.getElementById('extract-text-btn');
+            if (extractBtn) {
+                extractBtn.addEventListener('click', () => {
+                    console.log('=== JAPANESE TEXT EXTRACTION ===');
+                    
+                    const exerciseContainer = document.getElementById('exercise-content');
+                    let fullText = '';
+                    let japaneseOnlyText = '';
+                    
+                    if (exerciseContainer) {
+                        const tutorMessages = exerciseContainer.querySelectorAll('.chat-message.tutor-message');
+                        console.log(`Found ${tutorMessages.length} tutor message(s)`);
+                        
+                        tutorMessages.forEach((message, index) => {
+                            const messageText = message.textContent || message.innerText || '';
+                            console.log(`\n--- Tutor Message ${index + 1} ---`);
+                            console.log('Full text:', messageText);
+                            
+                                                         // Extract Japanese characters (hiragana, katakana, kanji, and punctuation)
+                             const japaneseRegex = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF\u3000-\u303F\uFF01-\uFF60\u30FC]/g;
+                            const japaneseChars = messageText.match(japaneseRegex);
+                            const japaneseText = japaneseChars ? japaneseChars.join('') : '';
+                            
+                            console.log('Japanese characters only:', japaneseText);
+                            console.log('Japanese character count:', japaneseText.length);
+                            
+                            fullText += messageText + '\n\n';
+                            japaneseOnlyText += japaneseText;
+                        });
+                        
+                        console.log('\n=== COMPLETE EXTRACTION RESULTS ===');
+                        console.log('Full combined text:');
+                        console.log(fullText);
+                        console.log('\nJapanese characters only:');
+                        console.log(japaneseOnlyText);
+                        console.log(`\nTotal Japanese characters: ${japaneseOnlyText.length}`);
+                        
+                        // Copy to clipboard and show alert
+                        if (japaneseOnlyText) {
+                            // Copy to clipboard
+                            copyToClipboard(japaneseOnlyText).then(() => {
+                                alert(`Japanese Text Extracted & Copied to Clipboard! ✅\n\n${japaneseOnlyText}\n\nLength: ${japaneseOnlyText.length} characters\n\n(Full details in console)`);
+                            }).catch(() => {
+                                alert(`Japanese Text Extracted:\n\n${japaneseOnlyText}\n\nLength: ${japaneseOnlyText.length} characters\n\n(Could not copy to clipboard - manual copy needed)\n(Full details in console)`);
+                            });
+                        } else {
+                            alert('No Japanese text found in current exercise content.');
+                        }
+                        
+                    } else {
+                        console.log('No exercise content found');
+                        alert('No exercise content available to extract text from.');
+                    }
+                });
+            }
+            
+            // Create a simple function to auto-analyze exercise content
+            window.autoAnalyzeReadability = function() {
+                console.log('=== AUTO READABILITY ANALYSIS ===');
+                
+                const exerciseContainer = document.getElementById('exercise-content');
+                let exerciseText = '';
+                
+                if (exerciseContainer) {
+                    const tutorMessages = exerciseContainer.querySelectorAll('.chat-message.tutor-message');
+                    if (tutorMessages.length > 0) {
+                        const lastMessage = tutorMessages[tutorMessages.length - 1];
+                        exerciseText = lastMessage.textContent || lastMessage.innerText || '';
+                                                 console.log('Auto-analyzing exercise text (first 100 chars):', exerciseText.substring(0, 100) + '...');
+                         console.log('COMPLETE TEXT FOR ANALYSIS:', exerciseText);
+                    }
+                }
+                
+                if (exerciseText && exerciseText.length > 10) {
+                    fetch('/analyze-readability', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            text: exerciseText,
+                            japanese_only: true
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Auto-analysis result:', data);
+                        
+                        const readabilityDisplay = document.getElementById('readability-display');
+                        const readabilityLevel = document.getElementById('readability-level');
+                        const readabilityScore = document.getElementById('readability-score');
+                        
+                        if (readabilityDisplay && readabilityLevel && readabilityScore && data.level) {
+                            readabilityLevel.textContent = data.level;
+                            readabilityLevel.className = `readability-level ${data.level.toLowerCase().replace(/[^a-z]/g, '-')}`;
+                            readabilityScore.textContent = data.score ? `(${data.score.toFixed(2)})` : '';
+                            readabilityDisplay.style.display = 'block';
+                            readabilityDisplay.classList.add('show');
+                            console.log('✅ Auto-updated readability display:', data.level, data.score);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Auto-analysis error:', error);
+                    });
+                } else {
+                    console.log('No suitable exercise text found for auto-analysis');
+                }
+            };
             
             // Log the graph container
             const container = document.getElementById('graph-container');

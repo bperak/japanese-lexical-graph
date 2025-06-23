@@ -41,8 +41,9 @@ This file tracks ongoing, completed, and planned tasks for the Japanese Lexical 
     *   **Task**: Implement selectable LLM model for Gemini API calls.
     *   **Description**: Add the ability to select different LLM models for Gemini API calls.
     *   **Assigned to**:
-    *   **Status**: To Do
+    *   **Status**: Completed
     *   **Date Added**: YYYY-MM-DD
+    *   **Date Completed**: 2025-05-18
     *   **Priority**: High
     *   **Sub-tasks**:
         *   [x] Add `GEMINI_DEFAULT_MODEL` to `.env` and `config.py`.
@@ -53,6 +54,25 @@ This file tracks ongoing, completed, and planned tasks for the Japanese Lexical 
         *   [x] Update relevant API endpoints in `app.py` (`/gemini-explanation`, `/gemini-analyze`, `/enhanced-node`) to optionally accept `model_name` query parameter and pass it to helper functions.
         *   [x] Update `PLANNING.md` to reflect model selection configurability.
         *   [x] Update `README.md` to document model selection and new .env variable.
+
+*   **Task ID**: FEAT-004
+    *   **Task**: Integrate jreadability for Japanese text readability analysis.
+    *   **Description**: Add readability scoring to the lexical exercises system using the jreadability library to help users understand text difficulty.
+    *   **Assigned to**: AI Assistant
+    *   **Status**: Completed
+    *   **Date Added**: 2025-06-23
+    *   **Date Completed**: 2025-06-23
+    *   **Priority**: Medium
+    *   **Sub-tasks**:
+        *   [x] Add `jreadability==1.1.4` to `requirements.txt`.
+        *   [x] Create `readability_helper.py` module with comprehensive readability analysis functionality.
+        *   [x] Create `test_jreadability.py` script for testing jreadability functionality.
+        *   [x] Create unit tests in `tests/unit/test_readability_helper.py`.
+        *   [x] Add readability analysis endpoints to `app.py` (`/analyze-readability`, `/analyze-exercise-readability`).
+        *   [x] Update HTML template to include readability display in exercise UI.
+        *   [x] Add CSS styling for readability badges with color-coded difficulty levels.
+        *   [x] Add JavaScript functions for analyzing and displaying readability scores.
+        *   [x] Integrate readability analysis with exercise generation workflow.
 
 ---
 
@@ -98,6 +118,24 @@ This file tracks ongoing, completed, and planned tasks for the Japanese Lexical 
     *   **Status**: Completed
     *   **Date Completed**: 2025-05-19
     *   **Notes**: Root cause was CSS specificity where `#side-nav` (id selector) had higher precedence over `.menu-nav.open`. Added override rule with higher specificity.
+
+---
+
+*   **Task ID**: ATTR-001
+    *   **Task**: Rename JLPT attribute to old_JLPT across all nodes and code
+    *   **Description**: Rename the JLPT attribute to old_JLPT on all nodes in the graph and update all code references to use the new attribute name.
+    *   **Assigned to**: AI Assistant
+    *   **Status**: Completed
+    *   **Date Added**: 2025-06-24
+    *   **Date Completed**: 2025-06-24
+    *   **Priority**: Medium
+    *   **Sub-tasks**:
+        *   [x] Create script to rename JLPT to old_JLPT in graph pickle file
+        *   [x] Run script to update 11,047 nodes with JLPT attributes
+        *   [x] Update graph_analysis.py to use old_JLPT instead of JLPT
+        *   [x] Update app.py to use old_JLPT instead of JLPT
+        *   [x] Update japanese_graph_data.json to use old_JLPT instead of JLPT
+        *   [x] Verify all changes are working correctly
 
 ---
 

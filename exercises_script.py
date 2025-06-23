@@ -60,41 +60,57 @@ def is_available():
     return HAS_VALID_API_KEY
 
 def get_graph():
-    """Load the NetworkX graph from pickle file."""
+    """Get the shared NetworkX graph from the main app."""
     try:
-        # Find the correct path to the pickle file
-        pickle_paths = [
-            'G_synonyms_2024_09_18.pickle',  # Root directory
-            os.path.join('graph_models', 'G_synonyms_2024_09_18.pickle')  # In graph_models directory
-        ]
-        
-        graph_file = None
-        for path in pickle_paths:
-            if os.path.exists(path):
-                graph_file = path
-                break
-        
-        if not graph_file:
-            logger.error("Graph pickle file not found")
-            return nx.Graph()  # Return empty graph if file not found
-        
-        with open(graph_file, 'rb') as f:
-            G = pickle.load(f)
-        logger.info(f"Loaded graph with {G.number_of_nodes()} nodes and {G.number_of_edges()} edges")
+        # Import the graph from app.py to ensure consistency
+        from app import G
+        logger.info(f"Using shared graph with {G.number_of_nodes()} nodes and {G.number_of_edges()} edges")
         return G
-    except Exception as e:
-        logger.error(f"Error loading graph: {e}")
-        return nx.Graph()  # Return empty graph on error
+    except ImportError:
+        logger.warning("Could not import graph from app.py, falling back to loading from pickle")
+        # Fallback to loading from pickle file
+        try:
+            pickle_paths = [
+                'G_synonyms_2024_09_18.pickle',  # Root directory
+                os.path.join('graph_models', 'G_synonyms_2024_09_18.pickle')  # In graph_models directory
+            ]
+            
+            graph_file = None
+            for path in pickle_paths:
+                if os.path.exists(path):
+                    graph_file = path
+                    break
+            
+            if not graph_file:
+                logger.error("Graph pickle file not found")
+                return nx.Graph()  # Return empty graph if file not found
+            
+            with open(graph_file, 'rb') as f:
+                G = pickle.load(f)
+            logger.info(f"Loaded graph from pickle with {G.number_of_nodes()} nodes and {G.number_of_edges()} edges")
+            return G
+        except Exception as e:
+            logger.error(f"Error loading graph from pickle: {e}")
+            return nx.Graph()  # Return empty graph on error
 
 def get_node_context(node_id, max_neighbors=7):
     """Get context about a node and its neighbors from the graph."""
     G = get_graph()
     
     if node_id not in G.nodes:
+        # Instead of returning an error, provide a fallback context
+        # This allows exercises to be generated even for nodes not in the graph
+        logger.warning(f"Node '{node_id}' not found in graph, using fallback context")
         return {
-            "error": f"Node '{node_id}' not found in the graph",
-            "node": {"id": node_id},
-            "neighbors": []
+            "node": {
+                "id": node_id,
+                "hiragana": "",
+                "romaji": "",
+                "translation": "",
+                "pos": ""
+            },
+            "neighbors": [],
+            "fallback": True  # Flag to indicate this is fallback data
         }
     
     # Get node data
@@ -180,12 +196,10 @@ def generate_exercise(node_id, level=1, session_history=None, mode="exercise", m
     # Get node context from the graph
     context = get_node_context(node_id)
     
-    # Handle node not found
-    if "error" in context:
-        return {
-            "error": context["error"],
-            "content": f"Unable to generate {mode}: {context['error']}"
-        }
+    # Check if we're using fallback data
+    is_fallback = context.get("fallback", False)
+    if is_fallback:
+        logger.info(f"Using fallback context for node '{node_id}' - exercise generation will proceed with limited context")
     
     # Create a more human-friendly level description
     level_description = LEVEL_DESCRIPTIONS.get(level, "Intermediate level")

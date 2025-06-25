@@ -1761,14 +1761,14 @@ body {
 }
 
 #exercise-input-container {
-    position: fixed;
+    position: absolute;
     bottom: 0;
-    left: 320px; /* position under main panel */
-    width: calc(100% - 320px);
+    left: 0;
+    right: 0;
     background-color: #292929;
     border-top: 1px solid #333;
     padding: 10px;
-    z-index: 1000;
+    z-index: 10;
 }
 
 .chat-input-group {

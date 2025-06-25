@@ -1746,7 +1746,6 @@ body {
     border: 1px solid #333;
     border-radius: 5px;
     background-color: #222;
-    height: calc(50vh - 130px); /* Adjusted for 50vh sidebar height */
     position: relative;
     display: flex;
     flex-direction: column;
@@ -1756,8 +1755,6 @@ body {
     flex: 1;
     overflow-y: auto;
     padding: 15px;
-    /* Reserve space at bottom so messages aren't obscured by the input field */
-    padding-bottom: 80px;
 }
 
 #exercise-input-container {

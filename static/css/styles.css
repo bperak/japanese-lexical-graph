@@ -1756,7 +1756,8 @@ body {
     flex: 1;
     overflow-y: auto;
     padding: 15px;
-    height: calc(100% - 70px);
+    /* Reserve space at bottom so messages aren't obscured by the input field */
+    padding-bottom: 80px;
 }
 
 #exercise-input-container {

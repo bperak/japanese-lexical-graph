@@ -849,9 +849,9 @@ input[type="checkbox"]:checked::after {
     height: 40px; /* Only show the header */
 }
 
-/* Open state - expanded to 70% of viewport height */
+/* Open state - expanded to 90% of viewport height */
 .sidebar-bottom.open {
-    height: 70vh; /* Increase to 70% of viewport height */
+    height: 90vh; /* Increase to 90% of viewport height */
     overflow-y: auto;
 }
 

@@ -1759,7 +1759,7 @@ body {
 
 #exercise-input-container {
     position: sticky;
-    bottom: 0;
+    bottom: 5px;
     background-color: #292929;
     border-top: 1px solid #333;
     padding: 10px;

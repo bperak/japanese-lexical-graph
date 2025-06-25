@@ -1761,10 +1761,8 @@ body {
 }
 
 #exercise-input-container {
-    position: absolute;
+    position: sticky;
     bottom: 0;
-    left: 0;
-    right: 0;
     background-color: #292929;
     border-top: 1px solid #333;
     padding: 10px;

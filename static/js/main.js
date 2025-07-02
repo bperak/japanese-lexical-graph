@@ -2098,44 +2098,30 @@ function toggleAccordion(element) {
             return;
         }
         
-        // Update node info panel
+        // Only display specific attributes in desired order
         const nodeInfoContent = document.getElementById('node-info-content');
-        let html = '';
-        
-        // Add node title (kanji)
-        html += `<h3 class="node-title">${node.id}</h3>`;
-        
-        // Show all node properties in the node info panel
-        html += '<div class="node-properties">';
-        
-        for (const [key, value] of Object.entries(node)) {
-            // Skip technical properties and null/undefined values
-            if (key !== 'id' && key !== 'x' && key !== 'y' && key !== 'z' && 
-                key !== 'vx' && key !== 'vy' && key !== 'vz' && 
-                key !== 'isSearchMatch' && key !== 'index' && 
-                value !== null && value !== undefined && value !== '') {
-                html += `<div class="node-property">
-                    <div class="property-name">${key}</div>
-                    <div class="property-value">${key === 'translation' ? formatTranslation(value) : value}</div>
-                </div>`;
-            }
-        }
-        
-        // Show degree and connectivity info
-        const nodeLinks = graphData.links.filter(link => 
+        // Compute connections count
+        const nodeLinks = graphData.links.filter(link =>
             link.source === node.id || link.target === node.id ||
             (typeof link.source === 'object' && link.source.id === node.id) ||
             (typeof link.target === 'object' && link.target.id === node.id)
         );
-        
-        html += `
-            <div class="node-property">
-                <div class="property-name">Connections</div>
-                <div class="property-value">${nodeLinks.length}</div>
-            </div>`;
-        
+
+        // Build HTML for selected node info
+        let html = '';
+        // Add node title (kanji)
+        html += `<h3 class=\"node-title\">${node.id}</h3>`;
+        // Begin properties container
+        html += '<div class=\"node-properties\">';
+        // Hiragana
+        html += `<div class=\"node-property\">\n    <div class=\"property-name\">Hiragana</div>\n    <div class=\"property-value\">${node.hiragana || 'N/A'}</div>\n</div>`;
+        // Translation
+        html += `<div class=\"node-property\">\n    <div class=\"property-name\">Translation</div>\n    <div class=\"property-value\">${formatTranslation(node.translation)}</div>\n</div>`;
+        // pos
+        html += `<div class=\"node-property\">\n    <div class=\"property-name\">pos</div>\n    <div class=\"property-value\">${node.POS || 'N/A'}</div>\n</div>`;
+        // Connections
+        html += `<div class=\"node-property\">\n    <div class=\"property-name\">Connections</div>\n    <div class=\"property-value\">${nodeLinks.length}</div>\n</div>`;
         html += '</div>'; // Close node-properties
-        
         nodeInfoContent.innerHTML = html;
         
         // Update Wikidata panel
@@ -2453,6 +2439,7 @@ function toggleAccordion(element) {
         const messageDiv = document.createElement('div');
         messageDiv.className = 'chat-message tutor-message';
         messageDiv.innerHTML = formatExerciseContent(data.content);
+        addTTSButtonToMessage(messageDiv);
         
         // Clear and add to container
         container.innerHTML = '';
@@ -2536,6 +2523,7 @@ function toggleAccordion(element) {
             const tutorMessageDiv = document.createElement('div');
             tutorMessageDiv.className = 'chat-message tutor-message';
             tutorMessageDiv.innerHTML = formatExerciseContent(data.content);
+            addTTSButtonToMessage(tutorMessageDiv);
             container.appendChild(tutorMessageDiv);
             
             // Update history
@@ -2734,6 +2722,57 @@ function toggleAccordion(element) {
     }
 
     // ===== END READABILITY ANALYSIS FUNCTIONS =====
+
+    // ===== TTS Utility Functions =====
+    /**
+     * Append a TTS play button to a tutor message element.
+     */
+    function addTTSButtonToMessage(messageDiv) {
+        const button = document.createElement('button');
+        button.className = 'tts-button';
+        button.textContent = '🔊';
+        button.style.marginLeft = '10px';
+        button.addEventListener('click', () => handleTTSForMessage(messageDiv));
+        messageDiv.appendChild(button);
+    }
+
+    /**
+     * Send TTS request for given message and play audio sequentially.
+     */
+    function handleTTSForMessage(messageDiv) {
+        const text = messageDiv.innerText;
+        const splitIndex = text.indexOf(') ');
+        let japaneseRaw = text;
+        let translationRaw = '';
+        if (splitIndex !== -1) {
+            const firstPart = text.substring(0, splitIndex + 1);
+            const rest = text.substring(splitIndex + 2);
+            japaneseRaw = firstPart.replace(/\([^)]*\)/g, '').trim();
+            translationRaw = rest.trim();
+        }
+        fetch('/tts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ japanese_text: japaneseRaw, translation_text: translationRaw })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.files && data.files.length) {
+                let idx = 0;
+                function playNext() {
+                    if (idx >= data.files.length) return;
+                    const audio = new Audio(data.files[idx]);
+                    audio.onended = () => { idx++; playNext(); };
+                    audio.play();
+                }
+                playNext();
+            } else {
+                console.error('TTS: no files returned', data);
+            }
+        })
+        .catch(err => console.error('TTS error', err));
+    }
+    // ===== END TTS Utility Functions =====
 });
 
 /* Cache buster: Tue 24 Jun 2025 12:11:37 AM CEST */

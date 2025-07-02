@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, url_for
 import networkx as nx
 import pickle
 import ssl
@@ -19,6 +19,9 @@ import ai_generation_single
 import exercises_script
 # Import readability helper
 import readability_helper
+# Import uuid for unique file prefixes and our new TTS helper
+import uuid
+import tts_helper
 
 # Load environment variables
 load_dotenv()
@@ -1052,6 +1055,39 @@ def extract_japanese_text():
             "available": True,
             "error": f"Failed to extract Japanese text: {str(e)}"
         }), 500
+
+# TTS endpoint for multi-speaker audio generation
+@app.route('/tts', methods=['POST'])
+def tts():
+    """
+    Generate multi-speaker TTS for a conversation turn.
+    Expects JSON: { japanese_text: str, translation_text: str }
+    Returns: { files: [url1, url2, ...] }
+    """
+    data = request.json or {}
+    japanese_text = data.get('japanese_text', '')
+    translation_text = data.get('translation_text', '')
+
+    if not japanese_text:
+        return jsonify({'error': 'No Japanese text provided'}), 400
+    if not translation_text:
+        return jsonify({'error': 'No translation text provided'}), 400
+
+    try:
+        prefix = str(uuid.uuid4())
+        output_dir = os.path.join(app.static_folder, 'tts')
+        file_paths = tts_helper.generate_tts(
+            japanese_text,
+            translation_text,
+            file_prefix=prefix,
+            output_dir=output_dir,
+            api_key=None
+        )
+        file_urls = [url_for('static', filename=f'tts/{os.path.basename(path)}') for path in file_paths]
+        return jsonify({'files': file_urls})
+    except Exception as e:
+        logger.error(f"TTS generation error: {e}")
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     # Run in debug mode locally

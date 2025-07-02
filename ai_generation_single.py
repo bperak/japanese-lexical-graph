@@ -371,6 +371,7 @@ def add_generated_relations_to_graph(node_id, generated_data, G=None):
             if synonym_lemma not in G.nodes():
                 G.add_node(synonym_lemma)
                 G.nodes[synonym_lemma]['hiragana'] = synonym.get('synonym_hiragana', '')
+                G.nodes[synonym_lemma]['POS'] = synonym.get('POS', '')
                 G.nodes[synonym_lemma]['pos'] = synonym.get('POS', '')
                 G.nodes[synonym_lemma]['translation'] = synonym.get('synonym_translation', '')
                 changes["updated_nodes"].append(synonym_lemma)
@@ -420,6 +421,7 @@ def add_generated_relations_to_graph(node_id, generated_data, G=None):
             if antonym_lemma not in G.nodes():
                 G.add_node(antonym_lemma)
                 G.nodes[antonym_lemma]['hiragana'] = antonym.get('antonym_hiragana', '')
+                G.nodes[antonym_lemma]['POS'] = antonym.get('POS', '')
                 G.nodes[antonym_lemma]['pos'] = antonym.get('POS', '')
                 G.nodes[antonym_lemma]['translation'] = antonym.get('antonym_translation', '')
                 changes["updated_nodes"].append(antonym_lemma)

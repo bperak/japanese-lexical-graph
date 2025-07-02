@@ -7,8 +7,8 @@ set -euo pipefail
 # Activate virtual environment
 source venv/bin/activate
 
-# Ensure Gunicorn is installed
-pip install gunicorn
+# Ensure Gunicorn and Google GenAI SDK are installed
+pip install gunicorn google-genai
 
 # Kill any existing process on port 5000
 if command -v lsof >/dev/null 2>&1; then

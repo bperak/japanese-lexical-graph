@@ -129,10 +129,34 @@ def generate_lexical_relations(node_id, G=None, model_name=DEFAULT_MODEL):
         # Handle edge types and add to existing neighbors
         relation_type = "unknown"
         if edge_data:
-            # Check for synonym relationships
-            if 'synonym' in edge_data:
-                relation_type = "synonym"
-            # Add other relationship types here if needed
+            # Handle MultiGraph (multiple parallel edges) vs. simple Graph
+            if hasattr(G, 'is_multigraph') and G.is_multigraph():
+                # For MultiGraph, get attribute dict of the first edge key
+                edge_key = list(edge_data.keys())[0] if edge_data else 0
+                edge_attr = edge_data[edge_key] if edge_key in edge_data else {}
+            else:
+                # For regular Graph, edge_data is already the attribute dict
+                edge_attr = edge_data
+            
+            # Determine edge type – prefer explicit 'type', otherwise infer from edge key or nested keys
+            relation_type = edge_attr.get('type')
+            if relation_type is None:
+                # For MultiGraph, check the edge key first
+                if hasattr(G, 'is_multigraph') and G.is_multigraph() and 'edge_key' in locals():
+                    if edge_key == 'synonym':
+                        relation_type = 'synonym'
+                    elif edge_key == 'antonym':
+                        relation_type = 'antonym'
+                    else:
+                        relation_type = 'unknown'
+                else:
+                    # For regular graphs, check nested keys
+                    if 'synonym' in edge_attr:
+                        relation_type = 'synonym'
+                    elif 'antonym' in edge_attr:
+                        relation_type = 'antonym'
+                    else:
+                        relation_type = 'unknown'
             
         existing_neighbors.append({
             "node": neighbor,
@@ -399,11 +423,24 @@ def add_generated_relations_to_graph(node_id, generated_data, G=None):
 
                 # Add or update the edge with new metadata
                 if G.has_edge(node_id, synonym_lemma):
-                    G[node_id][synonym_lemma]['synonym'] = synonym_data['synonym']
-                    G[node_id][synonym_lemma]['type'] = 'synonym'
-                    G[node_id][synonym_lemma]['weight'] = synonym_strength
+                    # For MultiGraph, update the synonym edge specifically
+                    if hasattr(G, 'is_multigraph') and G.is_multigraph():
+                        if 'synonym' in G[node_id][synonym_lemma]:
+                            G[node_id][synonym_lemma]['synonym'].update(synonym_data['synonym'])
+                            G[node_id][synonym_lemma]['synonym']['type'] = 'synonym'
+                            G[node_id][synonym_lemma]['synonym']['weight'] = synonym_strength
+                        else:
+                            G.add_edge(node_id, synonym_lemma, key='synonym', **synonym_data)
+                    else:
+                        G[node_id][synonym_lemma]['synonym'] = synonym_data['synonym']
+                        G[node_id][synonym_lemma]['type'] = 'synonym'
+                        G[node_id][synonym_lemma]['weight'] = synonym_strength
                 else:
-                    G.add_edge(node_id, synonym_lemma, **synonym_data)
+                    # Add new edge with proper key for MultiGraph
+                    if hasattr(G, 'is_multigraph') and G.is_multigraph():
+                        G.add_edge(node_id, synonym_lemma, key='synonym', **synonym_data)
+                    else:
+                        G.add_edge(node_id, synonym_lemma, **synonym_data)
 
                 changes["synonyms_added"] += 1
         except Exception as e:
@@ -446,11 +483,24 @@ def add_generated_relations_to_graph(node_id, generated_data, G=None):
 
                 # Add or update the edge
                 if G.has_edge(node_id, antonym_lemma):
-                    G[node_id][antonym_lemma]['antonym'] = antonym_data['antonym']
-                    G[node_id][antonym_lemma]['type'] = 'antonym'
-                    G[node_id][antonym_lemma]['weight'] = antonym_strength
+                    # For MultiGraph, update the antonym edge specifically
+                    if hasattr(G, 'is_multigraph') and G.is_multigraph():
+                        if 'antonym' in G[node_id][antonym_lemma]:
+                            G[node_id][antonym_lemma]['antonym'].update(antonym_data['antonym'])
+                            G[node_id][antonym_lemma]['antonym']['type'] = 'antonym'
+                            G[node_id][antonym_lemma]['antonym']['weight'] = antonym_strength
+                        else:
+                            G.add_edge(node_id, antonym_lemma, key='antonym', **antonym_data)
+                    else:
+                        G[node_id][antonym_lemma]['antonym'] = antonym_data['antonym']
+                        G[node_id][antonym_lemma]['type'] = 'antonym'
+                        G[node_id][antonym_lemma]['weight'] = antonym_strength
                 else:
-                    G.add_edge(node_id, antonym_lemma, **antonym_data)
+                    # Add new edge with proper key for MultiGraph
+                    if hasattr(G, 'is_multigraph') and G.is_multigraph():
+                        G.add_edge(node_id, antonym_lemma, key='antonym', **antonym_data)
+                    else:
+                        G.add_edge(node_id, antonym_lemma, **antonym_data)
 
                 changes["antonyms_added"] += 1
         except Exception as e:

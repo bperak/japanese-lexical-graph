@@ -22,6 +22,12 @@ import readability_helper
 # Import uuid for unique file prefixes and our new TTS helper
 import uuid
 import tts_helper
+# Import Croatian helper functions
+import croatian_helper
+import croatian_ai_generation
+import croatian_exercises
+import cando_helper
+
 
 # Load environment variables
 load_dotenv()
@@ -41,7 +47,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 # Load the NetworkX graph from pickle file
 try:
     # Updated path to pickle file in graph_models folder
-    filename = os.path.join('graph_models', 'G_synonyms_2024_09_18.pickle')
+    filename = os.path.join('graph_models', 'G_japanese_2025.pickle')
     with open(filename, 'rb') as f:
         G = pickle.load(f)
 
@@ -83,9 +89,226 @@ except Exception as e:
     logger.error(f"Error loading graph: {e}")
     G = nx.Graph()  # Create empty graph if file can't be loaded
 
+# Load Croatian graph
+try:
+    G_croatian = croatian_helper.load_croatian_graph()
+    if G_croatian:
+        logger.info(f"Croatian graph loaded: {G_croatian.number_of_nodes()} nodes, {G_croatian.number_of_edges()} edges")
+        
+        # ------------------------------------------------------------------
+        # Ensure Croatian edges have a numeric 'weight' attribute for consistency
+        # ------------------------------------------------------------------
+        # Reason: Frontend expects a unified 'weight' field for displaying neighbor strengths.
+        # Croatian edges store weights in nested structures like synonym->synonym_strength
+        # or antonym->antonym_strength. Extract and normalize these to a top-level weight field.
+        
+        for u, v, data in G_croatian.edges(data=True):
+            # Skip if weight already present
+            if 'weight' in data:
+                continue
+            
+            # Extract weight from nested synonym/antonym structures
+            weight = None
+            
+            # Check for synonym strength
+            if 'synonym' in data and isinstance(data['synonym'], dict):
+                weight = data['synonym'].get('synonym_strength')
+            
+            # Check for antonym strength
+            elif 'antonym' in data and isinstance(data['antonym'], dict):
+                weight = data['antonym'].get('antonym_strength')
+            
+            # Use extracted weight if valid, otherwise default to 1.0
+            if isinstance(weight, (int, float)) and not math.isnan(weight):
+                data['weight'] = float(weight)
+            else:
+                data['weight'] = 1.0
+        
+        logger.info("Croatian edge 'weight' attribute normalisation complete.")
+    else:
+        logger.warning("Croatian graph not found, creating empty graph")
+        G_croatian = nx.Graph()
+except Exception as e:
+    logger.error(f"Error loading Croatian graph: {e}")
+    G_croatian = nx.Graph()
+
 def get_graph():
     """Return the global graph object."""
     return G
+
+def get_graph_for_node(node_id):
+    """
+    Determine which graph a node belongs to and return (graph, language).
+    
+    Args:
+        node_id (str): Node ID to check
+        
+    Returns:
+        tuple: (graph, language) where language is 'japanese' or 'croatian'
+    """
+    # Check Croatian graph first (lempos format like "abeceda-NOUN")
+    if G_croatian and node_id in G_croatian.nodes():
+        return G_croatian, 'croatian'
+    
+    # Check Japanese graph 
+    if G and node_id in G.nodes():
+        return G, 'japanese'
+    
+    # Default to Japanese graph if node not found
+    return G, 'japanese'
+
+def detect_language_from_search(term, attribute):
+    """
+    Detect language from search term and attribute.
+    
+    Args:
+        term (str): Search term
+        attribute (str): Search attribute
+        
+    Returns:
+        str: 'japanese' or 'croatian'
+    """
+    # Check if term contains Croatian-specific patterns
+    if attribute in ['natuknica', 'natuknica_norm', 'UPOS']:
+        return 'croatian'
+    
+    # Check if term follows Croatian lempos pattern (word-POS)
+    if '-' in term and any(pos in term.upper() for pos in ['NOUN', 'VERB', 'ADJ', 'ADV']):
+        return 'croatian'
+    
+    # Check if term exists in Croatian graph
+    if G_croatian and term in G_croatian.nodes():
+        return 'croatian'
+    
+    # Check if term exists in Croatian node attributes
+    if G_croatian:
+        for node_id, attrs in G_croatian.nodes(data=True):
+            if (term.lower() in attrs.get('natuknica', '').lower() or
+                term.lower() in attrs.get('natuknica_norm', '').lower() or
+                term.lower() in attrs.get('translation', '').lower()):
+                return 'croatian'
+    
+    # Default to Japanese
+    return 'japanese'
+
+def find_nodes_multilingual(term, attribute, exact=False, language=None):
+    """
+    Find nodes in both Japanese and Croatian graphs.
+    
+    Args:
+        term (str): Search term
+        attribute (str): Search attribute
+        exact (bool): Whether to do exact matching
+        language (str): Force specific language ('japanese' or 'croatian')
+        
+    Returns:
+        tuple: (nodes, graph, language)
+    """
+    if not term:
+        return [], G, 'japanese'
+    
+    # Auto-detect language if not specified, but respect explicit language choice
+    if language is None:
+        language = detect_language_from_search(term, attribute)
+    elif language not in ['japanese', 'croatian']:
+        # Handle any invalid language values by defaulting to Japanese
+        logger.warning(f"Invalid language parameter '{language}', defaulting to Japanese")
+        language = 'japanese'
+    
+    if language == 'croatian':
+        # Search Croatian graph with attribute-specific logic
+        try:
+            nodes = find_croatian_nodes_by_attribute(G_croatian, term, attribute, exact)
+            return nodes, G_croatian, 'croatian'
+        except Exception as e:
+            logger.error(f"Error searching Croatian nodes: {e}")
+            return [], G_croatian, 'croatian'
+    
+    else:
+        # Search Japanese graph (existing logic)
+        nodes = find_nodes(G, term, attribute, exact)
+        return nodes, G, 'japanese'
+
+def find_croatian_nodes_by_attribute(G, term, attribute, exact=False):
+    """
+    Find Croatian nodes by specific attribute.
+    
+    Args:
+        G (nx.Graph): Croatian lexical graph
+        term (str): Search term
+        attribute (str): Search attribute
+        exact (bool): Whether to do exact matching
+        
+    Returns:
+        List[str]: List of matching node IDs
+    """
+    if not G or not term:
+        return []
+    
+    import unicodedata
+    
+    def normalize_text(text):
+        """Normalize text by removing accents and converting to lowercase."""
+        if not text:
+            return ""
+        # Normalize to NFD (decomposed form), then remove combining characters
+        normalized = unicodedata.normalize('NFD', str(text))
+        ascii_text = ''.join(c for c in normalized if unicodedata.category(c) != 'Mn')
+        return ascii_text.lower()
+    
+    matching_nodes = []
+    term_normalized = normalize_text(term)
+    
+    # Map frontend attribute names to backend attribute names
+    attribute_mapping = {
+        'natuknica': 'natuknica',
+        'normalized': 'natuknica_norm',
+        'definition': 'tekst',
+        'pos': 'pos',
+        'upos': 'UPOS',
+        'translation': 'translation'
+    }
+    
+    # Use mapped attribute name
+    search_attribute = attribute_mapping.get(attribute.lower(), attribute)
+    
+    for node_id, attrs in G.nodes(data=True):
+        # Get the value of the specified attribute
+        if search_attribute in attrs:
+            attr_value = normalize_text(attrs[search_attribute])
+            
+            if exact:
+                if term_normalized == attr_value:
+                    matching_nodes.append(node_id)
+            else:
+                if term_normalized in attr_value:
+                    matching_nodes.append(node_id)
+        
+        # Also check if searching by node ID (lempos format)
+        if search_attribute == 'id' or attribute.lower() == 'id':
+            node_id_normalized = normalize_text(node_id)
+            if exact:
+                if term_normalized == node_id_normalized:
+                    matching_nodes.append(node_id)
+            else:
+                if term_normalized in node_id_normalized:
+                    matching_nodes.append(node_id)
+    
+    # If no results found with normalization, try exact case-sensitive search
+    if not matching_nodes and not exact:
+        term_lower = term.lower()
+        for node_id, attrs in G.nodes(data=True):
+            if search_attribute in attrs:
+                attr_value = str(attrs[search_attribute]).lower()
+                if term_lower in attr_value:
+                    matching_nodes.append(node_id)
+            
+            # Also check node ID
+            if search_attribute == 'id' or attribute.lower() == 'id':
+                if term_lower in node_id.lower():
+                    matching_nodes.append(node_id)
+    
+    return matching_nodes
 
 @app.route('/')
 def index():
@@ -117,42 +340,171 @@ def get_subgraph(G, source_nodes, depth=1):
 
 @app.route('/graph-data')
 def graph_data():
-    term = request.args.get('term', '')
-    attribute = request.args.get('attribute', 'kanji')
-    depth = int(request.args.get('depth', '1'))
-    exact = request.args.get('exact', 'false').lower() == 'true'
-    
-    source_nodes = find_nodes(G, term, attribute, exact)
-    subgraph = get_subgraph(G, source_nodes, depth=depth)
+    try:
+        term = request.args.get('term', '')
+        attribute = request.args.get('attribute', 'kanji')
+        depth = int(request.args.get('depth', '1'))
+        exact = request.args.get('exact', 'false').lower() == 'true'
+        language = request.args.get('language', None)  # Allow explicit language selection
+        
+        logger.info(f"Graph data request: term='{term}', attribute='{attribute}', language='{language}'")
+        
+        if not term:
+            return jsonify({'error': 'No search term provided'}), 400
+        
+        source_nodes, graph, detected_language = find_nodes_multilingual(term, attribute, exact, language)
+        
+        if not source_nodes:
+            logger.info(f"No nodes found for term '{term}' in {detected_language} language")
+            return jsonify({
+                'nodes': [], 
+                'links': [], 
+                'language': detected_language,
+                'source_nodes': [],
+                'message': f'No nodes found for "{term}" in {detected_language} language'
+            })
+        
+        subgraph = get_subgraph(graph, source_nodes, depth=depth)
+    except Exception as e:
+        logger.error(f"Error in graph_data endpoint: {e}")
+        return jsonify({'error': f'Server error: {str(e)}'}), 500
 
     nodes = []
     for node, data in subgraph.nodes(data=True):
         node_data = {'id': str(node)}
         node_data.update({k: str(v) if v is not None else None for k, v in data.items()})
+        # Add language information
+        node_data['language'] = detected_language
         nodes.append(node_data)
 
     links = []
-    for u, v, key, data in subgraph.edges(data=True, keys=True):
-        link = {'source': str(u), 'target': str(v)}
-        link.update({k: str(v) if v is not None else None for k, v in data.items()})
-        # Determine relationship type for easier front-end rendering
-        # We inspect the multigraph edge key and known attribute patterns.
-        # Reason: Users want to distinguish synonyms from antonyms in the neighbour list.
-        relation_type = 'connected'
-        try:
-            if key == 'synonym' or 'synonym_strength' in data or 'synonym' in data:
-                relation_type = 'synonym'
-            elif key == 'antonym' or 'antonym_strength' in data or 'antonym' in data:
-                relation_type = 'antonym'
-        except Exception:
-            # Fallback to default if any issue arises
+    # Check if this is a MultiGraph before using keys parameter
+    if hasattr(subgraph, 'is_multigraph') and subgraph.is_multigraph():
+        for u, v, key, data in subgraph.edges(data=True, keys=True):
+            link = {'source': str(u), 'target': str(v)}
+            
+            # Flatten nested edge attributes for MultiGraph
+            for k, v_data in data.items():
+                if isinstance(v_data, dict) and k in ['synonym', 'antonym']:
+                    # Flatten the nested structure
+                    for nested_k, nested_v in v_data.items():
+                        if nested_v is not None:
+                            link[nested_k] = nested_v
+                else:
+                    # Regular attribute - preserve numeric types for weight fields
+                    if v_data is not None:
+                        # Keep numeric types for weight-related fields
+                        if k in ['weight', 'strength', 'synonym_strength', 'antonym_strength'] and isinstance(v_data, (int, float)):
+                            link[k] = float(v_data)
+                        else:
+                            link[k] = str(v_data)
+            
+            # Ensure weight field is set for frontend consistency
+            if 'weight' not in link:
+                # Extract weight from flattened synonym/antonym strength
+                if 'synonym_strength' in link:
+                    link['weight'] = float(link['synonym_strength']) if isinstance(link['synonym_strength'], (str, int, float)) else 1.0
+                elif 'antonym_strength' in link:
+                    link['weight'] = float(link['antonym_strength']) if isinstance(link['antonym_strength'], (str, int, float)) else 1.0
+                else:
+                    link['weight'] = 1.0
+            
+            # Determine relationship type for easier front-end rendering
+            # We inspect the multigraph edge key and known attribute patterns.
+            # Reason: Users want to distinguish synonyms from antonyms in the neighbour list.
             relation_type = 'connected'
-        link['relationship'] = relation_type
-        link['id'] = f"{u}-{v}-{key}"
-        links.append(link)
+            try:
+                if key == 'synonym' or 'synonym_strength' in link or 'synonym' in data:
+                    relation_type = 'synonym'
+                elif key == 'antonym' or 'antonym_strength' in link or 'antonym' in data:
+                    relation_type = 'antonym'
+            except Exception:
+                # Fallback to default if any issue arises
+                relation_type = 'connected'
+            link['relationship'] = relation_type
+            link['id'] = f"{u}-{v}-{key}"
+            links.append(link)
+    else:
+        # For regular graphs, iterate without keys
+        for u, v, data in subgraph.edges(data=True):
+            link = {'source': str(u), 'target': str(v)}
+            
+            # Flatten nested edge attributes
+            for k, v_data in data.items():
+                if isinstance(v_data, dict) and k in ['synonym', 'antonym']:
+                    # Flatten the nested structure
+                    for nested_k, nested_v in v_data.items():
+                        if nested_v is not None:
+                            link[nested_k] = nested_v
+                else:
+                    # Regular attribute - preserve numeric types for weight fields
+                    if v_data is not None:
+                        # Keep numeric types for weight-related fields
+                        if k in ['weight', 'strength', 'synonym_strength', 'antonym_strength'] and isinstance(v_data, (int, float)):
+                            link[k] = float(v_data)
+                        else:
+                            link[k] = str(v_data)
+            
+            # Ensure weight field is set for frontend consistency
+            if 'weight' not in link:
+                # Extract weight from flattened synonym/antonym strength
+                if 'synonym_strength' in link:
+                    link['weight'] = float(link['synonym_strength']) if isinstance(link['synonym_strength'], (str, int, float)) else 1.0
+                elif 'antonym_strength' in link:
+                    link['weight'] = float(link['antonym_strength']) if isinstance(link['antonym_strength'], (str, int, float)) else 1.0
+                else:
+                    link['weight'] = 1.0
+            
+            # Determine relationship type
+            relation_type = 'connected'
+            try:
+                if 'synonym_strength' in link or 'synonym' in data:
+                    relation_type = 'synonym'
+                elif 'antonym_strength' in link or 'antonym' in data:
+                    relation_type = 'antonym'
+            except Exception:
+                relation_type = 'connected'
+            link['relationship'] = relation_type
+            link['id'] = f"{u}-{v}"
+            links.append(link)
 
-    logger.info(f"Returning {len(nodes)} nodes and {len(links)} links")
-    return jsonify({'nodes': nodes, 'links': links})
+    logger.info(f"Returning {len(nodes)} nodes and {len(links)} links for {detected_language} language")
+    return jsonify({
+        'nodes': nodes, 
+        'links': links, 
+        'language': detected_language,
+        'source_nodes': source_nodes
+    })
+
+@app.route('/search-cando')
+def search_cando():
+    """
+    Endpoint to search for Can-do statements.
+    """
+    query = request.args.get('query', '')
+    if not query:
+        return jsonify({'error': 'No query provided'}), 400
+    
+    try:
+        results = cando_helper.search_cando_nodes(query)
+        return jsonify(results)
+    except Exception as e:
+        logger.error(f"Error searching Can-do nodes: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/cando-graph-data')
+def cando_graph_data():
+    """
+    Endpoint to get Can-do graph data for visualization.
+    """
+    node_id = request.args.get('node_id')
+    
+    try:
+        graph_data = cando_helper.get_cando_graph_data(node_id)
+        return jsonify(graph_data)
+    except Exception as e:
+        logger.error(f"Error getting Can-do graph data: {e}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/wikidata-info')
 def wikidata_info():
@@ -247,29 +599,47 @@ def node_details():
     if not node_id:
         return jsonify({'error': 'No node ID provided'}), 400
     
+    # Determine which graph this node belongs to
+    graph, language = get_graph_for_node(node_id)
+    
     # Check cache
-    cache_key = f"node_details:{node_id}:{','.join(include)}"
+    cache_key = f"node_details:{node_id}:{','.join(include)}:{language}"
     cached_result = cache.get(cache_key)
     if cached_result:
         return jsonify(cached_result)
     
     # Initialize response object
-    result = {'id': node_id}
+    result = {'id': node_id, 'language': language}
     
-    # Get node data from the graph
-    if 'basic' in include and node_id in G:
-        result['basic'] = {
-            **{k: str(v) if v is not None else None for k, v in G.nodes[node_id].items()},
-            'neighbors': [
-                {'id': str(neighbor), 'relationship': data.get('relationship', 'unknown')}
-                for neighbor, data in G[node_id].items()
-            ]
-        }
+    # Get node data from the appropriate graph
+    if 'basic' in include and node_id in graph:
+        if language == 'croatian':
+            # Use Croatian-specific node info
+            node_info = croatian_helper.get_croatian_node_info(graph, node_id)
+            if node_info:
+                result['basic'] = node_info
+                # Add neighbors information
+                neighbors_info = croatian_helper.get_croatian_neighbors_info(graph, node_id)
+                result['basic']['neighbors'] = neighbors_info
+        else:
+            # Use Japanese node info (existing logic)
+            result['basic'] = {
+                **{k: str(v) if v is not None else None for k, v in graph.nodes[node_id].items()},
+                'neighbors': [
+                    {'id': str(neighbor), 'relationship': data.get('relationship', 'unknown')}
+                    for neighbor, data in graph[node_id].items()
+                ]
+            }
     
     # Get Wikidata information if requested
     if 'wikidata' in include:
         try:
-            wikidata_info = get_wikidata_info(node_id)
+            # For Croatian nodes, try to get Wikidata info using natuknica
+            if language == 'croatian' and node_id in graph:
+                natuknica = graph.nodes[node_id].get('natuknica', node_id)
+                wikidata_info = get_wikidata_info(natuknica, 'hr')  # Croatian language
+            else:
+                wikidata_info = get_wikidata_info(node_id)
             result['wikidata'] = wikidata_info
         except Exception as e:
             logger.error(f"Error fetching Wikidata info: {str(e)}")
@@ -378,22 +748,49 @@ def ai_generate_relations():
     Endpoint to generate AI-powered lexical relations for a node.
     This allows users to generate new synonyms and antonyms for a word,
     adding these to the graph database.
+    Supports both Japanese and Croatian nodes.
     """
     node_id = request.args.get('id', '')
     if not node_id:
         return jsonify({"error": "No node ID provided"}), 400
     
     try:
-        # Check if AI generation is available
-        if not ai_generation_single.is_available():
-            return jsonify({
-                "status": "error",
-                "message": "AI Generation is not available. Please check your API key configuration."
-            }), 503
+        # Determine which graph this node belongs to
+        graph, language = get_graph_for_node(node_id)
+        logger.info(f"Generating AI relations for {language} node: {node_id}")
         
-        # Generate relations for the node
-        logger.info(f"Generating AI relations for node: {node_id}")
-        result = ai_generation_single.generate_node_relations(node_id, G)
+        # Check if AI generation is available for the detected language
+        if language == 'croatian':
+            if not croatian_ai_generation.is_available():
+                return jsonify({
+                    "status": "error",
+                    "message": "Croatian AI Generation is not available. Please check your API key configuration."
+                }), 503
+            
+            # Generate Croatian relations
+            generated_data = croatian_ai_generation.generate_croatian_lexical_relations(node_id, G=graph)
+            
+            # Add relations to Croatian graph
+            changes = croatian_ai_generation.add_generated_relations_to_croatian_graph(node_id, generated_data, G=graph)
+            
+            # Format result to match expected structure
+            result = {
+                "status": "success" if "error" not in changes else "partial_success",
+                "message": f"Generated {changes.get('synonyms_added', 0)} synonyms and {changes.get('antonyms_added', 0)} antonyms for {node_id}",
+                "generated_data": generated_data,
+                "changes": changes
+            }
+        else:
+            # Japanese AI generation (existing logic)
+            if not ai_generation_single.is_available():
+                return jsonify({
+                    "status": "error",
+                    "message": "AI Generation is not available. Please check your API key configuration."
+                }), 503
+            
+            # Generate relations for the node
+            result = ai_generation_single.generate_node_relations(node_id, graph)
+        
         logger.info(f"AI generation result status: {result.get('status')}")
 
         # If the generation was successful, include the updated graph data
@@ -411,14 +808,14 @@ def ai_generate_relations():
                 
                 # Get the updated subgraph data - with additional error handling
                 try:
-                    # Get the valid nodes that exist in the graph
-                    valid_source_nodes = [node for node in source_nodes if node in G.nodes]
+                    # Get the valid nodes that exist in the appropriate graph
+                    valid_source_nodes = [node for node in source_nodes if node in graph.nodes]
                     if len(valid_source_nodes) < len(source_nodes):
-                        missing_nodes = [node for node in source_nodes if node not in G.nodes]
+                        missing_nodes = [node for node in source_nodes if node not in graph.nodes]
                         logger.warning(f"Some nodes weren't found in the graph and will be skipped: {missing_nodes}")
                     
                     # Continue with valid nodes
-                    subgraph = get_subgraph(G, valid_source_nodes, depth=depth)
+                    subgraph = get_subgraph(graph, valid_source_nodes, depth=depth)
                     logger.info(f"Got subgraph with {subgraph.number_of_nodes()} nodes and {subgraph.number_of_edges()} edges")
                     
                     # Format nodes and links
@@ -429,12 +826,19 @@ def ai_generate_relations():
                         nodes.append(node_data)
                     
                     links = []
-                    for u, v, key, data in subgraph.edges(data=True, keys=True):
-                        # Check that both nodes exist in the nodes list
-                        if u in subgraph.nodes() and v in subgraph.nodes():
-                            link = {'source': str(u), 'target': str(v)}
-                            link.update({k: str(v) if v is not None else None for k, v in data.items()})
-                            # Determine relationship type for easier front-end rendering
+                    # Check if this is a MultiGraph before using keys parameter
+                    if hasattr(subgraph, 'is_multigraph') and subgraph.is_multigraph():
+                        for u, v, key, data in subgraph.edges(data=True, keys=True):
+                            # Check that both nodes exist in the nodes list
+                            if u in subgraph.nodes() and v in subgraph.nodes():
+                                link = {'source': str(u), 'target': str(v)}
+                                link.update({k: str(v) if v is not None else None for k, v in data.items()})
+                                # Ensure weight field is set for frontend consistency
+                                if 'weight' not in link:
+                                    # Extract weight from flattened synonym/antonym strength
+                                    if 'synonym_strength' in data or 'synonym' in data:
+                                        link['weight'] = data.get('synonym_strength', 1.0)
+                                # Determine relationship type for easier front-end rendering
                             # We inspect the multigraph edge key and known attribute patterns.
                             # Reason: Users want to distinguish synonyms from antonyms in the neighbour list.
                             relation_type = 'connected'
@@ -446,9 +850,33 @@ def ai_generate_relations():
                             except Exception:
                                 # Fallback to default if any issue arises
                                 relation_type = 'connected'
-                            link['relationship'] = relation_type
-                            link['id'] = f"{u}-{v}-{key}"
-                            links.append(link)
+                                link['relationship'] = relation_type
+                                link['id'] = f"{u}-{v}-{key}"
+                                links.append(link)
+                    else:
+                        # For regular graphs, iterate without keys
+                        for u, v, data in subgraph.edges(data=True):
+                            # Check that both nodes exist in the nodes list
+                            if u in subgraph.nodes() and v in subgraph.nodes():
+                                link = {'source': str(u), 'target': str(v)}
+                                link.update({k: str(v) if v is not None else None for k, v in data.items()})
+                                # Ensure weight field is set for frontend consistency
+                                if 'weight' not in link:
+                                    # Extract weight from flattened synonym/antonym strength
+                                    if 'synonym_strength' in data or 'synonym' in data:
+                                        link['weight'] = data.get('synonym_strength', 1.0)
+                                # Determine relationship type
+                                relation_type = 'connected'
+                                try:
+                                    if 'synonym_strength' in data or 'synonym' in data:
+                                        relation_type = 'synonym'
+                                    elif 'antonym_strength' in data or 'antonym' in data:
+                                        relation_type = 'antonym'
+                                except Exception:
+                                    relation_type = 'connected'
+                                link['relationship'] = relation_type
+                                link['id'] = f"{u}-{v}"
+                                links.append(link)
                     
                     # Add the graph data to the result
                     result["graph_data"] = {
@@ -459,13 +887,13 @@ def ai_generate_relations():
                     
                     # Add update statistics
                     result["update_stats"] = {
-                        "nodes_before": G.number_of_nodes() - len(result.get("changes", {}).get("updated_nodes", [])),
-                        "nodes_after": G.number_of_nodes(),
-                        "edges_before": G.number_of_edges() - (
+                        "nodes_before": graph.number_of_nodes() - len(result.get("changes", {}).get("updated_nodes", [])),
+                        "nodes_after": graph.number_of_nodes(),
+                        "edges_before": graph.number_of_edges() - (
                             result.get("changes", {}).get("synonyms_added", 0) + 
                             result.get("changes", {}).get("antonyms_added", 0)
                         ),
-                        "edges_after": G.number_of_edges(),
+                        "edges_after": graph.number_of_edges(),
                         "new_nodes": len(result.get("changes", {}).get("updated_nodes", [])),
                         "new_edges": (
                             result.get("changes", {}).get("synonyms_added", 0) + 
@@ -482,17 +910,23 @@ def ai_generate_relations():
                     
                     # Try to get at least a minimal graph with just the original node
                     try:
-                        if node_id in G.nodes:
+                        if node_id in graph.nodes:
                             minimal_subgraph = nx.Graph()
-                            minimal_subgraph.add_node(node_id, **G.nodes[node_id])
+                            minimal_subgraph.add_node(node_id, **graph.nodes[node_id])
                             
                             # Add immediate valid neighbors
-                            for neighbor in G.neighbors(node_id):
-                                minimal_subgraph.add_node(neighbor, **G.nodes[neighbor])
+                            for neighbor in graph.neighbors(node_id):
+                                minimal_subgraph.add_node(neighbor, **graph.nodes[neighbor])
                                 # Get edge data for each connection (could be multiple)
-                                for _, _, key, data in G.edges([node_id, neighbor], data=True, keys=True):
-                                    if node_id != neighbor:  # Avoid self-loops
-                                        minimal_subgraph.add_edge(node_id, neighbor, **data)
+                                # Check if this is a MultiGraph before using keys parameter
+                                if hasattr(graph, 'is_multigraph') and graph.is_multigraph():
+                                    for _, _, key, data in graph.edges([node_id, neighbor], data=True, keys=True):
+                                        if node_id != neighbor:  # Avoid self-loops
+                                            minimal_subgraph.add_edge(node_id, neighbor, **data)
+                                else:
+                                    for _, _, data in graph.edges([node_id, neighbor], data=True):
+                                        if node_id != neighbor:  # Avoid self-loops
+                                            minimal_subgraph.add_edge(node_id, neighbor, **data)
                             
                             # Format nodes and links
                             nodes = []
@@ -517,13 +951,13 @@ def ai_generate_relations():
                             
                             # Still include update statistics
                             result["update_stats"] = {
-                                "nodes_before": G.number_of_nodes() - len(result.get("changes", {}).get("updated_nodes", [])),
-                                "nodes_after": G.number_of_nodes(),
-                                "edges_before": G.number_of_edges() - (
+                                "nodes_before": graph.number_of_nodes() - len(result.get("changes", {}).get("updated_nodes", [])),
+                                "nodes_after": graph.number_of_nodes(),
+                                "edges_before": graph.number_of_edges() - (
                                     result.get("changes", {}).get("synonyms_added", 0) + 
                                     result.get("changes", {}).get("antonyms_added", 0)
                                 ),
-                                "edges_after": G.number_of_edges(),
+                                "edges_after": graph.number_of_edges(),
                                 "new_nodes": len(result.get("changes", {}).get("updated_nodes", [])),
                                 "new_edges": (
                                     result.get("changes", {}).get("synonyms_added", 0) + 
@@ -559,22 +993,119 @@ def enhanced_node():
     if not node_id:
         return jsonify({"error": "No node ID provided"}), 400
     
-    # Check if Gemini API is available (optional here if gemini_helper handles it, but good for early exit)
-    if not gemini_helper.is_available():
-        # Construct a more complete error response matching what enhance_with_gemini might return on error
-        return jsonify({
-            "id": node_id,
-            "explanation": {"error": "Gemini API is not available. Please check your API key."},
-            "neighbors": gemini_helper.get_neighbor_info(node_id), # Attempt to get basic neighbors
-            "relationships": [],
-            "error": "Gemini API is not available. Please check your API key."
-        }), 503
-
-    # Call the centralized enhance_with_gemini from gemini_helper.py
-    # This single call now handles explanation and relationship analysis internally.
-    enhanced_data = gemini_helper.enhance_with_gemini(node_id, model_name=model_name) 
+    # Determine which graph this node belongs to
+    graph, language = get_graph_for_node(node_id)
     
-    return jsonify(enhanced_data)
+    if language == 'croatian':
+        # Use Croatian AI explanation generation (faster and more focused than lexical relations)
+        try:
+            # Generate comprehensive Croatian explanation
+            explanation_data = croatian_helper.generate_croatian_explanation(
+                node_id, 
+                G=graph, 
+                model_name=model_name or 'gemini-2.0-flash'
+            )
+            
+            # Get neighbors info
+            neighbors_info = croatian_helper.get_croatian_neighbors_info(graph, node_id)
+            
+            if 'error' not in explanation_data:
+                result = {
+                    "id": node_id,
+                    "language": "croatian",
+                    "explanation": explanation_data,
+                    "neighbors": neighbors_info,
+                    "relationships": []
+                }
+                return jsonify(result)
+            else:
+                return jsonify({
+                    "id": node_id,
+                    "language": "croatian",
+                    "explanation": explanation_data,
+                    "neighbors": neighbors_info,
+                    "relationships": [],
+                    "error": explanation_data.get('error', 'Unknown error')
+                })
+        except Exception as e:
+            logger.error(f"Error with Croatian AI explanation: {e}")
+            return jsonify({
+                "id": node_id,
+                "language": "croatian",
+                "explanation": {"error": f"Croatian AI explanation failed: {str(e)}"},
+                "neighbors": croatian_helper.get_croatian_neighbors_info(graph, node_id),
+                "relationships": [],
+                "error": str(e)
+            }), 500
+    
+    else:
+        # Use Japanese AI generation (existing logic)
+        # Check if Gemini API is available (optional here if gemini_helper handles it, but good for early exit)
+        if not gemini_helper.is_available():
+            # Construct a more complete error response matching what enhance_with_gemini might return on error
+            return jsonify({
+                "id": node_id,
+                "language": "japanese",
+                "explanation": {"error": "Gemini API is not available. Please check your API key."},
+                "neighbors": gemini_helper.get_neighbor_info(node_id), # Attempt to get basic neighbors
+                "relationships": [],
+                "error": "Gemini API is not available. Please check your API key."
+            }), 503
+
+        # Call the centralized enhance_with_gemini from gemini_helper.py
+        # This single call now handles explanation and relationship analysis internally.
+        enhanced_data = gemini_helper.enhance_with_gemini(node_id, model_name=model_name) 
+        enhanced_data['language'] = 'japanese'
+        
+        return jsonify(enhanced_data)
+
+# Croatian-specific endpoints
+@app.route('/croatian-node-info')
+def croatian_node_info():
+    """Endpoint specifically for Croatian node information."""
+    node_id = request.args.get('id', '')
+    if not node_id:
+        return jsonify({'error': 'No node ID provided'}), 400
+    
+    # Check if this is a Croatian node
+    if not G_croatian or node_id not in G_croatian.nodes():
+        return jsonify({'error': f'Croatian node {node_id} not found'}), 404
+    
+    # Get Croatian node info
+    node_info = croatian_helper.get_croatian_node_info(G_croatian, node_id)
+    if not node_info:
+        return jsonify({'error': 'Failed to get Croatian node info'}), 500
+    
+    # Get neighbors info
+    neighbors_info = croatian_helper.get_croatian_neighbors_info(G_croatian, node_id)
+    node_info['neighbors'] = neighbors_info
+    
+    return jsonify(node_info)
+
+@app.route('/croatian-search')
+def croatian_search():
+    """Endpoint for searching Croatian nodes."""
+    term = request.args.get('term', '')
+    exact = request.args.get('exact', 'false').lower() == 'true'
+    
+    if not term:
+        return jsonify({'error': 'No search term provided'}), 400
+    
+    # Search Croatian nodes
+    matching_nodes = croatian_helper.find_croatian_nodes(G_croatian, term, exact)
+    
+    # Get basic info for each matching node
+    results = []
+    for node_id in matching_nodes[:50]:  # Limit to first 50 results
+        node_info = croatian_helper.get_croatian_node_info(G_croatian, node_id)
+        if node_info:
+            results.append(node_info)
+    
+    return jsonify({
+        'term': term,
+        'total_matches': len(matching_nodes),
+        'results': results
+    })
 
 # New endpoints for graph analysis
 @app.route('/graph-stats')
@@ -906,6 +1437,102 @@ def continue_exercise():
 # Register exercise routes explicitly
 app.add_url_rule('/exercise-generate', view_func=generate_exercise, methods=['GET'])
 app.add_url_rule('/exercise-continue', view_func=continue_exercise, methods=['POST'])
+
+# Croatian exercise endpoints
+@app.route('/generate-croatian-exercise', methods=['GET'])
+def generate_croatian_exercise():
+    """
+    Endpoint to generate an interactive Croatian language learning exercise for a node.
+    """
+    try:
+        node_id = request.args.get('node_id')
+        level = int(request.args.get('level', 1))
+        mode = request.args.get('mode', 'exercise')  # 'exercise' or 'conversation'
+        
+        if not node_id:
+            return jsonify({'error': 'Node ID is required'}), 400
+        
+        # Check if Croatian exercise generation is available
+        if not croatian_exercises.is_available():
+            return jsonify({
+                "available": False,
+                "message": "Croatian exercise generation is not available. Please check your API key configuration."
+            }), 503
+        
+        # Generate Croatian exercise for the node
+        result = croatian_exercises.generate_croatian_exercise(node_id, level, mode=mode)
+        
+        # Also get Croatian node context for additional info
+        node_context = croatian_exercises.get_croatian_node_context(node_id)
+        
+        return jsonify({
+            "available": True,
+            "exercise": result,
+            "node_context": node_context,
+            "modes": croatian_exercises.get_croatian_exercise_modes(),
+            "levels": croatian_exercises.get_croatian_learning_levels()
+        })
+    
+    except Exception as e:
+        logger.error(f"Error generating Croatian exercise: {e}")
+        return jsonify({
+            "available": True,
+            "error": f"Failed to generate Croatian exercise: {str(e)}"
+        }), 500
+
+@app.route('/continue-croatian-exercise', methods=['POST'])
+def continue_croatian_exercise():
+    """
+    Endpoint to continue an interactive Croatian language learning exercise.
+    """
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        node_id = data.get('node_id')
+        level = int(data.get('level', 1))
+        session_history = data.get('session_history', [])
+        user_message = data.get('message', '')
+        mode = data.get('mode', 'exercise')  # 'exercise' or 'conversation'
+        
+        if not node_id:
+            return jsonify({'error': 'Node ID is required'}), 400
+        
+        # Session history is optional - can be empty for first user message
+        # if not session_history:
+        #     return jsonify({'error': 'Session history is required for continuing exercise'}), 400
+        
+        # Check if Croatian exercise generation is available
+        if not croatian_exercises.is_available():
+            return jsonify({
+                "available": False,
+                "message": "Croatian exercise generation is not available. Please check your API key configuration."
+            }), 503
+        
+        # Add current user message to session history if provided
+        if user_message:
+            # Create new session entry with user message (tutor response will be generated)
+            session_history = session_history + [{'user': user_message, 'tutor': ''}]
+        
+        # Continue Croatian exercise
+        result = croatian_exercises.generate_croatian_exercise(node_id, level, session_history, mode=mode)
+        
+        return jsonify({
+            "available": True,
+            "exercise": result
+        })
+    
+    except Exception as e:
+        logger.error(f"Error continuing Croatian exercise: {e}")
+        return jsonify({
+            "available": True,
+            "error": f"Failed to continue Croatian exercise: {str(e)}"
+        }), 500
+
+# Register Croatian exercise routes explicitly
+app.add_url_rule('/croatian-exercise-generate', view_func=generate_croatian_exercise, methods=['GET'])
+app.add_url_rule('/croatian-exercise-continue', view_func=continue_croatian_exercise, methods=['POST'])
 
 @app.route('/analyze-readability', methods=['GET', 'POST'])
 def analyze_readability():

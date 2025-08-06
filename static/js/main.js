@@ -13,6 +13,133 @@ const aiGenerationCache = {}; // Cache for AI Generation results
 // Visibility toggles for relation types
 let showSynonyms = true;
 let showAntonyms = true;
+// Cando/Lexical mode tracking
+let currentMode = 'lexical'; // 'lexical' or 'cando'
+let lastLexicalSearch = null; // Store last lexical search for returning
+
+// Global function to toggle the node information sidebar (must be global for onclick)
+window.toggleNodeInfoSidebar = function() {
+    console.log('toggleNodeInfoSidebar called from global scope');
+    const nodeInfoSidebar = document.getElementById('combined-sidebar');
+    const candoSidebar = document.getElementById('cando-sidebar');
+    
+    if (!nodeInfoSidebar) {
+        console.error('Node info sidebar not found!');
+        return;
+    }
+    
+    // Close cando sidebar if it's open
+    if (candoSidebar && candoSidebar.classList.contains('open')) {
+        if (typeof closeCandoSidebar === 'function') {
+            closeCandoSidebar();
+        }
+    }
+    
+    // Toggle the open class
+    nodeInfoSidebar.classList.toggle('open');
+    const isNowOpen = nodeInfoSidebar.classList.contains('open');
+    console.log('Sidebar toggled. Now:', isNowOpen ? 'OPEN' : 'CLOSED');
+    
+    // Update arrow direction and text
+    const arrow = nodeInfoSidebar.querySelector('.arrow');
+    if (arrow) {
+        if (isNowOpen) {
+            arrow.style.transform = 'rotate(180deg)';
+            arrow.textContent = '▲';
+        } else {
+            arrow.style.transform = 'rotate(0deg)';
+            arrow.textContent = '▼';  
+        }
+    }
+    
+    // Update current mode
+    if (isNowOpen) {
+        currentMode = 'lexical';
+        if (typeof clearAndSetLexicalModeInfo === 'function') {
+            clearAndSetLexicalModeInfo();
+        }
+    }
+    
+    // Force a style recalculation for smooth animation
+    nodeInfoSidebar.style.display = 'none';
+    nodeInfoSidebar.offsetHeight; // Trigger reflow
+    nodeInfoSidebar.style.display = 'flex';
+}
+
+// Global function to toggle the Can-do information sidebar (must be global for onclick)
+window.toggleCandoSidebar = function() {
+    console.log('toggleCandoSidebar called from global scope');
+    const candoSidebar = document.getElementById('cando-sidebar');
+    const nodeInfoSidebar = document.getElementById('combined-sidebar');
+    
+    if (!candoSidebar) {
+        console.error('Cando sidebar not found!');
+        return;
+    }
+    
+    // Close node info sidebar if it's open
+    if (nodeInfoSidebar && nodeInfoSidebar.classList.contains('open')) {
+        if (typeof closeNodeInfoSidebar === 'function') {
+            closeNodeInfoSidebar();
+        } else {
+            // Fallback: manually close the node info sidebar
+            nodeInfoSidebar.classList.remove('open');
+        }
+    }
+    
+    // Toggle the open class
+    candoSidebar.classList.toggle('open');
+    const isNowOpen = candoSidebar.classList.contains('open');
+    console.log('Can-do sidebar toggled. Now:', isNowOpen ? 'OPEN' : 'CLOSED');
+    
+    // Update arrow direction and text
+    const arrow = candoSidebar.querySelector('.arrow');
+    if (arrow) {
+        if (isNowOpen) {
+            arrow.style.transform = 'rotate(180deg)';
+            arrow.textContent = '▶';
+        } else {
+            arrow.style.transform = 'rotate(0deg)';
+            arrow.textContent = '◀';  
+        }
+    }
+    
+    // Update current mode and load cando graph
+    if (isNowOpen) {
+        currentMode = 'cando';
+        if (typeof loadFullCandoGraph === 'function') {
+            loadFullCandoGraph();
+        }
+        if (typeof clearAndSetCandoModeInfo === 'function') {
+            clearAndSetCandoModeInfo();
+        }
+    } else {
+        // Return to lexical mode
+        currentMode = 'lexical';
+        if (lastLexicalSearch) {
+            if (typeof fetchGraphData === 'function') {
+                fetchGraphData(
+                    lastLexicalSearch.term, 
+                    lastLexicalSearch.attribute, 
+                    lastLexicalSearch.exact, 
+                    lastLexicalSearch.language
+                );
+            }
+        } else {
+            if (typeof initializeGraph === 'function') {
+                initializeGraph({ nodes: [], links: [] });
+            }
+            if (typeof updateSearchInfo === 'function') {
+                updateSearchInfo('', '');
+            }
+        }
+    }
+    
+    // Force a style recalculation for smooth animation
+    candoSidebar.style.display = 'none';
+    candoSidebar.offsetHeight; // Trigger reflow
+    candoSidebar.style.display = 'flex';
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     // Function to handle tab switching
@@ -236,6 +363,14 @@ function toggleAccordion(element) {
     const labelSizeValue = document.getElementById('label-size-value');
     const toggleSynonymsChk = document.getElementById('toggle-synonyms');
     const toggleAntonymsChk = document.getElementById('toggle-antonyms');
+    
+    // Initialize visibility variables from checkbox states
+    if (toggleSynonymsChk) {
+        showSynonyms = toggleSynonymsChk.checked;
+    }
+    if (toggleAntonymsChk) {
+        showAntonyms = toggleAntonymsChk.checked;
+    }
 
     // Check WebGL availability
     try {
@@ -312,21 +447,27 @@ function toggleAccordion(element) {
         }
     }
 
-    function fetchGraphData(term, attribute = 'kanji', exact = true) {
+    function fetchGraphData(term, attribute = 'kanji', exact = true, language = null) {
         if (!term.trim()) {
             console.log('Empty search term, not fetching data');
             return;
         }
         
         const depth = document.getElementById('search-depth').value;
-        console.log(`Fetching graph data: term=${term}, attribute=${attribute}, depth=${depth}, exact=${exact}`);
+        // Get language from selector if not explicitly provided
+        if (!language) {
+            const languageSelector = document.getElementById('language-select');
+            language = languageSelector ? languageSelector.value : 'japanese';
+        }
+        
+        console.log(`Fetching graph data: term=${term}, attribute=${attribute}, depth=${depth}, exact=${exact}, language=${language}`);
         
         // Show loading indicator
         const graphContainer = document.getElementById('graph-container');
         graphContainer.innerHTML = '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;"><p>Loading graph data...</p></div>';
         
-        // Prepare the URL with parameters
-        const url = `/graph-data?term=${encodeURIComponent(term)}&attribute=${encodeURIComponent(attribute)}&depth=${depth}&exact=${exact}`;
+        // Prepare the URL with parameters including language
+        const url = `/graph-data?term=${encodeURIComponent(term)}&attribute=${encodeURIComponent(attribute)}&depth=${depth}&exact=${exact}&language=${encodeURIComponent(language)}`;
         
         // Fetch data from API
         fetch(url)
@@ -1177,63 +1318,209 @@ function toggleAccordion(element) {
     }
 
     function handleNodeClick(node) {
-        console.log('Node clicked:', node);
+        console.log('Node clicked:', node, 'Current mode:', currentMode);
         
         try {
-            // Update node info panel
-            console.log('Updating node info...');
-            updateNodeInfo(node);
-            
-            // Get node links for the neighbors list
-            console.log('Finding node links...');
-            const nodeLinks = graphData.links.filter(link => {
-                // Handle both object and string reference formats
-                const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
-                const targetId = typeof link.target === 'object' ? link.target.id : link.target;
-                return sourceId === node.id || targetId === node.id;
-            });
-            
-            console.log(`Found ${nodeLinks.length} links for node ${node.id}`);
-            
-            // Update neighbors list
-            console.log('Updating neighbors list...');
-            updateNeighborsList(node, nodeLinks);
-            
-            // Highlight the selected node in the graph
-            console.log('Highlighting node and neighbors...');
-            highlightNodeAndNeighbors(node);
-            updateHighlight();
-            
-            // Update current selected node
-            clickedNode = node;
-            
-            // Open the combined sidebar if it's not already open
-            console.log('Opening combined sidebar...');
-            const combinedSidebar = document.getElementById('combined-sidebar');
-            if (combinedSidebar) {
-                if (!combinedSidebar.classList.contains('open')) {
-                    combinedSidebar.classList.add('open');
-                    // Also update the arrow
-                    const arrow = combinedSidebar.querySelector('.arrow');
-                    if (arrow) {
-                        arrow.style.transform = 'rotate(180deg)';
-                    }
-                }
-                
-                // Fetch data for both tabs
-                console.log('Fetching Gemini info for:', node.id);
-                fetchGeminiInfo(node.id);
-                
-                console.log('Fetching Wikidata info for:', node.id);
-                fetchWikidataInfo(node.id);
-        } else {
-                console.error('Combined sidebar element not found');
+            // Route to appropriate handler based on current mode
+            if (currentMode === 'cando') {
+                handleCandoModeNodeClick(node);
+            } else {
+                handleLexicalModeNodeClick(node);
             }
             
             console.log('Node click handling completed successfully');
         } catch (error) {
             console.error('Error in handleNodeClick:', error);
         }
+    }
+    
+    // Handle node clicks in lexical mode
+    function handleLexicalModeNodeClick(node) {
+        console.log('Handling lexical node click for:', node.id);
+        
+        // Update node info panel with lexical information
+        console.log('Updating lexical node info...');
+        updateNodeInfo(node);
+        
+        // Get node links for the neighbors list
+        console.log('Finding node links...');
+        const nodeLinks = graphData.links.filter(link => {
+            // Handle both object and string reference formats
+            const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+            const targetId = typeof link.target === 'object' ? link.target.id : link.target;
+            return sourceId === node.id || targetId === node.id;
+        });
+        
+        console.log(`Found ${nodeLinks.length} links for node ${node.id}`);
+        
+        // Update neighbors list
+        console.log('Updating neighbors list...');
+        updateNeighborsList(node, nodeLinks);
+        
+        // Highlight the selected node in the graph
+        console.log('Highlighting node and neighbors...');
+        highlightNodeAndNeighbors(node);
+        updateHighlight();
+        
+        // Update current selected node
+        clickedNode = node;
+        
+        // Open the node info sidebar for lexical mode
+        console.log('Opening node info sidebar for lexical mode...');
+        const nodeInfoSidebar = document.getElementById('combined-sidebar');
+        console.log('Found sidebar element:', nodeInfoSidebar);
+        console.log('Sidebar current classes:', nodeInfoSidebar ? nodeInfoSidebar.className : 'No sidebar');
+        console.log('Toggle function available:', typeof window.toggleNodeInfoSidebar);
+        
+        if (nodeInfoSidebar) {
+            if (!nodeInfoSidebar.classList.contains('open')) {
+                console.log('Sidebar is closed, attempting to open...');
+                window.toggleNodeInfoSidebar();
+                console.log('After toggle, sidebar classes:', nodeInfoSidebar.className);
+            } else {
+                console.log('Sidebar is already open');
+            }
+            
+            // Fetch data for both tabs
+            console.log('Fetching Gemini info for:', node.id);
+            fetchGeminiInfo(node.id);
+            
+            console.log('Fetching Wikidata info for:', node.id);
+            fetchWikidataInfo(node.id);
+        } else {
+            console.error('Node info sidebar element not found');
+        }
+    }
+    
+    // Handle node clicks in cando mode
+    function handleCandoModeNodeClick(node) {
+        console.log('Handling cando node click for:', node.id);
+        
+        // Update the RIGHT sidebar with detailed cando info
+        updateCandoRightSidebarInfo(node);
+        
+        // Highlight the selected node
+        highlightNodeAndNeighbors(node);
+        updateHighlight();
+        
+        // Update current selected node
+        clickedNode = node;
+        
+        // Ensure the cando sidebar is open
+        const candoSidebar = document.getElementById('cando-sidebar');
+        if (candoSidebar && !candoSidebar.classList.contains('open')) {
+            window.toggleCandoSidebar();
+        }
+    }
+
+    // Update RIGHT sidebar with cando node information
+    function updateCandoRightSidebarInfo(node) {
+        const candoDetailsContainer = document.getElementById('cando-details-content');
+        if (!candoDetailsContainer) return;
+        
+        let html = '<div class="cando-detail-item">';
+        
+        if (node.jp && node.en) {
+            // This is a Can-do statement
+            html += `
+                <h5>Can-do Statement</h5>
+                <div class="cando-statement">
+                    <p class="japanese-text"><strong>Japanese:</strong><br>${node.jp}</p>
+                    <p class="english-text"><strong>English:</strong><br>${node.en}</p>
+                </div>
+                <div class="cando-metadata">
+                    <p><strong>ID:</strong> ${node.id}</p>
+                    <p><strong>Type:</strong> Can-do Statement</p>
+                </div>
+            `;
+        } else {
+            // This is a metadata node (Level, Topic, etc.)
+            const nodeType = node.id.split(':')[0];
+            const nodeName = node.id.split(':')[1] || node.id;
+            
+            html += `
+                <h5>${nodeType} Node</h5>
+                <div class="cando-metadata">
+                    <p><strong>Name:</strong> ${nodeName}</p>
+                    <p><strong>Type:</strong> ${nodeType}</p>
+                    <p><strong>ID:</strong> ${node.id}</p>
+                </div>
+            `;
+            
+            // Show additional node attributes
+            Object.keys(node).forEach(key => {
+                if (key !== 'id' && key !== 'x' && key !== 'y' && key !== 'z' && 
+                    key !== 'vx' && key !== 'vy' && key !== 'vz' && key !== 'index' &&
+                    key !== 'fx' && key !== 'fy' && key !== 'fz') {
+                    html += `<p><strong>${key}:</strong> ${node[key]}</p>`;
+                }
+            });
+        }
+        
+        html += '</div>';
+        candoDetailsContainer.innerHTML = html;
+        
+        // Also update connections in the search results area
+        updateCandoConnections(node);
+    }
+    
+    // Update connections for cando node in search results area
+    function updateCandoConnections(node) {
+        const candoSearchContainer = document.getElementById('cando-search-results');
+        if (!candoSearchContainer) return;
+        
+        // Get node links
+        const nodeLinks = graphData.links.filter(link => {
+            const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+            const targetId = typeof link.target === 'object' ? link.target.id : link.target;
+            return sourceId === node.id || targetId === node.id;
+        });
+        
+        let html = '<div class="cando-connections">';
+        html += `<h5>Connections (${nodeLinks.length})</h5>`;
+        
+        if (nodeLinks.length === 0) {
+            html += '<p>No connections found.</p>';
+        } else {
+            html += '<ul class="connection-list">';
+            
+            nodeLinks.forEach(link => {
+                const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+                const targetId = typeof link.target === 'object' ? link.target.id : link.target;
+                const connectedNodeId = sourceId === node.id ? targetId : sourceId;
+                
+                // Find the connected node
+                const connectedNode = graphData.nodes.find(n => n.id === connectedNodeId);
+                if (connectedNode) {
+                    const nodeType = connectedNodeId.split(':')[0];
+                    const displayName = connectedNode.jp || connectedNode.name || connectedNodeId.split(':')[1] || connectedNodeId;
+                    
+                    html += `
+                        <li class="cando-connection-item" data-node-id="${connectedNodeId}">
+                            <span class="connection-type">[${nodeType}]</span>
+                            <span class="connection-name">${displayName}</span>
+                        </li>
+                    `;
+                }
+            });
+            
+            html += '</ul>';
+        }
+        
+        html += '</div>';
+        candoSearchContainer.innerHTML = html;
+        
+        // Add click handlers for connection items
+        const connectionItems = candoSearchContainer.querySelectorAll('.cando-connection-item');
+        connectionItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const nodeId = item.getAttribute('data-node-id');
+                const connectedNode = graphData.nodes.find(n => n.id === nodeId);
+                if (connectedNode) {
+                    handleNodeClick(connectedNode);
+                }
+            });
+        });
     }
 
     function updateNeighborsPanel(node) {
@@ -1533,14 +1820,50 @@ function toggleAccordion(element) {
     // Set initial value
     is3D = dimensionSelect.value === '3d';
 
+    // Language selector change handler
+    const languageSelect = document.getElementById('language-select');
+    if (languageSelect) {
+        languageSelect.addEventListener('change', function() {
+            const selectedLanguage = this.value;
+            const japaneseOptions = document.querySelectorAll('.japanese-option');
+            const croatianOptions = document.querySelectorAll('.croatian-option');
+            
+            if (selectedLanguage === 'japanese') {
+                // Show Japanese options, hide Croatian options
+                japaneseOptions.forEach(option => option.style.display = '');
+                croatianOptions.forEach(option => option.style.display = 'none');
+                // Set default Japanese attribute
+                document.getElementById('search-attribute').value = 'kanji';
+            } else if (selectedLanguage === 'croatian') {
+                // Hide Japanese options, show Croatian options
+                japaneseOptions.forEach(option => option.style.display = 'none');
+                croatianOptions.forEach(option => option.style.display = '');
+                // Set default Croatian attribute
+                document.getElementById('search-attribute').value = 'natuknica';
+            }
+        });
+        
+        // Trigger initial setup
+        languageSelect.dispatchEvent(new Event('change'));
+    }
+
     // Set up search functionality
     searchButton.addEventListener('click', () => {
         searchTerm = searchInput.value.trim();
         searchAttribute = document.getElementById('search-attribute').value;
         const exactSearch = exactSearchCheckbox.checked;
+        const selectedLanguage = document.getElementById('language-select').value;
         
         if (searchTerm) {
-        fetchGraphData(searchTerm, searchAttribute, exactSearch);
+            // Store this search for returning from cando mode
+            lastLexicalSearch = {
+                term: searchTerm,
+                attribute: searchAttribute,
+                exact: exactSearch,
+                language: selectedLanguage
+            };
+            currentMode = 'lexical';
+            fetchGraphData(searchTerm, searchAttribute, exactSearch, selectedLanguage);
         }
     });
 
@@ -1550,6 +1873,353 @@ function toggleAccordion(element) {
             searchButton.click();
         }
     });
+    
+    // Clear and set info panel for cando mode
+    function clearAndSetCandoModeInfo() {
+        const candoDetailsContainer = document.getElementById('cando-details-content');
+        const candoSearchContainer = document.getElementById('cando-search-results');
+        
+        if (candoDetailsContainer) {
+            candoDetailsContainer.innerHTML = `
+                <p><strong>Can-do Explorer Mode</strong></p>
+                <p>Click on any Can-do statement (green nodes) or category node (white nodes) in the graph to see its details.</p>
+            `;
+        }
+        
+        if (candoSearchContainer) {
+            candoSearchContainer.innerHTML = `
+                <p>Search for Can-do statements to see results here.</p>
+            `;
+        }
+    }
+    
+    // Clear and set info panel for lexical mode
+    function clearAndSetLexicalModeInfo() {
+        const nodeInfoContainer = document.getElementById('node-info-content');
+        const neighborsContainer = document.getElementById('neighbors-list');
+        
+        if (nodeInfoContainer) {
+            nodeInfoContainer.innerHTML = `
+                <p>No node selected. Click on a node in the graph to see its details.</p>
+            `;
+        }
+        
+        if (neighborsContainer) {
+            neighborsContainer.innerHTML = `
+                <p>No node selected. Click on a node to see its neighbors.</p>
+            `;
+        }
+    }
+
+    // Function to load and display the full Can-do graph
+    function loadFullCandoGraph() {
+        console.log('Loading full Can-do graph...');
+        currentMode = 'cando'; // Ensure mode is set
+        
+        // Show loading indicator
+        const graphContainer = document.getElementById('graph-container');
+        graphContainer.innerHTML = '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;"><p>Loading Can-do graph...</p></div>';
+        
+        // Fetch full Can-do graph data (without node_id parameter)
+        fetch('/cando-graph-data')
+            .then(response => {
+                console.log('Full Can-do graph response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Received full Can-do graph data:', data);
+                console.log('Nodes count:', data.nodes ? data.nodes.length : 'no nodes property');
+                console.log('Links count:', data.links ? data.links.length : 'no links property');
+                
+                if (!data.nodes || data.nodes.length === 0) {
+                    console.warn('No nodes found in Can-do graph response');
+                    graphContainer.innerHTML = '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;"><p>No Can-do graph data available.</p></div>';
+                    return;
+                }
+                
+                // Store the data globally
+                graphData = data;
+                
+                // Initialize the Can-do graph
+                console.log('About to initialize full Can-do graph...');
+                initializeCandoGraph(data);
+                
+                // Update search info for Can-do
+                updateCandoSearchInfo('full_graph', data.nodes.length, data.links.length);
+            })
+            .catch(error => {
+                console.error('Error fetching full Can-do graph data:', error);
+                graphContainer.innerHTML = `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                    <p>Error loading Can-do graph: ${error.message}</p>
+                    <p>Please try again.</p>
+                </div>`;
+            });
+    }
+
+    // Function to load and display Can-do graph for specific node
+    function loadCandoGraph(candoId) {
+        console.log('Loading Can-do graph for:', candoId);
+        
+        // Show loading indicator
+        const graphContainer = document.getElementById('graph-container');
+        graphContainer.innerHTML = '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;"><p>Loading Can-do graph...</p></div>';
+        
+        // Fetch Can-do graph data
+        fetch(`/cando-graph-data?node_id=${encodeURIComponent(candoId)}`)
+            .then(response => {
+                console.log('Can-do graph response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Received Can-do graph data:', data);
+                console.log('Nodes count:', data.nodes ? data.nodes.length : 'no nodes property');
+                console.log('Links count:', data.links ? data.links.length : 'no links property');
+                
+                if (!data.nodes || data.nodes.length === 0) {
+                    console.warn('No nodes found in Can-do graph response');
+                    graphContainer.innerHTML = '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;"><p>No Can-do graph data available.</p></div>';
+                    return;
+                }
+                
+                // Store the data globally
+                graphData = data;
+                
+                // Initialize the Can-do graph
+                console.log('About to initialize Can-do graph...');
+                initializeCandoGraph(data);
+                
+                // Update search info for Can-do
+                updateCandoSearchInfo(candoId, data.nodes.length, data.links.length);
+            })
+            .catch(error => {
+                console.error('Error fetching Can-do graph data:', error);
+                graphContainer.innerHTML = `<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                    <p>Error loading Can-do graph: ${error.message}</p>
+                    <p>Please try again.</p>
+                </div>`;
+            });
+    }
+
+    // Function to initialize Can-do graph visualization
+    function initializeCandoGraph(data) {
+        console.log('Initializing Can-do graph with data:', data);
+        console.log('Data nodes length:', data.nodes.length);
+        console.log('Data links length:', data.links.length);
+        
+        const graphContainer = document.getElementById('graph-container');
+        if (!graphContainer) {
+            console.error('Graph container not found!');
+            return;
+        }
+        
+        graphContainer.innerHTML = '';
+        
+        const graphEl = document.createElement('div');
+        graphEl.id = 'cando-graph';
+        graphEl.style.width = '100%';
+        graphEl.style.height = '100%';
+        graphContainer.appendChild(graphEl);
+        console.log('Created graph element:', graphEl);
+        
+        // Determine if we're using 2D or 3D
+        const dimensionSelect = document.getElementById('dimension-select');
+        const is3D = dimensionSelect ? dimensionSelect.value === '3d' : false;
+        console.log('Using 3D mode:', is3D);
+        
+        // Check if required libraries are available
+        console.log('ForceGraph available:', typeof ForceGraph);
+        console.log('ForceGraph3D available:', typeof ForceGraph3D);
+        console.log('SpriteText available:', typeof SpriteText);
+        
+        try {
+            let graph;
+            
+            if (is3D) {
+                graph = ForceGraph3D()
+                    (graphEl)
+                    .nodeId('id')
+                    .graphData(data)
+                    .backgroundColor('#1a1a1a')
+                    .nodeLabel(node => {
+                        // For Can-do nodes, show Japanese and English
+                        if (node.jp && node.en) {
+                            return `${node.jp}\\n${node.en}`;
+                        }
+                        return node.id || '';
+                    })
+                    .nodeColor(node => {
+                        // Color Can-do nodes differently based on type
+                        if (node.id && node.id.includes('CanDo:')) return '#4CAF50'; // Green for Can-do statements
+                        if (node.id && node.id.includes('Level:')) return '#2196F3'; // Blue for levels
+                        if (node.id && node.id.includes('CompetenceType:')) return '#FF9800'; // Orange for competence types
+                        if (node.id && node.id.includes('LingActivity:')) return '#9C27B0'; // Purple for linguistic activities
+                        return '#ffffff'; // White for others
+                    })
+                    .linkColor(link => '#888888')
+                    .linkWidth(2)
+                    .nodeRelSize(8)
+                    .nodeThreeObject(node => {
+                        if (typeof SpriteText !== 'undefined') {
+                            const sprite = new SpriteText(node.jp || node.id || '');
+                            sprite.color = '#ffffff';
+                            sprite.textHeight = 6;
+                            sprite.backgroundColor = 'rgba(0,0,0,0.4)';
+                            sprite.padding = 2;
+                            return sprite;
+                        }
+                        return null;
+                    })
+                    .onNodeClick(node => {
+                        console.log('Can-do node clicked:', node);
+                        handleCandoNodeClick(node);
+                    });
+                    
+                graph.cameraPosition({ z: 400 });
+            } else {
+                graph = ForceGraph()
+                    (graphEl)
+                    .nodeId('id')
+                    .graphData(data)
+                    .backgroundColor('#1a1a1a')
+                    .nodeLabel(node => {
+                        if (node.jp && node.en) {
+                            return `${node.jp}\\n${node.en}`;
+                        }
+                        return node.id || '';
+                    })
+                    .nodeColor(node => {
+                        if (node.id && node.id.includes('CanDo:')) return '#4CAF50';
+                        if (node.id && node.id.includes('Level:')) return '#2196F3';
+                        if (node.id && node.id.includes('CompetenceType:')) return '#FF9800';
+                        if (node.id && node.id.includes('LingActivity:')) return '#9C27B0';
+                        return '#ffffff';
+                    })
+                    .linkColor(link => '#888888')
+                    .linkWidth(2)
+                    .nodeRelSize(8)
+                    .nodeCanvasObject((node, ctx, globalScale) => {
+                        const label = node.jp || node.id || '';
+                        const fontSize = 12 / globalScale;
+                        ctx.font = `${fontSize}px Sans-Serif`;
+                        const textWidth = ctx.measureText(label).width;
+                        const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.4);
+                        
+                        // Node circle
+                        ctx.fillStyle = node.id && node.id.includes('CanDo:') ? '#4CAF50' : 
+                                       node.id && node.id.includes('Level:') ? '#2196F3' :
+                                       node.id && node.id.includes('CompetenceType:') ? '#FF9800' :
+                                       node.id && node.id.includes('LingActivity:') ? '#9C27B0' : '#ffffff';
+                        ctx.beginPath();
+                        ctx.arc(node.x, node.y, 6, 0, 2 * Math.PI);
+                        ctx.fill();
+                        
+                        // Text background
+                        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+                        ctx.fillRect(
+                            node.x - bckgDimensions[0] / 2,
+                            node.y - bckgDimensions[1] / 2 - 12,
+                            bckgDimensions[0],
+                            bckgDimensions[1]
+                        );
+                        
+                        // Text
+                        ctx.fillStyle = '#ffffff';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(label, node.x, node.y - 12);
+                    })
+                    .onNodeClick(node => {
+                        console.log('Can-do node clicked:', node);
+                        handleCandoNodeClick(node);
+                    });
+            }
+            
+            // Store the graph instance
+            window.candoGraph = graph;
+            Graph = graph; // For compatibility
+            
+            console.log('Can-do graph initialized successfully');
+            
+        } catch (error) {
+            console.error('Error initializing Can-do graph:', error);
+            graphContainer.innerHTML = `
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                    <p>Error initializing Can-do graph: ${error.message}</p>
+                </div>
+            `;
+        }
+    }
+
+    // Function to handle Can-do node clicks
+    function handleCandoNodeClick(node) {
+        console.log('Can-do node clicked:', node);
+        
+        // Show Can-do details in the right sidebar
+        const detailsContainer = document.getElementById('cando-details-content');
+        
+        let html = `<div class="cando-detail-item">`;
+        
+        if (node.jp && node.en) {
+            // This is a Can-do statement
+            html += `
+                <h5>${node.jp}</h5>
+                <p class="cando-english">${node.en}</p>
+                <p class="cando-id">ID: ${node.id}</p>
+            `;
+        } else {
+            // This is a metadata node (Level, CompetenceType, etc.)
+            html += `
+                <h5>${node.id}</h5>
+                <p class="cando-type">Type: ${node.id.split(':')[0]}</p>
+            `;
+            
+            // Show any additional attributes
+            Object.keys(node).forEach(key => {
+                if (key !== 'id' && key !== 'x' && key !== 'y' && key !== 'z' && 
+                    key !== 'vx' && key !== 'vy' && key !== 'vz' && key !== 'index') {
+                    html += `<p><strong>${key}:</strong> ${node[key]}</p>`;
+                }
+            });
+        }
+        
+        html += `</div>`;
+        detailsContainer.innerHTML = html;
+        
+        // Ensure the right sidebar is open
+        const rightSidebar = document.querySelector('.sidebar-right');
+        if (!rightSidebar.classList.contains('open')) {
+            rightSidebar.classList.add('open');
+        }
+    }
+
+    // Function to update search info for Can-do
+    function updateCandoSearchInfo(candoId, nodeCount, linkCount) {
+        const searchInfoContainer = document.getElementById('search-info');
+        if (!searchInfoContainer) return;
+        
+        const focusedNodeInfo = candoId === 'full_graph' 
+            ? '<p><strong>View:</strong> <span>Complete Can-do Graph</span></p>'
+            : `<p><strong>Focused Node:</strong> <span>${candoId}</span></p>`;
+        
+        searchInfoContainer.innerHTML = `
+            <h4>Can-do Graph Information</h4>
+            ${focusedNodeInfo}
+            <p><strong>Total Nodes:</strong> <span>${nodeCount}</span></p>
+            <p><strong>Total Links:</strong> <span>${linkCount}</span></p>
+            <p><strong>Graph Type:</strong> <span>Can-do Statements</span></p>
+        `;
+    }
+
+    // Make functions available globally
+    window.loadCandoGraph = loadCandoGraph;
+    window.loadFullCandoGraph = loadFullCandoGraph;
+    window.handleCandoNodeClick = handleCandoNodeClick;
 
     // Initial empty graph
     initializeGraph({ nodes: [], links: [] });
@@ -1733,10 +2403,53 @@ function toggleAccordion(element) {
         // Make sure it starts without the open class
         combinedSidebar.classList.remove('open');
         
+        // Ensure initial arrow state
+        const arrow = combinedSidebar.querySelector('.arrow');
+        if (arrow) {
+            arrow.textContent = '▼';
+            arrow.style.transform = 'rotate(0deg)';
+        }
+        
         // Add click handler to the header to toggle the sidebar
         const sidebarHeader = combinedSidebar.querySelector('.sidebar-header');
         if (sidebarHeader) {
-            sidebarHeader.addEventListener('click', toggleCombinedSidebar);
+            sidebarHeader.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.toggleNodeInfoSidebar();
+            });
+            
+            // Make it visually obvious it's clickable
+            sidebarHeader.style.cursor = 'pointer';
+            sidebarHeader.style.userSelect = 'none';
+        }
+    }
+    
+    // Initialize right cando sidebar - ensure it starts closed
+    const candoSidebar = document.getElementById('cando-sidebar');
+    if (candoSidebar) {
+        // Make sure it starts without the open class
+        candoSidebar.classList.remove('open');
+        
+        // Ensure initial arrow state
+        const arrow = candoSidebar.querySelector('.arrow');
+        if (arrow) {
+            arrow.textContent = '◀';
+            arrow.style.transform = 'rotate(0deg)';
+        }
+        
+        // Add click handler to the header to toggle the sidebar
+        const sidebarHeader = candoSidebar.querySelector('.sidebar-header');
+        if (sidebarHeader) {
+            sidebarHeader.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.toggleCandoSidebar();
+            });
+            
+            // Make it visually obvious it's clickable
+            sidebarHeader.style.cursor = 'pointer';
+            sidebarHeader.style.userSelect = 'none';
         }
     }
 
@@ -1917,15 +2630,25 @@ function toggleAccordion(element) {
         // Source lexeme info
         const sourceLexeme = generatedData.source_lexeme || {};
         if (sourceLexeme.lemma) {
-            html += `
-                <h4>Source Lexeme</h4>
-                <div class="generation-item source-lexeme">
-                    <p><strong>Lemma:</strong> ${sourceLexeme.lemma}</p>
-                    <p><strong>Hiragana:</strong> ${sourceLexeme.hiragana || 'N/A'}</p>
-                    <p><strong>POS:</strong> ${sourceLexeme.POS || 'N/A'}</p>
-                    <p><strong>Translation:</strong> ${formatTranslation(sourceLexeme.translation)}</p>
-                </div>
-            `;
+            html += `<h4>Source Lexeme</h4><div class="generation-item source-lexeme">`;
+            html += `<p><strong>Lemma:</strong> ${sourceLexeme.lemma}</p>`;
+            
+            // Language-specific fields
+            if (sourceLexeme.natuknica) {
+                // Croatian lexeme
+                html += `<p><strong>Natuknica:</strong> ${sourceLexeme.natuknica}</p>`;
+                html += `<p><strong>POS:</strong> ${sourceLexeme.UPOS || sourceLexeme.pos || 'N/A'}</p>`;
+                if (sourceLexeme.tekst) {
+                    html += `<p><strong>Definition:</strong> ${sourceLexeme.tekst}</p>`;
+                }
+            } else {
+                // Japanese lexeme
+                html += `<p><strong>Hiragana:</strong> ${sourceLexeme.hiragana || 'N/A'}</p>`;
+                html += `<p><strong>POS:</strong> ${sourceLexeme.POS || 'N/A'}</p>`;
+            }
+            
+            html += `<p><strong>Translation:</strong> ${formatTranslation(sourceLexeme.translation)}</p>`;
+            html += `</div>`;
         }
         
         // Generated synonyms
@@ -1935,7 +2658,7 @@ function toggleAccordion(element) {
             html += '<div class="generation-synonyms">';
             
             synonyms.forEach(synonym => {
-                const strength = parseFloat(synonym.synonym_strenght || 0).toFixed(2);
+                const strength = parseFloat(synonym.synonym_strenght || synonym.synonym_strength || 0).toFixed(2);
                 html += `
                     <div class="generation-item synonym-item">
                         <p class="item-title">
@@ -1961,7 +2684,7 @@ function toggleAccordion(element) {
             html += '<div class="generation-antonyms">';
             
             antonyms.forEach(antonym => {
-                const strength = parseFloat(antonym.antonym_strenght || 0).toFixed(2);
+                const strength = parseFloat(antonym.antonym_strenght || antonym.antonym_strength || 0).toFixed(2);
                 html += `
                     <div class="generation-item antonym-item">
                         <p class="item-title">
@@ -2080,6 +2803,35 @@ function toggleAccordion(element) {
         }
     }
 
+    // Function to detect node language based on attributes
+    function detectNodeLanguage(node) {
+        // Check if node has Croatian-specific attributes
+        if (node.language === 'croatian' || 
+            node.natuknica || 
+            node.natuknica_norm || 
+            node.UPOS || 
+            (node.pos && !node.POS)) {
+            return 'croatian';
+        }
+        
+        // Check if node has Japanese-specific attributes
+        if (node.hiragana || 
+            node.POS || 
+            node.old_JLPT || 
+            node.jlpt_jisho_lemma) {
+            return 'japanese';
+        }
+        
+        // Check current language selector as fallback
+        const languageSelector = document.getElementById('language-select');
+        if (languageSelector) {
+            return languageSelector.value;
+        }
+        
+        // Default to Japanese
+        return 'japanese';
+    }
+
     // Modify the updateNodeInfo function to add AI Generation tab handling
     function updateNodeInfo(node) {
         if (!node) {
@@ -2088,7 +2840,11 @@ function toggleAccordion(element) {
             document.getElementById('gemini-details').innerHTML = '<div class="no-data">Select a node to view AI-enhanced information</div>';
             document.getElementById('wikidata-details').innerHTML = '<div class="no-data">Select a node to view Wikidata information</div>';
             document.getElementById('ai-generation-details').innerHTML = '<div class="no-data">Select a node to generate new lexical relations</div>';
-            document.getElementById('exercises-details').innerHTML = '<div class="no-data">Select a node to practice with interactive exercises</div>';
+            // Check if exercises-details element exists before trying to update it
+            const exercisesElement = document.getElementById('exercises-details');
+            if (exercisesElement) {
+                exercisesElement.innerHTML = '<div class="no-data">Select a node to practice with interactive exercises</div>';
+            }
             
             // Update neighbors header
             const neighborsHeader = document.querySelector('#neighbors-info h4');
@@ -2097,6 +2853,10 @@ function toggleAccordion(element) {
             }
             return;
         }
+        
+        // Detect node language
+        const nodeLanguage = detectNodeLanguage(node);
+        console.log('Detected node language:', nodeLanguage, 'for node:', node.id);
         
         // Only display specific attributes in desired order
         const nodeInfoContent = document.getElementById('node-info-content');
@@ -2107,19 +2867,32 @@ function toggleAccordion(element) {
             (typeof link.target === 'object' && link.target.id === node.id)
         );
 
-        // Build HTML for selected node info
+        // Build HTML for selected node info based on language
         let html = '';
-        // Add node title (kanji)
         html += `<h3 class=\"node-title\">${node.id}</h3>`;
-        // Begin properties container
         html += '<div class=\"node-properties\">';
-        // Hiragana
-        html += `<div class=\"node-property\">\n    <div class=\"property-name\">Hiragana</div>\n    <div class=\"property-value\">${node.hiragana || 'N/A'}</div>\n</div>`;
-        // Translation
-        html += `<div class=\"node-property\">\n    <div class=\"property-name\">Translation</div>\n    <div class=\"property-value\">${formatTranslation(node.translation)}</div>\n</div>`;
-        // pos
-        html += `<div class=\"node-property\">\n    <div class=\"property-name\">pos</div>\n    <div class=\"property-value\">${node.POS || 'N/A'}</div>\n</div>`;
-        // Connections
+        
+        if (nodeLanguage === 'croatian') {
+            // Croatian node properties
+            html += `<div class=\"node-property\">\n    <div class=\"property-name\">Natuknica</div>\n    <div class=\"property-value\">${node.natuknica || 'N/A'}</div>\n</div>`;
+            html += `<div class=\"node-property\">\n    <div class=\"property-name\">Normalized</div>\n    <div class=\"property-value\">${node.natuknica_norm || 'N/A'}</div>\n</div>`;
+            html += `<div class=\"node-property\">\n    <div class=\"property-name\">Translation</div>\n    <div class=\"property-value\">${formatTranslation(node.translation)}</div>\n</div>`;
+            html += `<div class=\"node-property\">\n    <div class=\"property-name\">POS</div>\n    <div class=\"property-value\">${node.pos || 'N/A'}</div>\n</div>`;
+            html += `<div class=\"node-property\">\n    <div class=\"property-name\">UPOS</div>\n    <div class=\"property-value\">${node.UPOS || 'N/A'}</div>\n</div>`;
+            if (node.tekst) {
+                html += `<div class=\"node-property\">\n    <div class=\"property-name\">Definition</div>\n    <div class=\"property-value\">${node.tekst}</div>\n</div>`;
+            }
+        } else {
+            // Japanese node properties (default)
+            html += `<div class=\"node-property\">\n    <div class=\"property-name\">Hiragana</div>\n    <div class=\"property-value\">${node.hiragana || 'N/A'}</div>\n</div>`;
+            html += `<div class=\"node-property\">\n    <div class=\"property-name\">Translation</div>\n    <div class=\"property-value\">${formatTranslation(node.translation)}</div>\n</div>`;
+            html += `<div class=\"node-property\">\n    <div class=\"property-name\">POS</div>\n    <div class=\"property-value\">${node.POS || 'N/A'}</div>\n</div>`;
+            if (node.old_JLPT) {
+                html += `<div class=\"node-property\">\n    <div class=\"property-name\">JLPT</div>\n    <div class=\"property-value\">${node.old_JLPT}</div>\n</div>`;
+            }
+        }
+        
+        // Connections (common for both languages)
         html += `<div class=\"node-property\">\n    <div class=\"property-name\">Connections</div>\n    <div class=\"property-value\">${nodeLinks.length}</div>\n</div>`;
         html += '</div>'; // Close node-properties
         nodeInfoContent.innerHTML = html;
@@ -2182,12 +2955,19 @@ function toggleAccordion(element) {
             if (neighborNode) {
                 // Determine relationship strength using available attributes
                 const strengthVal = parseFloat(link.strength || link.weight || link.synonym_strength || 1);
+                
+                // Detect neighbor node language
+                const neighborLanguage = detectNodeLanguage(neighborNode);
+                
                 neighbors.push({
                     id: neighborId,
                     hiragana: neighborNode.hiragana || '',
+                    natuknica: neighborNode.natuknica || '',
+                    natuknica_norm: neighborNode.natuknica_norm || '',
                     translation: neighborNode.translation || 'No translation',
                     strength: isNaN(strengthVal) ? 1 : strengthVal,
-                    relationship: link.relationship || 'connected'
+                    relationship: link.relationship || 'connected',
+                    language: neighborLanguage
                 });
             }
         });
@@ -2219,10 +2999,23 @@ function toggleAccordion(element) {
                 out += `<div class=\"neighbor-group-heading\">${heading}</div>`;
             }
             arr.forEach(neighbor => {
+                let secondaryInfo = '';
+                if (neighbor.language === 'croatian') {
+                    // For Croatian nodes, show normalized form if different from main form
+                    if (neighbor.natuknica_norm && neighbor.natuknica_norm !== neighbor.id) {
+                        secondaryInfo = `<span class=\"neighbor-hiragana\">${neighbor.natuknica_norm}</span>`;
+                    }
+                } else {
+                    // For Japanese nodes, show hiragana
+                    if (neighbor.hiragana) {
+                        secondaryInfo = `<span class=\"neighbor-hiragana\">${neighbor.hiragana}</span>`;
+                    }
+                }
+                
                 out += `
                     <div class=\"neighbor-item\">
                         <a class=\"neighbor-kanji node-link\" data-id=\"${neighbor.id}\">${neighbor.id}</a>
-                        ${neighbor.hiragana ? `<span class=\"neighbor-hiragana\">${neighbor.hiragana}</span>` : ''}
+                        ${secondaryInfo}
                         <span class=\"neighbor-translation\">${formatTranslation(neighbor.translation)}</span>
                         <span class=\"neighbor-relation\">${neighbor.relationship} (${neighbor.strength.toFixed(2)})</span>
                     </div>`;
@@ -2251,23 +3044,32 @@ function toggleAccordion(element) {
         });
     }
 
-    // Function to toggle the combined sidebar
-    function toggleCombinedSidebar() {
-        console.log('toggleCombinedSidebar called');
-        const combinedSidebar = document.getElementById('combined-sidebar');
-        combinedSidebar.classList.toggle('open');
-        
-        // Toggle the arrow direction
-        const arrow = combinedSidebar.querySelector('.arrow');
-        if (arrow) {
-            if (combinedSidebar.classList.contains('open')) {
-                arrow.style.transform = 'rotate(180deg)';
-            } else {
+
+
+    
+    // Helper functions to close sidebars
+    function closeNodeInfoSidebar() {
+        const nodeInfoSidebar = document.getElementById('combined-sidebar');
+        if (nodeInfoSidebar && nodeInfoSidebar.classList.contains('open')) {
+            nodeInfoSidebar.classList.remove('open');
+            const arrow = nodeInfoSidebar.querySelector('.arrow');
+            if (arrow) {
                 arrow.style.transform = 'rotate(0deg)';
+                arrow.textContent = '▼';
             }
         }
-        
-        console.log('Combined sidebar toggled, open state:', combinedSidebar.classList.contains('open'));
+    }
+    
+    function closeCandoSidebar() {
+        const candoSidebar = document.getElementById('cando-sidebar');
+        if (candoSidebar && candoSidebar.classList.contains('open')) {
+            candoSidebar.classList.remove('open');
+            const arrow = candoSidebar.querySelector('.arrow');
+            if (arrow) {
+                arrow.style.transform = 'rotate(0deg)';
+                arrow.textContent = '◀';
+            }
+        }
     }
 
     // Function to handle the lexical exercises tab
@@ -2318,8 +3120,14 @@ function toggleAccordion(element) {
         exerciseBtn.disabled = true;
         statusElement.innerHTML = '<span class="loading">Generating exercise... This may take a few seconds.</span>';
         
+        // Determine exercise endpoint based on selected language
+        const selectedLanguage = document.getElementById('language-select').value;
+        const exerciseEndpoint = selectedLanguage === 'croatian' 
+            ? `/generate-croatian-exercise?node_id=${encodeURIComponent(nodeId)}&level=${level}&mode=exercise`
+            : `/exercise-generate?id=${encodeURIComponent(nodeId)}&level=${level}`;
+        
         // Fetch exercise data
-        fetch(`/exercise-generate?id=${encodeURIComponent(nodeId)}&level=${level}`)
+        fetch(exerciseEndpoint)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
@@ -2376,8 +3184,14 @@ function toggleAccordion(element) {
         conversationBtn.disabled = true;
         statusElement.innerHTML = '<span class="loading">Starting conversation... This may take a few seconds.</span>';
         
+        // Determine exercise endpoint based on selected language
+        const selectedLanguage = document.getElementById('language-select').value;
+        const conversationEndpoint = selectedLanguage === 'croatian' 
+            ? `/generate-croatian-exercise?node_id=${encodeURIComponent(nodeId)}&level=${level}&mode=conversation`
+            : `/exercise-generate?id=${encodeURIComponent(nodeId)}&level=${level}&mode=conversation`;
+        
         // Fetch conversation starter
-        fetch(`/exercise-generate?id=${encodeURIComponent(nodeId)}&level=${level}&mode=conversation`)
+        fetch(conversationEndpoint)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
@@ -2433,12 +3247,26 @@ function toggleAccordion(element) {
             return;
         }
         
-        console.log('Creating exercise content, data.content length:', data.content ? data.content.length : 'null');
+        // Extract content from different response structures
+        // Japanese: data.content directly
+        // Croatian: data.exercise.content
+        let content = data.content;
+        if (!content && data.exercise && data.exercise.content) {
+            content = data.exercise.content;
+        }
+        
+        if (!content) {
+            console.log('No content found in response:', data);
+            container.innerHTML = `<div class="error">No exercise content available</div>`;
+            return;
+        }
+        
+        console.log('Creating exercise content, content length:', content.length);
         
         // Create a tutor message div
         const messageDiv = document.createElement('div');
         messageDiv.className = 'chat-message tutor-message';
-        messageDiv.innerHTML = formatExerciseContent(data.content);
+        messageDiv.innerHTML = formatExerciseContent(content);
         addTTSButtonToMessage(messageDiv);
         
         // Clear and add to container
@@ -2449,20 +3277,25 @@ function toggleAccordion(element) {
         container.scrollTop = container.scrollHeight;
         
         // Store conversation history in a data attribute
-        container.dataset.history = JSON.stringify([
-            { user: '', tutor: data.content }
-        ]);
+        // Don't include empty user message in initial history
+        container.dataset.history = JSON.stringify([]);
         
-        console.log('About to call analyzeExerciseReadability with content:', data.content ? data.content.substring(0, 100) + '...' : 'null');
+        console.log('About to call analyzeExerciseReadability with content:', content.substring(0, 100) + '...');
         
         // Analyze readability of the exercise content
-        analyzeExerciseReadability(data.content);
+        analyzeExerciseReadability(content);
         
         console.log('analyzeExerciseReadability call completed');
     }
 
     // Function to format exercise content with proper styling
     function formatExerciseContent(content) {
+        // Safety check for null/undefined content
+        if (!content) {
+            console.warn('formatExerciseContent: content is null or undefined');
+            return '<p>No content available</p>';
+        }
+        
         // Use the marked library to render markdown
         return marked.parse(content);
     }
@@ -2503,33 +3336,53 @@ function toggleAccordion(element) {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="exercise-loading"></span>';
         
+        // Determine continuation endpoint based on selected language
+        const selectedLanguage = document.getElementById('language-select').value;
+        const continueEndpoint = selectedLanguage === 'croatian' 
+            ? '/continue-croatian-exercise'
+            : '/exercise-continue';
+        
+        // Debug: log what we're sending
+        const requestData = {
+            node_id: nodeId,
+            level: level,
+            message: userMessage,
+            // Use different parameter names based on language
+            ...(selectedLanguage === 'croatian' 
+                ? { session_history: history }
+                : { history: history }
+            ),
+            mode: isConversation ? 'conversation' : 'exercise'
+        };
+        console.log('Sending to', continueEndpoint, ':', requestData);
+        
         // Submit to server
-        fetch('/exercise-continue', {
+        fetch(continueEndpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                node_id: nodeId,
-                level: level,
-                message: userMessage,
-                history: history,
-                mode: isConversation ? 'conversation' : 'exercise'
-            }),
+            body: JSON.stringify(requestData),
         })
         .then(response => response.json())
         .then(data => {
+            // Extract content from different response structures (same as updateExerciseContent)
+            let tutorContent = data.content;
+            if (!tutorContent && data.exercise && data.exercise.content) {
+                tutorContent = data.exercise.content;
+            }
+            
             // Add tutor response to chat
             const tutorMessageDiv = document.createElement('div');
             tutorMessageDiv.className = 'chat-message tutor-message';
-            tutorMessageDiv.innerHTML = formatExerciseContent(data.content);
+            tutorMessageDiv.innerHTML = formatExerciseContent(tutorContent);
             addTTSButtonToMessage(tutorMessageDiv);
             container.appendChild(tutorMessageDiv);
             
             // Update history
             container.dataset.history = JSON.stringify(data.history || [
                 ...history,
-                { user: userMessage, tutor: data.content }
+                { user: userMessage, tutor: tutorContent }
             ]);
             
             // Scroll to bottom

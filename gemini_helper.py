@@ -7,6 +7,7 @@ and enhancing node information with AI-generated content.
 import os
 import json
 import logging
+import time
 import google.generativeai as genai
 from PIL import Image
 from cache_helper import cache
@@ -148,11 +149,74 @@ def generate_explanation(term, context=None, model_name=None):
                 
                 # Now parse the cleaned JSON
                 logger.info(f"Final JSON text before parsing for '{term}': {json_text!r}")
-                parsed_json = json.loads(json_text)
-                logger.info(f"Successfully parsed JSON for '{term}'")
                 
-                # Update the explanation with parsed values
-                explanation.update(parsed_json)
+                # Try multiple parsing strategies
+                parsed_json = None
+                parse_errors = []
+                
+                # Strategy 1: Direct parsing
+                try:
+                    parsed_json = json.loads(json_text)
+                    logger.info(f"Successfully parsed JSON for '{term}' using direct parsing")
+                except json.JSONDecodeError as e:
+                    parse_errors.append(f"Direct parsing failed: {e}")
+                
+                # Strategy 2: If direct parsing failed, try to fix common issues
+                if parsed_json is None:
+                    try:
+                        # Fix common issues like unescaped quotes in strings
+                        fixed_json = json_text
+                        
+                        # Try to parse again
+                        parsed_json = json.loads(fixed_json)
+                        logger.info(f"Successfully parsed JSON for '{term}' using fixed JSON")
+                    except json.JSONDecodeError as e:
+                        parse_errors.append(f"Fixed parsing failed: {e}")
+                
+                # Strategy 3: If all else fails, try to extract individual fields manually
+                if parsed_json is None:
+                    logger.warning(f"JSON parsing failed for '{term}', attempting manual field extraction")
+                    logger.warning(f"Parse errors: {parse_errors}")
+                    
+                    # Try to extract fields manually using regex
+                    import re
+                    
+                    manual_json = {}
+                    
+                    # Extract overview
+                    overview_match = re.search(r'"overview"\s*:\s*"([^"]*(?:\\.[^"]*)*)"', json_text, re.DOTALL)
+                    if overview_match:
+                        manual_json["overview"] = overview_match.group(1).replace('\\"', '"').replace('\\n', '\n')
+                    
+                    # Extract cultural_context
+                    context_match = re.search(r'"cultural_context"\s*:\s*"([^"]*(?:\\.[^"]*)*)"', json_text, re.DOTALL)
+                    if context_match:
+                        manual_json["cultural_context"] = context_match.group(1).replace('\\"', '"').replace('\\n', '\n')
+                    
+                    # Extract nuances
+                    nuances_match = re.search(r'"nuances"\s*:\s*"([^"]*(?:\\.[^"]*)*)"', json_text, re.DOTALL)
+                    if nuances_match:
+                        manual_json["nuances"] = nuances_match.group(1).replace('\\"', '"').replace('\\n', '\n')
+                    
+                    # Extract usage_examples array
+                    examples_match = re.search(r'"usage_examples"\s*:\s*\[(.*?)\]', json_text, re.DOTALL)
+                    if examples_match:
+                        examples_text = examples_match.group(1)
+                        # Extract individual examples
+                        example_matches = re.findall(r'"([^"]*(?:\\.[^"]*)*)"', examples_text)
+                        manual_json["usage_examples"] = [ex.replace('\\"', '"').replace('\\n', '\n') for ex in example_matches]
+                    
+                    if manual_json:
+                        parsed_json = manual_json
+                        logger.info(f"Successfully extracted fields manually for '{term}': {list(manual_json.keys())}")
+                
+                if parsed_json:
+                    # Update the explanation with parsed values
+                    explanation.update(parsed_json)
+                    logger.info(f"Updated explanation for '{term}' with parsed data")
+                else:
+                    logger.error(f"All parsing strategies failed for '{term}'. Parse errors: {parse_errors}")
+                    explanation["generation_note"] = f"Parse errors: {'; '.join(parse_errors)}"
                 
                 # Ensure all required fields exist
                 required_fields = ["overview", "cultural_context", "usage_examples", "nuances"]
@@ -413,15 +477,25 @@ def get_neighbor_info(node_id):
                     if edge_weight is None:
                         edge_weight = 1
 
-                # Determine edge type – prefer explicit 'type', otherwise infer from nested keys
+                # Determine edge type – prefer explicit 'type', otherwise infer from edge key or nested keys
                 edge_type = edge_attr.get('type')
                 if edge_type is None:
-                    if 'synonym' in edge_attr:
-                        edge_type = 'synonym'
-                    elif 'antonym' in edge_attr:
-                        edge_type = 'antonym'
+                    # For MultiGraph, check the edge key first
+                    if graph.is_multigraph() and edge_key:
+                        if edge_key == 'synonym':
+                            edge_type = 'synonym'
+                        elif edge_key == 'antonym':
+                            edge_type = 'antonym'
+                        else:
+                            edge_type = 'unknown'
                     else:
-                        edge_type = 'unknown'
+                        # For regular graphs, check nested keys
+                        if 'synonym' in edge_attr:
+                            edge_type = 'synonym'
+                        elif 'antonym' in edge_attr:
+                            edge_type = 'antonym'
+                        else:
+                            edge_type = 'unknown'
 
                 neighbors.append({
                     'id': neighbor_id,
@@ -479,6 +553,7 @@ def enhance_with_gemini(node_id, model_name=None):
                     'term2': neighbor['id'],
                     'analysis': relationship
                 })
+                time.sleep(1)  # Add a 1-second delay to avoid hitting rate limits
         
         return {
             'id': node_id,
